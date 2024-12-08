@@ -1,0 +1,43 @@
+[project]
+name = "ModernPrimitive"
+version = "0.0.1"
+description = "ModernPrimitive Blender-Addon"
+authors = [
+    { name = "Degarashi", email = "degarasu@gmail.com" }
+]
+dependencies = []
+readme = "README.md"
+requires-python = ">= 3.8"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = [
+    "pynvim>=0.5.2",
+    "debugpy>=1.8.9",
+    "ruff>=0.8.2",
+    "ruff-lsp>=0.0.59",
+    "fake-bpy-module-latest>=20241208",
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/modern_primitive"]
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+	"E",
+	"W",
+	"F",
+	"B",
+	"C4",
+	"UP",
+]
