@@ -28,6 +28,11 @@ You can adjust from modifier panel.<br>
 ### Tube
 ![jpg](./doc_images/usage_tube_0.jpg)
 
+# Changelog
+## v0.0.2
+    added Tube primitive
+## v0.0.1
+    Initial Release
 
 ## Author
 Degarashi
