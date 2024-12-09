@@ -3,29 +3,29 @@ Modern Primitive Object for Blener
 # Requirement
 Blender 4.3 or later
 
-## Usage
+# Usage
 Add Object(Shift+A) -> Mesh -> ModernPrimitive
 ![jpg](./doc_images/usage_0.jpg) <br>
 <br>
 You can adjust from modifier panel.<br>
 ![jpg](./doc_images/usage_panel_0.jpg)
 
-## Gallery
-### Cube
+# Gallery
+## Cube
 ![jpg](./doc_images/usage_cube_0.jpg)
-### Cone
+## Cone
 ![jpg](./doc_images/usage_cone_0.jpg)
-### Cylinder
+## Cylinder
 ![jpg](./doc_images/usage_cylinder_0.jpg)
-### Grid
+## Grid
 ![jpg](./doc_images/usage_grid_0.jpg)
-### Ico Sphere
+## Ico Sphere
 ![jpg](./doc_images/usage_icosphere_0.jpg)
-### Torus
+## Torus
 ![jpg](./doc_images/usage_torus_0.jpg)
-### UV Sphere
+## UV Sphere
 ![jpg](./doc_images/usage_uvsphere_0.jpg)
-### Tube
+## Tube
 ![jpg](./doc_images/usage_tube_0.jpg)
 
 # Changelog
@@ -34,5 +34,5 @@ You can adjust from modifier panel.<br>
 ## v0.0.1
     Initial Release
 
-## Author
+# Author
 Degarashi
