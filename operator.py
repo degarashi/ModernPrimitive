@@ -9,6 +9,7 @@ from .primitive import (
     PrimitiveInfo_ICOSphere,
     PrimitiveInfo_UVSphere,
     PrimitiveInfo_Torus,
+    PrimitiveInfo_Tube,
 )
 
 
@@ -135,6 +136,22 @@ class MakeUVSphere_Operator(OperatorBase, PrimitiveInfo_UVSphere):
         return self.handle_primitive(context)
 
 
+class MakeTube_Operator(OperatorBase, PrimitiveInfo_Tube):
+    """Make Modern Tube"""
+
+    P = PrimitiveInfo_Tube
+    bl_idname = P.bl_idname
+    bl_label = P.bl_label
+
+    @classmethod
+    @property
+    def menu_icon(cls):
+        return "SURFACE_NCYLINDER"
+
+    def execute(self, context: Context | None) -> set[str]:
+        return self.handle_primitive(context)
+
+
 OPS: list[type[bpy_struct]] = [
     MakeCube_Operator,
     MakeCone_Operator,
@@ -143,6 +160,7 @@ OPS: list[type[bpy_struct]] = [
     MakeICOSphere_Operator,
     MakeTorus_Operator,
     MakeUVSphere_Operator,
+    MakeTube_Operator,
 ]
 
 

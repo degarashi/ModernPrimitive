@@ -59,3 +59,7 @@ class PrimitiveInfo_UVSphere(PrimitiveInfo):
 
 class PrimitiveInfo_ICOSphere(PrimitiveInfo):
     type = Type.ICOSphere
+
+
+class PrimitiveInfo_Tube(PrimitiveInfo):
+    type = Type.Tube
