@@ -29,6 +29,8 @@ You can adjust from modifier panel.<br>
 ![jpg](./doc_images/usage_tube_0.jpg)
 
 # Changelog
+## v0.0.2a
+    fixed Tube primitive (bottom-region)
 ## v0.0.2
     added Tube primitive
 ## v0.0.1
