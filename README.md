@@ -25,6 +25,8 @@ You can adjust from modifier panel.<br>
 ![jpg](./doc_images/usage_torus_0.jpg)
 ### UV Sphere
 ![jpg](./doc_images/usage_uvsphere_0.jpg)
+### Tube
+![jpg](./doc_images/usage_tube_0.jpg)
 
 
 ## Author
