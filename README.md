@@ -34,8 +34,13 @@ Shortcut key(Ctrl+Alt+X) to focus ModernPrimitive modifier (to manipulate primit
 ![jpg](./doc_images/usage_tube_0.jpg)
 ## Gear
 ![jpg](./doc_images/usage_gear_0.jpg)
+## Spring
+![jpg](./doc_images/usage_spring_0.jpg)
 
 # Changelog
+## v0.0.5
+- added Spring primitive
+- fixed geometry distortion when bevel modifier is applied(Tube, Gear)
 ## v0.0.4
     added Gear primitive
 ## v0.0.3
