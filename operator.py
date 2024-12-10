@@ -10,11 +10,13 @@ from .primitive import (
     PrimitiveInfo_UVSphere,
     PrimitiveInfo_Torus,
     PrimitiveInfo_Tube,
+    PrimitiveInfo_Gear,
 )
 
 
 class OperatorBase(Operator):
     bl_options = {"REGISTER", "UNDO"}
+
     def handle_primitive(self, context: Context) -> set[str]:
         try:
             aux_func.load_primitive_from_asset(self.type, context)
@@ -152,6 +154,22 @@ class MakeTube_Operator(OperatorBase, PrimitiveInfo_Tube):
         return self.handle_primitive(context)
 
 
+class MakeGear_Operator(OperatorBase, PrimitiveInfo_Gear):
+    """Make Modern Gear"""
+
+    P = PrimitiveInfo_Gear
+    bl_idname = P.bl_idname
+    bl_label = P.bl_label
+
+    @classmethod
+    @property
+    def menu_icon(cls):
+        return "SURFACE_NCYLINDER"
+
+    def execute(self, context: Context | None) -> set[str]:
+        return self.handle_primitive(context)
+
+
 OPS: list[type[bpy_struct]] = [
     MakeCube_Operator,
     MakeCone_Operator,
@@ -161,6 +179,7 @@ OPS: list[type[bpy_struct]] = [
     MakeTorus_Operator,
     MakeUVSphere_Operator,
     MakeTube_Operator,
+    MakeGear_Operator,
 ]
 
 

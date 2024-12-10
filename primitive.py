@@ -63,3 +63,7 @@ class PrimitiveInfo_ICOSphere(PrimitiveInfo):
 
 class PrimitiveInfo_Tube(PrimitiveInfo):
     type = Type.Tube
+
+
+class PrimitiveInfo_Gear(PrimitiveInfo):
+    type = Type.Gear

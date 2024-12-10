@@ -12,6 +12,7 @@ class Type(Enum):
     UVSphere = auto()
     ICOSphere = auto()
     Tube = auto()
+    Gear = auto()
 
 
 class VersionInt:
@@ -53,6 +54,7 @@ class NodeGroupCurVersion(Enum):
     UVSphere = VersionInt(0)
     ICOSphere = VersionInt(0)
     Tube = VersionInt(1)
+    Gear = VersionInt(0)
 
 
 MODERN_PRIMITIVE_TAG = "[ModernPrimitive]"
