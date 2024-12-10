@@ -1,30 +1,44 @@
 import bpy
 from typing import cast
 from bpy.types import Context, Object, Operator, Modifier
+from bpy.props import BoolProperty
 from .constants import MODERN_PRIMITIVE_TAG
 
 
 class SelectModifier_Operator(Operator):
     bl_idname = "object.select_modernprimitive_modifier"
     bl_label = "Select ModernPrimitive Modifier"
+    bl_options = {"REGISTER", "UNDO"}
+
+    disable_others: BoolProperty(default=False)
 
     def execute(self, context: Context | None) -> set[str]:
         obj = context.view_layer.objects.active
-        if obj is not None:
+        if obj is not None and obj.type == "MESH":
+            obj = cast(Object, obj)
             select_modern_modifier(obj)
+            if self.disable_others:
+                disable_others(obj)
         return {"FINISHED"}
 
 
+def is_primitive_mod(mod: Modifier) -> bool:
+    return mod.name.startswith(MODERN_PRIMITIVE_TAG)
+
+
 def select_modern_modifier(obj: Object) -> None:
-    if obj is not None and obj.type == "MESH":
-        obj = cast(Object, obj)
-        target: Modifier | None = None
-        for mod in obj.modifiers:
-            if mod.name.startswith(MODERN_PRIMITIVE_TAG):
-                target = mod
-                break
-        if target is not None:
-            target.is_active = True
+    target: Modifier | None = None
+    for mod in obj.modifiers:
+        if is_primitive_mod(mod):
+            target = mod
+            break
+    if target is not None:
+        target.is_active = True
+
+
+def disable_others(obj: Object) -> None:
+    for mod in obj.modifiers:
+        mod.show_viewport = is_primitive_mod(mod)
 
 
 addon_keymaps = []
