@@ -13,6 +13,7 @@ class Type(Enum):
     ICOSphere = auto()
     Tube = auto()
     Gear = auto()
+    Spring = auto()
 
 
 class VersionInt:
@@ -55,6 +56,7 @@ class NodeGroupCurVersion(Enum):
     ICOSphere = VersionInt(0)
     Tube = VersionInt(2)
     Gear = VersionInt(1)
+    Spring = VersionInt(0)
 
 
 MODERN_PRIMITIVE_TAG = "[ModernPrimitive]"

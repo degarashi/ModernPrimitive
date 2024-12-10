@@ -67,3 +67,7 @@ class PrimitiveInfo_Tube(PrimitiveInfo):
 
 class PrimitiveInfo_Gear(PrimitiveInfo):
     type = Type.Gear
+
+
+class PrimitiveInfo_Spring(PrimitiveInfo):
+    type = Type.Spring

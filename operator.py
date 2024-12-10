@@ -11,6 +11,7 @@ from .primitive import (
     PrimitiveInfo_Torus,
     PrimitiveInfo_Tube,
     PrimitiveInfo_Gear,
+    PrimitiveInfo_Spring,
 )
 
 
@@ -170,6 +171,22 @@ class MakeGear_Operator(OperatorBase, PrimitiveInfo_Gear):
         return self.handle_primitive(context)
 
 
+class MakeSpring_Operator(OperatorBase, PrimitiveInfo_Spring):
+    """Make Modern Spring"""
+
+    P = PrimitiveInfo_Spring
+    bl_idname = P.bl_idname
+    bl_label = P.bl_label
+
+    @classmethod
+    @property
+    def menu_icon(cls):
+        return "MOD_SCREW"
+
+    def execute(self, context: Context | None) -> set[str]:
+        return self.handle_primitive(context)
+
+
 OPS: list[type[bpy_struct]] = [
     MakeCube_Operator,
     MakeCone_Operator,
@@ -180,6 +197,7 @@ OPS: list[type[bpy_struct]] = [
     MakeUVSphere_Operator,
     MakeTube_Operator,
     MakeGear_Operator,
+    MakeSpring_Operator,
 ]
 
 
