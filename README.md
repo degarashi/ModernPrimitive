@@ -10,6 +10,11 @@ Add Object(Shift+A) -> Mesh -> ModernPrimitive
 You can adjust from modifier panel.<br>
 ![jpg](./doc_images/usage_panel_0.jpg)
 
+Shortcut key(Ctrl+Alt+X) to focus ModernPrimitive modifier (to manipulate primitive)
+![jpg](./doc_images/shortcut_key_0.jpg)
+![jpg](./doc_images/selectmodifier_0.jpg)
+
+
 # Gallery
 ## Cube
 ![jpg](./doc_images/usage_cube_0.jpg)
@@ -29,6 +34,8 @@ You can adjust from modifier panel.<br>
 ![jpg](./doc_images/usage_tube_0.jpg)
 
 # Changelog
+## v0.0.3
+    added [Select ModernPrimitive Modifier] Operator and Shortcut key(Ctrl+Alt+X)
 ## v0.0.2a
     fixed Tube primitive (bottom-region)
 ## v0.0.2
