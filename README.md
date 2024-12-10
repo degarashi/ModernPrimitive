@@ -32,8 +32,12 @@ Shortcut key(Ctrl+Alt+X) to focus ModernPrimitive modifier (to manipulate primit
 ![jpg](./doc_images/usage_uvsphere_0.jpg)
 ## Tube
 ![jpg](./doc_images/usage_tube_0.jpg)
+## Gear
+![jpg](./doc_images/usage_gear_0.jpg)
 
 # Changelog
+## v0.0.4
+    added Gear primitive
 ## v0.0.3
     added [Select ModernPrimitive Modifier] Operator and Shortcut key(Ctrl+Alt+X)
 ## v0.0.2a
