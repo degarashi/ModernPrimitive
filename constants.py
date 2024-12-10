@@ -53,8 +53,8 @@ class NodeGroupCurVersion(Enum):
     Cylinder = VersionInt(1)
     UVSphere = VersionInt(0)
     ICOSphere = VersionInt(0)
-    Tube = VersionInt(1)
-    Gear = VersionInt(0)
+    Tube = VersionInt(2)
+    Gear = VersionInt(1)
 
 
 MODERN_PRIMITIVE_TAG = "[ModernPrimitive]"
