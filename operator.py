@@ -164,7 +164,7 @@ class MakeGear_Operator(OperatorBase, PrimitiveInfo_Gear):
     @classmethod
     @property
     def menu_icon(cls):
-        return "SURFACE_NCYLINDER"
+        return "PREFERENCES"
 
     def execute(self, context: Context | None) -> set[str]:
         return self.handle_primitive(context)
