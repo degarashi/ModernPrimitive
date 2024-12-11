@@ -11,8 +11,9 @@ You can adjust from modifier panel.<br>
 ![jpg](./doc_images/usage_panel_0.jpg)
 
 Shortcut key(Ctrl+Alt+X) to focus ModernPrimitive modifier (to manipulate primitive)
-![jpg](./doc_images/shortcut_key_0.jpg)
-![jpg](./doc_images/selectmodifier_0.jpg)
+![jpg](./doc_images/shortcut_key_1.jpg)
+![jpg](./doc_images/focusmodifier_0.jpg)
+![jpg](./doc_images/focus_modern_primitive_menu_0.jpg)
 
 
 # Gallery
@@ -38,6 +39,8 @@ Shortcut key(Ctrl+Alt+X) to focus ModernPrimitive modifier (to manipulate primit
 ![jpg](./doc_images/usage_spring_0.jpg)
 
 # Changelog
+## v0.0.5a
+- "Focus primitive" operator gets "disable_others" option, and Unfocus the primitive if already focused
 ## v0.0.5
 - added Spring primitive
 - fixed geometry distortion when bevel modifier is applied(Tube, Gear)
