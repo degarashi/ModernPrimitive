@@ -137,8 +137,21 @@ class KeyAssign:
         raise IndexError
 
 
+def menu_func(self, context: Context) -> None:
+    layout = self.layout
+
+    OPS = SelectModifier_Operator
+    op = layout.operator(OPS.bl_idname, text=OPS.bl_label)
+    op.disable_others = True
+    layout.separator()
+
+
+MENU_TARGET = bpy.types.VIEW3D_MT_select_object
+
+
 def register() -> None:
     bpy.utils.register_class(SelectModifier_Operator)
+    MENU_TARGET.append(menu_func)
     wm = bpy.context.window_manager
     kc = wm.keyconfigs.addon
     if kc:
@@ -157,6 +170,7 @@ def register() -> None:
 
 def unregister() -> None:
     bpy.utils.unregister_class(SelectModifier_Operator)
+    MENU_TARGET.remove(menu_func)
     for km, kmi in addon_keymaps:
         km.keymap_items.remove(kmi)
     addon_keymaps.clear()
