@@ -60,12 +60,12 @@ class NodeGroupCurVersion(Enum):
     Spring = VersionInt(0)
 
 
-MODERN_PRIMITIVE_TAG = "[ModernPrimitive]"
-MODERN_PRIMITIVE_BASE_MESH_NAME = f"{MODERN_PRIMITIVE_TAG}BaseMesh"
+_MODERN_PRIMITIVE_TAG = "[ModernPrimitive]"
+MODERN_PRIMITIVE_BASE_MESH_NAME = f"{_MODERN_PRIMITIVE_TAG}BaseMesh"
 
 
 def node_group_name_prefix(type: Type) -> str:
-    return f"{MODERN_PRIMITIVE_TAG}{type.name}_"
+    return f"{_MODERN_PRIMITIVE_TAG}{type.name}_"
 
 
 def node_group_name(type: Type, version: VersionInt) -> str:
@@ -73,8 +73,8 @@ def node_group_name(type: Type, version: VersionInt) -> str:
 
 
 def modifier_name(type: Type) -> str:
-    return f"{MODERN_PRIMITIVE_TAG}{type.name}"
+    return f"{_MODERN_PRIMITIVE_TAG}{type.name}"
 
 
 def is_primitive_mod(mod: Modifier) -> bool:
-    return mod.name.startswith(MODERN_PRIMITIVE_TAG)
+    return mod.name.startswith(_MODERN_PRIMITIVE_TAG)
