@@ -1,6 +1,7 @@
 from enum import Enum, auto
 from .exception import DGInvalidVersionNumber
 import re
+from bpy.types import Modifier
 
 
 class Type(Enum):
@@ -73,3 +74,7 @@ def node_group_name(type: Type, version: VersionInt) -> str:
 
 def modifier_name(type: Type) -> str:
     return f"{MODERN_PRIMITIVE_TAG}{type.name}"
+
+
+def is_primitive_mod(mod: Modifier) -> bool:
+    return mod.name.startswith(MODERN_PRIMITIVE_TAG)

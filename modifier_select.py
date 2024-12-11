@@ -2,7 +2,7 @@ import bpy
 from typing import cast
 from bpy.types import Context, Object, Operator, Modifier
 from bpy.props import BoolProperty
-from .constants import MODERN_PRIMITIVE_TAG
+from .constants import is_primitive_mod
 
 
 class SelectModifier_Operator(Operator):
@@ -22,8 +22,6 @@ class SelectModifier_Operator(Operator):
         return {"FINISHED"}
 
 
-def is_primitive_mod(mod: Modifier) -> bool:
-    return mod.name.startswith(MODERN_PRIMITIVE_TAG)
 
 
 def select_modern_modifier(obj: Object) -> None:
