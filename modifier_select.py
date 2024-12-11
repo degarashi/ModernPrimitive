@@ -34,7 +34,7 @@ def is_other_modifier_state_valid(mods: ObjectModifiers, data: Dict[str, bool]) 
     return found_pmod
 
 
-class SelectModifier_Operator(Operator):
+class FocusModifier_Operator(Operator):
     """
     focus to ModernPrimitive modifier only(save other modifier's state)
     if already focused, then restore other modifier's state
@@ -42,8 +42,8 @@ class SelectModifier_Operator(Operator):
 
     ENTRY_NAME = make_primitive_property_name("original_modifier_viewstate")
 
-    bl_idname = "object.select_modernprimitive_modifier"
-    bl_label = "Select ModernPrimitive Modifier"
+    bl_idname = "object.focus_modernprimitive_modifier"
+    bl_label = "Focus ModernPrimitive Modifier"
     bl_options = {"REGISTER", "UNDO"}
 
     disable_others: BoolProperty(default=True)
@@ -53,7 +53,7 @@ class SelectModifier_Operator(Operator):
         obj = context.view_layer.objects.active
         return obj is not None and obj.type == "MESH"
 
-    def _is_already_selected(self, obj: Object) -> bool:
+    def _is_already_focused(self, obj: Object) -> bool:
         for mod in obj.modifiers:
             if is_primitive_mod(mod):
                 if not mod.show_viewport or not mod.is_active:
@@ -63,14 +63,14 @@ class SelectModifier_Operator(Operator):
                     return False
         return True
 
-    def _select_modifier(self, obj: Object) -> None:
-        select_modern_modifier(obj.modifiers)
+    def _focus_modifier(self, obj: Object) -> None:
+        focus_modern_modifier(obj.modifiers)
         if self.disable_others:
             # save other modifier's viewport state
             obj[self.__class__.ENTRY_NAME] = save_other_modifier_state(obj.modifiers)
             disable_other_mods(obj.modifiers)
 
-    def _unselect_modifier(self, obj: Object) -> None:
+    def _unfocus_modifier(self, obj: Object) -> None:
         if self.disable_others:
             ENTRY_NAME = self.__class__.ENTRY_NAME
             if ENTRY_NAME in obj:
@@ -81,10 +81,10 @@ class SelectModifier_Operator(Operator):
 
     def execute(self, context: Context | None) -> set[str]:
         obj = cast(Object, context.view_layer.objects.active)
-        if self._is_already_selected(obj):
-            self._unselect_modifier(obj)
+        if self._is_already_focused(obj):
+            self._unfocus_modifier(obj)
         else:
-            self._select_modifier(obj)
+            self._focus_modifier(obj)
         return {"FINISHED"}
 
 
@@ -95,7 +95,7 @@ def find_modern_mod(mods: ObjectModifiers) -> Modifier | None:
     return None
 
 
-def select_modern_modifier(mods: ObjectModifiers) -> None:
+def focus_modern_modifier(mods: ObjectModifiers) -> None:
     mod = find_modern_mod(mods)
     if mod is not None:
         mod.is_active = True
@@ -140,7 +140,7 @@ class KeyAssign:
 def menu_func(self, context: Context) -> None:
     layout = self.layout
 
-    OPS = SelectModifier_Operator
+    OPS = FocusModifier_Operator
     op = layout.operator(OPS.bl_idname, text=OPS.bl_label)
     op.disable_others = True
     layout.separator()
@@ -150,14 +150,14 @@ MENU_TARGET = bpy.types.VIEW3D_MT_select_object
 
 
 def register() -> None:
-    bpy.utils.register_class(SelectModifier_Operator)
+    bpy.utils.register_class(FocusModifier_Operator)
     MENU_TARGET.append(menu_func)
     wm = bpy.context.window_manager
     kc = wm.keyconfigs.addon
     if kc:
         KEY_ASSIGN_LIST: list[KeyAssign] = [
             KeyAssign(
-                SelectModifier_Operator.bl_idname, "X", "PRESS", True, True, False
+                FocusModifier_Operator.bl_idname, "X", "PRESS", True, True, False
             ),
         ]
         km = kc.keymaps.new(name="3D View", space_type="VIEW_3D")
@@ -169,7 +169,7 @@ def register() -> None:
 
 
 def unregister() -> None:
-    bpy.utils.unregister_class(SelectModifier_Operator)
+    bpy.utils.unregister_class(FocusModifier_Operator)
     MENU_TARGET.remove(menu_func)
     for km, kmi in addon_keymaps:
         km.keymap_items.remove(kmi)
