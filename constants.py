@@ -62,6 +62,7 @@ class NodeGroupCurVersion(Enum):
 
 _MODERN_PRIMITIVE_TAG = "[ModernPrimitive]"
 MODERN_PRIMITIVE_BASE_MESH_NAME = f"{_MODERN_PRIMITIVE_TAG}BaseMesh"
+_MODERN_PRIMITIVE_PROPERTY_PREFIX = "mpr"
 
 
 def node_group_name_prefix(type: Type) -> str:
@@ -78,3 +79,11 @@ def modifier_name(type: Type) -> str:
 
 def is_primitive_mod(mod: Modifier) -> bool:
     return mod.name.startswith(_MODERN_PRIMITIVE_TAG)
+
+
+def make_primitive_property_name(name: str) -> str:
+    return f"{_MODERN_PRIMITIVE_PROPERTY_PREFIX}_{name}"
+
+
+def is_primitive_property(name: str) -> bool:
+    return name.startswith(_MODERN_PRIMITIVE_PROPERTY_PREFIX + "_")
