@@ -2,7 +2,7 @@ import bpy
 from pathlib import Path
 from bpy.types import Mesh, Object, Context, bpy_struct, NodeGroup
 from .primitive import Type
-from .constants import MODERN_PRIMITIVE_BASE_MESH_NAME, VersionInt
+from .constants import MODERN_PRIMITIVE_BASE_MESH_NAME, VersionInt, get_blend_file_name
 from .exception import DGFileNotFound, DGObjectNotFound, DGInvalidVersionNumber
 from .constants import modifier_name, node_group_name_prefix, NodeGroupCurVersion
 
@@ -17,12 +17,11 @@ def unregister_class(cls: list[type[bpy_struct]]) -> None:
         bpy.utils.unregister_class(cl)
 
 
-BLEND_FILE = "assets/primitive_nodes.blend"
-
-
-def append_object_from_asset(obj_name: str, context: Context) -> Object:
+def append_object_from_asset(type: Type, context: Context) -> Object:
     addon_dir = Path(__file__).parent
-    file_path = addon_dir / BLEND_FILE
+    obj_name = type.name
+    file_name = get_blend_file_name(type)
+    file_path = addon_dir / file_name
     if not file_path.exists():
         raise DGFileNotFound(file_path)
 
@@ -89,7 +88,7 @@ def share_basemesh_if_exists(obj: Object) -> None:
 
 
 def load_primitive_from_asset(type: Type, context: Context) -> Object:
-    obj = append_object_from_asset(type.name, context)
+    obj = append_object_from_asset(type, context)
     # ダブッたリソースを共有
     share_node_group_if_exists(type, obj)
     share_basemesh_if_exists(obj)
