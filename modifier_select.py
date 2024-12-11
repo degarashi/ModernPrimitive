@@ -46,7 +46,7 @@ class SelectModifier_Operator(Operator):
     bl_label = "Select ModernPrimitive Modifier"
     bl_options = {"REGISTER", "UNDO"}
 
-    disable_others: BoolProperty(default=False)
+    disable_others: BoolProperty(default=True)
 
     @classmethod
     def poll(cls, context: Context | None) -> bool:
