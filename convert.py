@@ -82,6 +82,8 @@ class ConvertToCube_Operator(Operator):
         )
         cube.matrix_world = from_obj.matrix_world
         cube.location = from_obj.matrix_world @ center
+        cube.name = from_obj.name + "_converted"
+        print(cube.name_full)
 
     def execute(self, context: Context | None) -> set[str]:
         sel = context.selected_objects.copy()
