@@ -1,5 +1,5 @@
 from bpy.types import bpy_struct, Context, Operator
-from bpy.types import NodeGroup, NodeGroupInput, NodesModifier
+from bpy.types import NodeGroup, NodeGroupInput, NodesModifier, Object
 import bpy.utils
 from typing import cast, Any, Iterable
 from .aux_func import get_bound_box, get_object_just_added
@@ -82,11 +82,16 @@ class ConvertToCube_Operator(Operator):
         if context is None:
             return False
         context = cast(Context, context)
-        obj = context.view_layer.objects.active
-        return obj is not None and obj.type == "MESH"
 
-    def execute(self, context: Context | None) -> set[str]:
-        from_obj = context.view_layer.objects.active
+        sel = context.selected_objects
+        if len(sel) == 0:
+            return False
+        for obj in sel:
+            if obj is None or obj.type != "MESH":
+                return False
+        return True
+
+    def _make_cube(self, context: Context, from_obj: Object) -> None:
         (b_min, b_max) = get_bound_box(from_obj.bound_box)
         center = (b_min + b_max) / 2
 
@@ -105,6 +110,9 @@ class ConvertToCube_Operator(Operator):
         cube.matrix_world = from_obj.matrix_world
         cube.location = from_obj.matrix_world @ center
 
+    def execute(self, context: Context | None) -> set[str]:
+        for obj in context.selected_objects:
+            self._make_cube(context, obj)
         return {"FINISHED"}
 
 
