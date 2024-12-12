@@ -295,12 +295,21 @@ OPS: list[type[bpy_struct]] = [
     MakeDeformableCube_Operator,
 ]
 
+MENU_TARGET = bpy.types.VIEW3D_MT_object_convert
+
+
+def menu_func(self, context: Context) -> None:
+    layout = self.layout
+    layout.operator(ConvertToCube_Operator.bl_idname, text="Modern Cube", icon="CUBE")
+
 
 def register() -> None:
     aux_func.register_class(OPS)
     bpy.utils.register_class(ConvertToCube_Operator)
+    MENU_TARGET.append(menu_func)
 
 
 def unregister() -> None:
     aux_func.unregister_class(OPS)
     bpy.utils.unregister_class(ConvertToCube_Operator)
+    MENU_TARGET.remove(menu_func)
