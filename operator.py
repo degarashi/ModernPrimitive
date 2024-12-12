@@ -1,4 +1,8 @@
 from bpy.types import bpy_struct, Context, Operator
+from bpy.types import NodeGroup, NodeGroupInput, NodesModifier
+import bpy.utils
+from typing import cast, Any, Iterable
+from .aux_func import bbox, get_object_just_added
 from . import aux_func
 from .exception import DGFileNotFound, DGObjectNotFound
 from .primitive import (
@@ -37,6 +41,71 @@ class MakeCube_Operator(OperatorBase, PrimitiveInfo_Cube):
 
     def execute(self, context: Context | None) -> set[str]:
         return self.handle_primitive(context)
+
+
+def find_group_input(node_group: NodeGroup) -> NodeGroupInput:
+    for node in node_group.nodes:
+        if node.type == "GROUP_INPUT":
+            return node
+    raise KeyError("Group Input")
+
+
+def find_interface_name(node_group: NodeGroup, name: str) -> str:
+    gi = find_group_input(node_group)
+    for o in gi.outputs:
+        if o.name == name:
+            return o.identifier
+    raise KeyError(name)
+
+
+def set_interface_value(mod: NodesModifier, data: tuple[str, Any]) -> None:
+    sock_name = find_interface_name(mod.node_group, data[0])
+    mod[sock_name] = data[1]
+
+
+def set_interface_values(
+    mod: NodesModifier, context: Context, data: Iterable[tuple[str, Any]]
+) -> None:
+    for d in data:
+        set_interface_value(mod, d)
+    mod.node_group.interface_update(context)
+
+
+class ConvertToCube_Operator(Operator):
+    """Make Modern Cube From Object"""
+
+    bl_idname = "mesh.convert_to_modern_cube"
+    bl_label = "Convert object to ModernCube"
+
+    @classmethod
+    def poll(cls, context: Context | None) -> bool:
+        if context is None:
+            return False
+        context = cast(Context, context)
+        obj = context.view_layer.objects.active
+        return obj is not None and obj.type == "MESH"
+
+    def execute(self, context: Context | None) -> set[str]:
+        from_obj = context.view_layer.objects.active
+        (b_min, b_max) = bbox(from_obj.bound_box)
+        center = (b_min + b_max) / 2
+
+        bpy.ops.mesh.make_modern_cube()
+        cube = get_object_just_added(context)
+
+        set_interface_values(
+            cube.modifiers[0],
+            context,
+            (
+                ("SizeX", (b_max.x - b_min.x) / 2),
+                ("SizeY", (b_max.y - b_min.y) / 2),
+                ("SizeZ", (b_max.z - b_min.z) / 2),
+            ),
+        )
+        cube.matrix_world = from_obj.matrix_world
+        cube.location = from_obj.matrix_world @ center
+
+        return {"FINISHED"}
 
 
 class MakeCone_Operator(OperatorBase, PrimitiveInfo_Cone):
@@ -221,7 +290,9 @@ OPS: list[type[bpy_struct]] = [
 
 def register() -> None:
     aux_func.register_class(OPS)
+    bpy.utils.register_class(ConvertToCube_Operator)
 
 
 def unregister() -> None:
     aux_func.unregister_class(OPS)
+    bpy.utils.unregister_class(ConvertToCube_Operator)
