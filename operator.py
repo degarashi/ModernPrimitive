@@ -2,7 +2,7 @@ from bpy.types import bpy_struct, Context, Operator
 from bpy.types import NodeGroup, NodeGroupInput, NodesModifier
 import bpy.utils
 from typing import cast, Any, Iterable
-from .aux_func import bbox, get_object_just_added
+from .aux_func import get_bound_box, get_object_just_added
 from . import aux_func
 from .exception import DGFileNotFound, DGObjectNotFound
 from .primitive import (
@@ -87,7 +87,7 @@ class ConvertToCube_Operator(Operator):
 
     def execute(self, context: Context | None) -> set[str]:
         from_obj = context.view_layer.objects.active
-        (b_min, b_max) = bbox(from_obj.bound_box)
+        (b_min, b_max) = get_bound_box(from_obj.bound_box)
         center = (b_min + b_max) / 2
 
         bpy.ops.mesh.make_modern_cube()
