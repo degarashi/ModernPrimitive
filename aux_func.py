@@ -17,6 +17,10 @@ def unregister_class(cls: list[type[bpy_struct]]) -> None:
         bpy.utils.unregister_class(cl)
 
 
+def get_object_just_added(context: Context) -> Object:
+    return context.view_layer.objects.selected[0]
+
+
 def append_object_from_asset(type: Type, context: Context) -> Object:
     addon_dir = Path(__file__).parent
     obj_name = type.name
@@ -31,7 +35,7 @@ def append_object_from_asset(type: Type, context: Context) -> Object:
         filename=obj_name,
     )
     try:
-        return context.view_layer.objects.selected[0]
+        return get_object_just_added(context)
     except IndexError as e:
         # ロードできてない
         raise DGObjectNotFound(obj_name, file_path) from e
