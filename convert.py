@@ -10,6 +10,7 @@ from bpy.types import (
 from typing import cast
 from .aux_func import get_bound_box, get_object_just_added
 from typing import Any, Iterable
+from bpy.props import BoolProperty
 
 
 def find_group_input(node_group: NodeGroup) -> NodeGroupInput:
@@ -45,6 +46,9 @@ class ConvertToCube_Operator(Operator):
 
     bl_idname = "mesh.convert_to_modern_cube"
     bl_label = "Convert object to ModernCube"
+    bl_options = {"REGISTER", "UNDO"}
+
+    keep_original: BoolProperty(name="Keep Original", default=False)
 
     @classmethod
     def poll(cls, context: Context | None) -> bool:
@@ -80,8 +84,12 @@ class ConvertToCube_Operator(Operator):
         cube.location = from_obj.matrix_world @ center
 
     def execute(self, context: Context | None) -> set[str]:
-        for obj in context.selected_objects:
+        sel = context.selected_objects.copy()
+        for obj in sel:
             self._make_cube(context, obj)
+        if not self.keep_original:
+            for obj in sel:
+                bpy.data.objects.remove(obj)
         return {"FINISHED"}
 
 
