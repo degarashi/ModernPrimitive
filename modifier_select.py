@@ -46,7 +46,7 @@ class FocusModifier_Operator(Operator):
     bl_label = "Focus ModernPrimitive Modifier"
     bl_options = {"REGISTER", "UNDO"}
 
-    disable_others: BoolProperty(default=True)
+    disable_others: BoolProperty(name="Disable Others", default=True)
 
     @classmethod
     def poll(cls, context: Context | None) -> bool:
