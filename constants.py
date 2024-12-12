@@ -15,6 +15,7 @@ class Type(Enum):
     Tube = auto()
     Gear = auto()
     Spring = auto()
+    DeformableCube = auto()
 
 
 class VersionInt:
@@ -58,6 +59,7 @@ class NodeGroupCurVersion(Enum):
     Tube = VersionInt(2)
     Gear = VersionInt(1)
     Spring = VersionInt(0)
+    DeformableCube = VersionInt(0)
 
 
 _MODERN_PRIMITIVE_TAG = "[ModernPrimitive]"

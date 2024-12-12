@@ -12,6 +12,7 @@ from .primitive import (
     PrimitiveInfo_Tube,
     PrimitiveInfo_Gear,
     PrimitiveInfo_Spring,
+    PrimitiveInfo_DeformableCube,
 )
 
 
@@ -187,6 +188,22 @@ class MakeSpring_Operator(OperatorBase, PrimitiveInfo_Spring):
         return self.handle_primitive(context)
 
 
+class MakeDeformableCube_Operator(OperatorBase, PrimitiveInfo_DeformableCube):
+    """Make Modern Deformable Cube"""
+
+    P = PrimitiveInfo_DeformableCube
+    bl_idname = P.bl_idname
+    bl_label = P.bl_label
+
+    @classmethod
+    @property
+    def menu_icon(cls):
+        return "META_CUBE"
+
+    def execute(self, context: Context | None) -> set[str]:
+        return self.handle_primitive(context)
+
+
 OPS: list[type[bpy_struct]] = [
     MakeCube_Operator,
     MakeCone_Operator,
@@ -198,6 +215,7 @@ OPS: list[type[bpy_struct]] = [
     MakeTube_Operator,
     MakeGear_Operator,
     MakeSpring_Operator,
+    MakeDeformableCube_Operator,
 ]
 
 
