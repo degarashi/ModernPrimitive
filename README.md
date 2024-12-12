@@ -15,6 +15,10 @@ Shortcut key(Ctrl+Alt+X) to focus ModernPrimitive modifier (to manipulate primit
 ![jpg](./doc_images/focusmodifier_0.jpg)
 ![jpg](./doc_images/focus_modern_primitive_menu_0.jpg)
 
+Convert To Cube function
+![jpg](./doc_images/usage_convert_cube_0.jpg)
+![jpg](./doc_images/usage_convert_cube_menu_0.jpg)
+
 
 # Gallery
 ## Cube
@@ -37,8 +41,14 @@ Shortcut key(Ctrl+Alt+X) to focus ModernPrimitive modifier (to manipulate primit
 ![jpg](./doc_images/usage_gear_0.jpg)
 ## Spring
 ![jpg](./doc_images/usage_spring_0.jpg)
+## DeformableCube
+![jpg](./doc_images/usage_deformable_cube_0.jpg)
+
 
 # Changelog
+## v0.0.6
+- added Deformable Cube primitive
+- added "Convert -> ModernCube" function (and menu)
 ## v0.0.5a
 - "Focus primitive" operator gets "disable_others" option, and Unfocus the primitive if already focused
 ## v0.0.5
