@@ -1,10 +1,13 @@
 import bpy
+import sys
 from pathlib import Path
 from bpy.types import Mesh, Object, Context, bpy_struct, NodeGroup
 from .primitive import Type
 from .constants import MODERN_PRIMITIVE_BASE_MESH_NAME, VersionInt, get_blend_file_name
 from .exception import DGFileNotFound, DGObjectNotFound, DGInvalidVersionNumber
 from .constants import modifier_name, node_group_name_prefix, NodeGroupCurVersion
+from mathutils import Vector
+from collections.abc import Iterable
 
 
 def register_class(cls: list[type[bpy_struct]]) -> None:
@@ -99,3 +102,15 @@ def load_primitive_from_asset(type: Type, context: Context) -> Object:
     # カーソル位置へ移動
     obj.location = context.scene.cursor.location
     return obj
+
+
+def get_bound_box(vecs: Iterable[Vector]) -> tuple[Vector, Vector]:
+    L = sys.float_info.max
+    min_v = Vector((L, L, L))
+    max_v = Vector((-L, -L, -L))
+    for pt in vecs:
+        for i in range(3):
+            min_v[i] = min(min_v[i], pt[i])
+            max_v[i] = max(max_v[i], pt[i])
+
+    return (min_v, max_v)
