@@ -8,7 +8,11 @@ from bpy.types import (
     NodesModifier,
 )
 from typing import cast
-from .aux_func import get_bound_box, get_object_just_added
+from .aux_func import (
+    get_bound_box,
+    get_object_just_added,
+    is_modern_primitive,
+)
 from typing import Any, Iterable
 from bpy.props import BoolProperty, EnumProperty
 
@@ -74,6 +78,8 @@ class ConvertToCube_Operator(Operator):
 
     def _make_cube(self, context: Context, from_obj: Object) -> None:
         # bound_box update
+        if is_modern_primitive(from_obj):
+            bpy.ops.object.mode_set(mode="OBJECT")
         from_obj.data.update()
         (b_min, b_max) = get_bound_box(from_obj.bound_box)
         center = (b_min + b_max) / 2
@@ -84,6 +90,7 @@ class ConvertToCube_Operator(Operator):
             bpy.ops.mesh.make_modern_deformablecube()
 
         cube = get_object_just_added(context)
+        cube.matrix_world = from_obj.matrix_world
 
         if self.cube_type == "Cube":
             set_interface_values(
@@ -95,6 +102,7 @@ class ConvertToCube_Operator(Operator):
                     ("SizeZ", (b_max.z - b_min.z) / 2),
                 ),
             )
+            cube.location = from_obj.matrix_world @ center
         else:
             set_interface_values(
                 cube.modifiers[0],
@@ -108,8 +116,6 @@ class ConvertToCube_Operator(Operator):
                     ("MaxZ", b_max.z),
                 ),
             )
-        cube.matrix_world = from_obj.matrix_world
-        cube.location = from_obj.matrix_world @ center
         cube.name = from_obj.name + "_converted"
 
     def execute(self, context: Context | None) -> set[str]:
