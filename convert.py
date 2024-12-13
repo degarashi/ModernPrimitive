@@ -73,6 +73,8 @@ class ConvertToCube_Operator(Operator):
         return True
 
     def _make_cube(self, context: Context, from_obj: Object) -> None:
+        # bound_box update
+        from_obj.data.update()
         (b_min, b_max) = get_bound_box(from_obj.bound_box)
         center = (b_min + b_max) / 2
 
