@@ -1,7 +1,7 @@
 import bpy
 import sys
 from pathlib import Path
-from bpy.types import Mesh, Object, Context, bpy_struct, NodeGroup
+from bpy.types import Mesh, Object, Context, bpy_struct, NodeGroup, NodesModifier
 from .primitive import Type
 from .constants import MODERN_PRIMITIVE_BASE_MESH_NAME, VersionInt, get_blend_file_name
 from .exception import DGFileNotFound, DGObjectNotFound, DGInvalidVersionNumber
@@ -127,3 +127,7 @@ def is_modern_primitive(obj: Object) -> bool:
     if len(obj.modifiers) == 0:
         return False
     return is_primitive_mod(obj.modifiers[0])
+
+
+def update_node_interface(mod: NodesModifier, context: Context) -> bool:
+    mod.node_group.interface_update(context)
