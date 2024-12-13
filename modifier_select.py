@@ -1,6 +1,12 @@
 import bpy
 from typing import cast, Dict
-from bpy.types import Context, Object, Operator, Modifier, ObjectModifiers
+from bpy.types import (
+    Context,
+    Object,
+    Operator,
+    Modifier,
+    ObjectModifiers,
+)
 from bpy.props import BoolProperty
 from .constants import is_primitive_mod, make_primitive_property_name
 from .aux_func import is_modern_primitive
