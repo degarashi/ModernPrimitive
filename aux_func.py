@@ -129,5 +129,11 @@ def is_modern_primitive(obj: Object) -> bool:
     return is_primitive_mod(obj.modifiers[0])
 
 
+def is_modern_primitive_specific(obj: Object, type: Type) -> bool:
+    if not is_modern_primitive(obj):
+        return False
+    return obj.modifiers[0].name == modifier_name(type)
+
+
 def update_node_interface(mod: NodesModifier, context: Context) -> bool:
     mod.node_group.interface_update(context)
