@@ -34,3 +34,7 @@ def set_interface_values(
         set_interface_value(mod, d)
     mod.node_group.interface_update(context)
 
+
+def get_interface_value(mod: NodesModifier, name: str) -> Any:
+    sock_name = find_interface_name(mod.node_group, name)
+    return mod[sock_name]
