@@ -34,6 +34,15 @@ def is_other_modifier_state_valid(mods: ObjectModifiers, data: Dict[str, bool]) 
     return found_pmod
 
 
+def is_modern_primitive(obj: Object) -> bool:
+    if obj.type != "MESH":
+        return False
+    if len(obj.modifiers) == 0:
+        return False
+    return is_primitive_mod(obj.modifiers[0])
+
+
+# ModernCubeでない時はPollを無効化
 class FocusModifier_Operator(Operator):
     """
     focus to ModernPrimitive modifier only(save other modifier's state)
@@ -51,7 +60,7 @@ class FocusModifier_Operator(Operator):
     @classmethod
     def poll(cls, context: Context | None) -> bool:
         obj = context.view_layer.objects.active
-        return obj is not None and obj.type == "MESH"
+        return obj is not None and is_modern_primitive(obj)
 
     def _is_already_focused(self, obj: Object) -> bool:
         for mod in obj.modifiers:
