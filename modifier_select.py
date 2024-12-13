@@ -3,6 +3,7 @@ from typing import cast, Dict
 from bpy.types import Context, Object, Operator, Modifier, ObjectModifiers
 from bpy.props import BoolProperty
 from .constants import is_primitive_mod, make_primitive_property_name
+from .aux_func import is_modern_primitive
 
 
 def save_other_modifier_state(mods: ObjectModifiers) -> Dict[str, bool]:
@@ -32,14 +33,6 @@ def is_other_modifier_state_valid(mods: ObjectModifiers, data: Dict[str, bool]) 
             if mod.name not in data:
                 return False
     return found_pmod
-
-
-def is_modern_primitive(obj: Object) -> bool:
-    if obj.type != "MESH":
-        return False
-    if len(obj.modifiers) == 0:
-        return False
-    return is_primitive_mod(obj.modifiers[0])
 
 
 # ModernCubeでない時はPollを無効化

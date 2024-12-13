@@ -5,7 +5,12 @@ from bpy.types import Mesh, Object, Context, bpy_struct, NodeGroup
 from .primitive import Type
 from .constants import MODERN_PRIMITIVE_BASE_MESH_NAME, VersionInt, get_blend_file_name
 from .exception import DGFileNotFound, DGObjectNotFound, DGInvalidVersionNumber
-from .constants import modifier_name, node_group_name_prefix, NodeGroupCurVersion
+from .constants import (
+    modifier_name,
+    node_group_name_prefix,
+    NodeGroupCurVersion,
+    is_primitive_mod,
+)
 from mathutils import Vector
 from collections.abc import Iterable
 
@@ -114,3 +119,11 @@ def get_bound_box(vecs: Iterable[Vector]) -> tuple[Vector, Vector]:
             max_v[i] = max(max_v[i], pt[i])
 
     return (min_v, max_v)
+
+
+def is_modern_primitive(obj: Object) -> bool:
+    if obj.type != "MESH":
+        return False
+    if len(obj.modifiers) == 0:
+        return False
+    return is_primitive_mod(obj.modifiers[0])
