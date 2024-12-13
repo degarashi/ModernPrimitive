@@ -46,6 +46,9 @@ Convert To Cube function
 
 
 # Changelog
+## v0.0.6a
+- added "Convert -> DeformableCube"
+- fix some bugs... (convert function)
 ## v0.0.6
 - added Deformable Cube primitive
 - added "Convert -> ModernCube" function (and menu)
