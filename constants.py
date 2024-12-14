@@ -56,7 +56,7 @@ class NodeGroupCurVersion(Enum):
     Cylinder = VersionInt(2)
     UVSphere = VersionInt(0)
     ICOSphere = VersionInt(0)
-    Tube = VersionInt(2)
+    Tube = VersionInt(3)
     Gear = VersionInt(1)
     Spring = VersionInt(0)
     DeformableCube = VersionInt(0)
