@@ -19,6 +19,8 @@ Convert To Cube function
 ![jpg](./doc_images/usage_convert_cube_0.jpg)
 ![jpg](./doc_images/usage_convert_cube_menu_0.jpg)
 
+DeformableCube's "set origin to center" operator
+![jpg](./doc_images/usage_cube_origin_0.jpg)
 
 # Gallery
 ## Cube
@@ -27,6 +29,7 @@ Convert To Cube function
 ![jpg](./doc_images/usage_cone_0.jpg)
 ## Cylinder
 ![jpg](./doc_images/usage_cylinder_0.jpg)
+![jpg](./doc_images/usage_cylinder_1.jpg)
 ## Grid
 ![jpg](./doc_images/usage_grid_0.jpg)
 ## Ico Sphere
@@ -37,6 +40,7 @@ Convert To Cube function
 ![jpg](./doc_images/usage_uvsphere_0.jpg)
 ## Tube
 ![jpg](./doc_images/usage_tube_0.jpg)
+![jpg](./doc_images/usage_tube_1.jpg)
 ## Gear
 ![jpg](./doc_images/usage_gear_0.jpg)
 ## Spring
@@ -46,6 +50,9 @@ Convert To Cube function
 
 
 # Changelog
+## v0.0.6b
+- update Cylinder, Tube ("centered" bool option)
+- DeformableCube's "set origin to center" operator
 ## v0.0.6a
 - added "Convert -> DeformableCube"
 - fix some bugs... (convert function)
