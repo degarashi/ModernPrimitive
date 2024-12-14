@@ -53,7 +53,7 @@ class NodeGroupCurVersion(Enum):
     Cone = VersionInt(0)
     Grid = VersionInt(0)
     Torus = VersionInt(0)
-    Cylinder = VersionInt(1)
+    Cylinder = VersionInt(2)
     UVSphere = VersionInt(0)
     ICOSphere = VersionInt(0)
     Tube = VersionInt(2)
