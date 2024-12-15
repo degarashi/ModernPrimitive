@@ -75,3 +75,7 @@ class PrimitiveInfo_Spring(PrimitiveInfo):
 
 class PrimitiveInfo_DeformableCube(PrimitiveInfo):
     type = Type.DeformableCube
+
+
+class PrimitiveInfo_Capsule(PrimitiveInfo):
+    type = Type.Capsule

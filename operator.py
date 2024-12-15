@@ -13,6 +13,7 @@ from .primitive import (
     PrimitiveInfo_Gear,
     PrimitiveInfo_Spring,
     PrimitiveInfo_DeformableCube,
+    PrimitiveInfo_Capsule,
 )
 
 
@@ -204,6 +205,22 @@ class MakeDeformableCube_Operator(OperatorBase, PrimitiveInfo_DeformableCube):
         return self.handle_primitive(context)
 
 
+class MakeCapsule_Operator(OperatorBase, PrimitiveInfo_Capsule):
+    """Make Modern Capsule"""
+
+    P = PrimitiveInfo_Capsule
+    bl_idname = P.bl_idname
+    bl_label = P.bl_label
+
+    @classmethod
+    @property
+    def menu_icon(cls):
+        return "MESH_CAPSULE"
+
+    def execute(self, context: Context | None) -> set[str]:
+        return self.handle_primitive(context)
+
+
 OPS: list[type[bpy_struct]] = [
     MakeCube_Operator,
     MakeCone_Operator,
@@ -216,6 +233,7 @@ OPS: list[type[bpy_struct]] = [
     MakeGear_Operator,
     MakeSpring_Operator,
     MakeDeformableCube_Operator,
+    MakeCapsule_Operator,
 ]
 
 
