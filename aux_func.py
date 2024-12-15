@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 from bpy.types import Mesh, Object, Context, bpy_struct, NodeGroup, NodesModifier
 from .primitive import Type
-from .constants import MODERN_PRIMITIVE_BASE_MESH_NAME, VersionInt, get_blend_file_name
+from .constants import MODERN_PRIMITIVE_BASE_MESH_NAME, VersionInt
 from .exception import DGFileNotFound, DGObjectNotFound, DGInvalidVersionNumber
 from .constants import (
     modifier_name,
@@ -30,10 +30,8 @@ def get_object_just_added(context: Context) -> Object:
 
 
 def append_object_from_asset(type: Type, context: Context) -> Object:
-    addon_dir = Path(__file__).parent
     obj_name = type.name
-    file_name = get_blend_file_name(type)
-    file_path = addon_dir / file_name
+    file_path = get_blend_file_path(type, False)
     if not file_path.exists():
         raise DGFileNotFound(file_path)
 
@@ -137,3 +135,22 @@ def is_modern_primitive_specific(obj: Object, type: Type) -> bool:
 
 def update_node_interface(mod: NodesModifier, context: Context) -> bool:
     mod.node_group.interface_update(context)
+
+
+def get_addon_dir() -> Path:
+    return Path(__file__).parent
+
+
+_ASSET_DIR_NAME = "assets"
+
+
+def get_assets_dir() -> Path:
+    return get_addon_dir() / _ASSET_DIR_NAME
+
+
+def get_blend_file_path(type: Type, is_relative: bool) -> str:
+    rel_path = f"{_ASSET_DIR_NAME}/{type.name.lower()}.blend"
+    if is_relative:
+        return rel_path
+    addon_dir = get_addon_dir()
+    return addon_dir / rel_path

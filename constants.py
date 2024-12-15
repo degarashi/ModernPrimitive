@@ -91,7 +91,3 @@ def make_primitive_property_name(name: str) -> str:
 
 def is_primitive_property(name: str) -> bool:
     return name.startswith(_MODERN_PRIMITIVE_PROPERTY_PREFIX + "_")
-
-
-def get_blend_file_name(type: Type) -> str:
-    return f"assets/{type.name.lower()}.blend"
