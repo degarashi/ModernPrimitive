@@ -43,13 +43,16 @@ DeformableCube's "set origin to center" operator
 ![jpg](./doc_images/usage_tube_1.jpg)
 ## Gear
 ![jpg](./doc_images/usage_gear_0.jpg)
-## Spring
+## Sprin
 ![jpg](./doc_images/usage_spring_0.jpg)
 ## DeformableCube
 ![jpg](./doc_images/usage_deformable_cube_0.jpg)
-
+## Capsule
+![jpg](./doc_images/usage_capsule_0.jpg)
 
 # Changelog
+## v0.0.7
+- added Capsule primitive
 ## v0.0.6b
 - update Cylinder, Tube ("centered" bool option)
 - DeformableCube's "set origin to center" operator
