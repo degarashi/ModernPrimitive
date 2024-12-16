@@ -1,4 +1,5 @@
-from .constants import node_group_name, Type
+from .constants import Type
+from .aux_func import node_group_name
 
 
 class PrimitiveInfo:

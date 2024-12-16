@@ -8,8 +8,11 @@ from bpy.types import (
     ObjectModifiers,
 )
 from bpy.props import BoolProperty
-from .constants import is_primitive_mod, make_primitive_property_name
-from .aux_func import is_modern_primitive
+from .aux_func import (
+    is_modern_primitive,
+    is_primitive_mod,
+    make_primitive_property_name,
+)
 
 
 def save_other_modifier_state(mods: ObjectModifiers) -> Dict[str, bool]:

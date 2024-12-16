@@ -1,18 +1,26 @@
 import bpy
 import sys
-from pathlib import Path
-from bpy.types import Mesh, Object, Context, bpy_struct, NodeGroup, NodesModifier
-from .primitive import Type
-from .constants import MODERN_PRIMITIVE_BASE_MESH_NAME, VersionInt
+from bpy.types import (
+    Mesh,
+    Object,
+    Context,
+    bpy_struct,
+    NodeGroup,
+    NodesModifier,
+    Modifier,
+)
 from .exception import DGFileNotFound, DGObjectNotFound, DGInvalidVersionNumber
 from .constants import (
-    modifier_name,
-    node_group_name_prefix,
-    NodeGroupCurVersion,
-    is_primitive_mod,
+    Type,
+    ASSET_DIR_NAME,
+    MODERN_PRIMITIVE_BASE_MESH_NAME,
+    MODERN_PRIMITIVE_TAG,
+    MODERN_PRIMITIVE_PROPERTY_PREFIX,
+    get_addon_dir,
 )
 from mathutils import Vector
 from collections.abc import Iterable
+from .version import VersionInt, get_primitive_version
 
 
 def register_class(cls: list[type[bpy_struct]]) -> None:
@@ -76,7 +84,7 @@ def get_base_mesh() -> Mesh | None:
 
 
 def share_node_group_if_exists(type: Type, obj: Object) -> None:
-    node_group = get_node_group(type, NodeGroupCurVersion[type.name].value)
+    node_group = get_node_group(type, get_primitive_version(type))
     if node_group is not None:
         mod = obj.modifiers[modifier_name(type)]
         if mod.node_group == node_group:
@@ -137,20 +145,33 @@ def update_node_interface(mod: NodesModifier, context: Context) -> bool:
     mod.node_group.interface_update(context)
 
 
-def get_addon_dir() -> Path:
-    return Path(__file__).parent
-
-
-_ASSET_DIR_NAME = "assets"
-
-
-def get_assets_dir() -> Path:
-    return get_addon_dir() / _ASSET_DIR_NAME
-
-
 def get_blend_file_path(type: Type, is_relative: bool) -> str:
-    rel_path = f"{_ASSET_DIR_NAME}/{type.name.lower()}.blend"
+    rel_path = f"{ASSET_DIR_NAME}/{type.name.lower()}.blend"
     if is_relative:
         return rel_path
     addon_dir = get_addon_dir()
     return addon_dir / rel_path
+
+
+def node_group_name_prefix(type: Type) -> str:
+    return f"{MODERN_PRIMITIVE_TAG}{type.name}_"
+
+
+def node_group_name(type: Type, version: VersionInt) -> str:
+    return node_group_name_prefix(type) + str(version)
+
+
+def modifier_name(type: Type) -> str:
+    return f"{MODERN_PRIMITIVE_TAG}{type.name}"
+
+
+def is_primitive_mod(mod: Modifier) -> bool:
+    return mod.name.startswith(MODERN_PRIMITIVE_TAG)
+
+
+def make_primitive_property_name(name: str) -> str:
+    return f"{MODERN_PRIMITIVE_PROPERTY_PREFIX}_{name}"
+
+
+def is_primitive_property(name: str) -> bool:
+    return name.startswith(MODERN_PRIMITIVE_PROPERTY_PREFIX + "_")
