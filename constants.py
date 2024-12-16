@@ -30,7 +30,7 @@ class VersionInt:
             raise DGInvalidVersionNumber(num)
 
     def __str__(self) -> str:
-        return str(self.num).zfill(self.MAX_DIGITS)
+        return f"Version({str(self.num).zfill(self.MAX_DIGITS)})"
 
     def __eq__(self, other) -> bool:
         return self.num == other.num
