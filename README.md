@@ -51,6 +51,8 @@ DeformableCube's "set origin to center" operator
 ![jpg](./doc_images/usage_capsule_0.jpg)
 
 # Changelog
+## v0.0.7a
+- updated Tube primitive (side division)
 ## v0.0.7
 - added Capsule primitive
 ## v0.0.6b
