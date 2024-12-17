@@ -41,6 +41,7 @@ DeformableCube's "set origin to center" operator
 ## Tube
 ![jpg](./doc_images/usage_tube_0.jpg)
 ![jpg](./doc_images/usage_tube_1.jpg)
+![jpg](./doc_images/usage_tube_2.jpg)
 ## Gear
 ![jpg](./doc_images/usage_gear_0.jpg)
 ## Sprin
