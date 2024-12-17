@@ -4,52 +4,32 @@ Modern Primitive Object for Blener
 Blender 4.3 or later
 
 # Usage
-Add Object(Shift+A) -> Mesh -> ModernPrimitive
-![jpg](./doc_images/usage_0.jpg) <br>
+Add Object(Shift+A) -> Mesh -> ModernPrimitive <br>
+<img src="./doc_images/usage_0.jpg" alt="" width="75%" /> <br>
 <br>
 You can adjust from modifier panel.<br>
-![jpg](./doc_images/usage_panel_0.jpg)
+<img src="./doc_images/usage_panel_0.jpg" alt="" width="75%" />
 
 Shortcut key(Ctrl+Alt+X) to focus ModernPrimitive modifier (to manipulate primitive)
-![jpg](./doc_images/shortcut_key_1.jpg)
-![jpg](./doc_images/focusmodifier_0.jpg)
-![jpg](./doc_images/focus_modern_primitive_menu_0.jpg)
+<img src="./doc_images/shortcut_key_1.jpg" alt="" width="75%" />
+<img src="./doc_images/focusmodifier_0.jpg" alt="" width="75%" />
+<img src="./doc_images/focus_modern_primitive_menu_0.jpg" alt="" width="75%" />
 
-Convert To Cube function
-![jpg](./doc_images/usage_convert_cube_0.jpg)
-![jpg](./doc_images/usage_convert_cube_menu_0.jpg)
+Convert To Cube function <br>
+<img src="./doc_images/usage_convert_cube_0.jpg" alt="" width="35%" />
+<img src="./doc_images/usage_convert_cube_menu_0.jpg" alt="" width="50%" />
 
-DeformableCube's "set origin to center" operator
-![jpg](./doc_images/usage_cube_origin_0.jpg)
+DeformableCube's "set origin to center" operator <br>
+<img src="./doc_images/usage_cube_origin_0.jpg" alt="" width="35%" />
 
 # Gallery
-## Cube
-![jpg](./doc_images/usage_cube_0.jpg)
-## Cone
-![jpg](./doc_images/usage_cone_0.jpg)
-## Cylinder
-![jpg](./doc_images/usage_cylinder_0.jpg)
-![jpg](./doc_images/usage_cylinder_1.jpg)
-## Grid
-![jpg](./doc_images/usage_grid_0.jpg)
-## Ico Sphere
-![jpg](./doc_images/usage_icosphere_0.jpg)
-## Torus
-![jpg](./doc_images/usage_torus_0.jpg)
-## UV Sphere
-![jpg](./doc_images/usage_uvsphere_0.jpg)
-## Tube
-![jpg](./doc_images/usage_tube_0.jpg)
-![jpg](./doc_images/usage_tube_1.jpg)
-![jpg](./doc_images/usage_tube_2.jpg)
-## Gear
-![jpg](./doc_images/usage_gear_0.jpg)
-## Sprin
-![jpg](./doc_images/usage_spring_0.jpg)
-## DeformableCube
-![jpg](./doc_images/usage_deformable_cube_0.jpg)
-## Capsule
-![jpg](./doc_images/usage_capsule_0.jpg)
+<img src="./doc_images/usage_cube_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_cone_0.jpg" alt="" width="25%" />
+<img src="./doc_images/usage_cylinder_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_cylinder_1.jpg" alt="" width="25%" />
+<img src="./doc_images/usage_grid_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_icosphere_0.jpg" alt="" width="25%" />
+<img src="./doc_images/usage_torus_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_uvsphere_0.jpg" alt="" width="25%" />
+<img src="./doc_images/usage_tube_1.jpg" alt="" width="25%" /> <img src="./doc_images/usage_tube_2.jpg" alt="" width="25%" />
+<img src="./doc_images/usage_gear_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_spring_0.jpg" alt="" width="25%" />
+<img src="./doc_images/usage_deformable_cube_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_capsule_0.jpg" alt="" width="25%" />
 
 # Changelog
 ## v0.0.7a
