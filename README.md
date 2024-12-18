@@ -1,5 +1,6 @@
 # ModernPrimitive
-Modern Primitive Object for Blener
+Modern Primitive Object for Blener<br>
+<img src="./doc_images/modern_primitive_icon_256.png" alt="" /><br>
 <div><video controls src="https://github.com/user-attachments/assets/af1c5da9-1dcc-49d4-870b-7e9b7e9eb598" muted="false"></video></div>
 
 # Requirement
@@ -7,7 +8,7 @@ Blender 4.3 or later
 
 # Usage
 Add Object(Shift+A) -> Mesh -> ModernPrimitive <br>
-<img src="./doc_images/usage_0.jpg" alt="" width="75%" /> <br>
+<img src="./doc_images/menu0.png" alt="" width="50%" /> <br>
 <br>
 You can adjust from modifier panel.<br>
 <img src="./doc_images/usage_panel_0.jpg" alt="" width="75%" />
