@@ -7,11 +7,11 @@ if "bpy" in locals():
     importlib.reload(cube)  # noqa: F821
     importlib.reload(version)  # noqa: F821
 else:
-    from . import modern_primitive
-    from . import modifier_select
-    from . import convert
-    from . import cube
-    from . import version
+    from .src import modern_primitive
+    from .src import modifier_select
+    from .src import convert
+    from .src import cube
+    from .src import version
 
 import bpy  # noqa: F401
 

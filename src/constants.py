@@ -24,7 +24,7 @@ ASSET_DIR_NAME = "assets"
 
 
 def get_addon_dir() -> Path:
-    return Path(__file__).parent
+    return Path(__file__).parent.parent
 
 
 def get_assets_dir() -> Path:
