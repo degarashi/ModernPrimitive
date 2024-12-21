@@ -3,7 +3,7 @@ schema_version = "1.0.0"
 # Example of manifest file for a Blender extension
 # Change the values according to your extension
 id = "modern_primitive"
-version = "0.0.7"
+version = "0.0.8"
 name = "Modern Primitive"
 tagline = "Modern Primitive for Non-Destructive Modeling"
 maintainer = "Degarashi <degarasu@gmail.com>"
@@ -15,7 +15,7 @@ website = "https://github.com/degarashi/ModernPrimitive"
 
 # # Optional: tag list defined by Blender and server, see:
 # # https://docs.blender.org/manual/en/dev/advanced/extensions/tags.html
-tags = ["Add Mesh", "Modeling", "Mesh"]
+tags = ["Add Mesh", "Modeling"]
 
 blender_version_min = "4.3.0"
 # # Optional: Blender version that the extension does not support, earlier versions are supported.
@@ -79,4 +79,6 @@ paths_exclude_pattern = [
   "requirements-dev.lock",
   "pyproject.toml",
   "LICENSE.txt",
+  "README.md",
+  "activate_env.bat",
 ]
