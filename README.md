@@ -35,6 +35,8 @@ DeformableCube's "set origin to center" operator <br>
 <img src="./doc_images/usage_deformable_cube_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_capsule_0.jpg" alt="" width="25%" />
 
 # Changelog
+## v0.0.9
+- fixed Tube and Gear's bottom region was invalid (flipped normals)
 ## v0.0.8
 - changed polygon-division gizmo from "Linear" to "Dial"(Tube, Cylinder, Cube, Grid)
 ## v0.0.7a
