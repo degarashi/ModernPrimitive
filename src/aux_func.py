@@ -15,7 +15,7 @@ from .constants import (
     ASSET_DIR_NAME,
     MODERN_PRIMITIVE_BASE_MESH_NAME,
     MODERN_PRIMITIVE_TAG,
-    MODERN_PRIMITIVE_PROPERTY_PREFIX,
+    MODERN_PRIMITIVE_PREFIX,
     get_addon_dir,
 )
 from mathutils import Vector
@@ -170,8 +170,8 @@ def is_primitive_mod(mod: Modifier) -> bool:
 
 
 def make_primitive_property_name(name: str) -> str:
-    return f"{MODERN_PRIMITIVE_PROPERTY_PREFIX}_{name}"
+    return f"{MODERN_PRIMITIVE_PREFIX}_{name}"
 
 
 def is_primitive_property(name: str) -> bool:
-    return name.startswith(MODERN_PRIMITIVE_PROPERTY_PREFIX + "_")
+    return name.startswith(MODERN_PRIMITIVE_PREFIX + "_")
