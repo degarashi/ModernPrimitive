@@ -1,7 +1,6 @@
 import bpy
 import sys
 from bpy.types import (
-    Mesh,
     Object,
     Context,
     bpy_struct,
@@ -13,7 +12,6 @@ from .exception import DGFileNotFound, DGObjectNotFound, DGInvalidVersionNumber
 from .constants import (
     Type,
     ASSET_DIR_NAME,
-    MODERN_PRIMITIVE_BASE_MESH_NAME,
     MODERN_PRIMITIVE_TAG,
     MODERN_PRIMITIVE_PREFIX,
     get_addon_dir,
@@ -79,10 +77,6 @@ def get_node_group(type: Type, minimum_version: VersionInt) -> NodeGroup | None:
     return matched
 
 
-def get_base_mesh() -> Mesh | None:
-    return bpy.data.meshes.get(MODERN_PRIMITIVE_BASE_MESH_NAME, None)
-
-
 def share_node_group_if_exists(type: Type, obj: Object) -> None:
     node_group = get_node_group(type, get_primitive_version(type))
     if node_group is not None:
@@ -95,22 +89,11 @@ def share_node_group_if_exists(type: Type, obj: Object) -> None:
         bpy.data.node_groups.remove(to_delete)
 
 
-def share_basemesh_if_exists(obj: Object) -> None:
-    mesh = get_base_mesh()
-    if mesh == obj.data:
-        return
-    if mesh is not None:
-        to_delete = obj.data
-        obj.data = mesh
-        bpy.data.meshes.remove(to_delete)
-
-
 def load_primitive_from_asset(type: Type, context: Context) -> Object:
     obj = append_object_from_asset(type, context)
-    # ダブッたリソースを共有
+    # share duplicate resources
     share_node_group_if_exists(type, obj)
-    share_basemesh_if_exists(obj)
-    # カーソル位置へ移動
+    # move to 3d-cursor's position
     obj.location = context.scene.cursor.location
     return obj
 

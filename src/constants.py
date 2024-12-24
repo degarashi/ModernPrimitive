@@ -18,7 +18,6 @@ class Type(Enum):
 
 
 MODERN_PRIMITIVE_TAG = "[ModernPrimitive]"
-MODERN_PRIMITIVE_BASE_MESH_NAME = f"{MODERN_PRIMITIVE_TAG}BaseMesh"
 # used by property-name, operator-id...
 MODERN_PRIMITIVE_PREFIX = "mpr"
 ASSET_DIR_NAME = "assets"
