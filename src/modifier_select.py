@@ -1,11 +1,13 @@
 import bpy
-from typing import cast, Dict
+from typing import cast, Dict, NamedTuple
 from bpy.types import (
     Context,
     Object,
     Operator,
     Modifier,
     ObjectModifiers,
+    KeyMap,
+    KeyMapItem,
 )
 from bpy.props import BoolProperty
 from .aux_func import (
@@ -117,35 +119,29 @@ def disable_other_mods(mods: ObjectModifiers) -> None:
         mod.show_viewport = is_primitive_mod(mod)
 
 
-addon_keymaps = []
+addon_keymaps: list[tuple[KeyMap, KeyMapItem]] = []
 
 
 class KeyAssign:
     def __init__(
         self, idname: str, key: str, event: str, ctrl: bool, alt: bool, shift: bool
     ):
-        self.idname = idname
-        self.key = key
-        self.event = event
-        self.ctrl = ctrl
-        self.alt = alt
-        self.shift = shift
+        self._idname = idname
+        self._key = key
+        self._event = event
+        self._ctrl = ctrl
+        self._alt = alt
+        self._shift = shift
 
-    def __getitem__(self, key: int):
-        match key:
-            case 0:
-                return self.idname
-            case 1:
-                return self.key
-            case 2:
-                return self.event
-            case 3:
-                return self.ctrl
-            case 4:
-                return self.alt
-            case 5:
-                return self.shift
-        raise IndexError
+    def register(self, km: KeyMap) -> KeyMapItem:
+        return km.keymap_items.new(
+            self._idname,
+            self._key,
+            self._event,
+            ctrl=self._ctrl,
+            alt=self._alt,
+            shift=self._shift,
+        )
 
 
 def menu_func(self, context: Context) -> None:
@@ -160,28 +156,35 @@ def menu_func(self, context: Context) -> None:
 MENU_TARGET = bpy.types.VIEW3D_MT_select_object
 
 
+class KeymapAt(NamedTuple):
+    name: str
+    space_type: str
+
+
+KEY_ASSIGN_MAP: Dict[KeymapAt, list[KeyAssign]] = {
+    KeymapAt("3D View", "VIEW_3D"): [
+        KeyAssign(FocusModifier_Operator.bl_idname, "X", "PRESS", True, True, False),
+    ]
+}
+
+
 def register() -> None:
     bpy.utils.register_class(FocusModifier_Operator)
     MENU_TARGET.append(menu_func)
-    wm = bpy.context.window_manager
-    kc = wm.keyconfigs.addon
+
+    kc = bpy.context.window_manager.keyconfigs.addon
     if kc:
-        KEY_ASSIGN_LIST: list[KeyAssign] = [
-            KeyAssign(
-                FocusModifier_Operator.bl_idname, "X", "PRESS", True, True, False
-            ),
-        ]
-        km = kc.keymaps.new(name="3D View", space_type="VIEW_3D")
-        for idname, key, event, ctrl, alt, shift in KEY_ASSIGN_LIST:
-            kmi = km.keymap_items.new(
-                idname, key, event, ctrl=ctrl, alt=alt, shift=shift
-            )
-            addon_keymaps.append((km, kmi))
+        for at, as_l in KEY_ASSIGN_MAP.items():
+            km = kc.keymaps.new(name=at.name, space_type=at.space_type)
+            for a in as_l:
+                kmi = a.register(km)
+                addon_keymaps.append((km, kmi))
 
 
 def unregister() -> None:
     bpy.utils.unregister_class(FocusModifier_Operator)
     MENU_TARGET.remove(menu_func)
+
     for km, kmi in addon_keymaps:
         km.keymap_items.remove(kmi)
     addon_keymaps.clear()
