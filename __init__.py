@@ -6,12 +6,14 @@ if "bpy" in locals():
     importlib.reload(convert)  # noqa: F821
     importlib.reload(cube)  # noqa: F821
     importlib.reload(version)  # noqa: F821
+    importlib.reload(panel)  # noqa: F821
 else:
     from .src import modern_primitive
     from .src import modifier_select
     from .src import convert
     from .src import cube
     from .src import version
+    from .src import panel
 
 import bpy  # noqa: F401
 
@@ -23,6 +25,7 @@ def register():
     convert.register()
     cube.register()
     version.register()
+    panel.register()
 
 
 def unregister():
@@ -32,3 +35,4 @@ def unregister():
     convert.unregister()
     cube.unregister()
     version.unregister()
+    panel.unregister()
