@@ -56,7 +56,7 @@ class FocusModifier_Operator(Operator):
     ENTRY_NAME = make_primitive_property_name("original_modifier_viewstate")
 
     bl_idname = "object.focus_modernprimitive_modifier"
-    bl_label = "Focus ModernPrimitive Modifier"
+    bl_label = "Focus/Unfocus ModernPrimitive Modifier"
     bl_options = {"REGISTER", "UNDO"}
 
     disable_others: BoolProperty(name="Disable Others", default=True)
