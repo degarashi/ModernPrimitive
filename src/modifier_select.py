@@ -1,5 +1,5 @@
 import bpy
-from typing import cast, Dict, NamedTuple
+from typing import cast, Dict, NamedTuple, Any
 from bpy.types import (
     Context,
     Object,
@@ -125,7 +125,15 @@ addon_keymaps: list[tuple[KeyMap, KeyMapItem]] = []
 
 class KeyAssign:
     def __init__(
-        self, idname: str, key: str, event: str, ctrl: bool, alt: bool, shift: bool
+        self,
+        idname: str,
+        key: str,
+        event: str,
+        ctrl: bool,
+        alt: bool,
+        shift: bool,
+        *,
+        prop: Dict[str, Any] | None = None,
     ):
         self._idname = idname
         self._key = key
@@ -133,9 +141,10 @@ class KeyAssign:
         self._ctrl = ctrl
         self._alt = alt
         self._shift = shift
+        self._prop = prop
 
     def register(self, km: KeyMap) -> KeyMapItem:
-        return km.keymap_items.new(
+        kmi = km.keymap_items.new(
             self._idname,
             self._key,
             self._event,
@@ -143,6 +152,10 @@ class KeyAssign:
             alt=self._alt,
             shift=self._shift,
         )
+        if isinstance(self._prop, dict):
+            for k, v in self._prop.items():
+                setattr(kmi.properties, k, v)
+        return kmi
 
 
 def menu_func(self, context: Context) -> None:
@@ -164,7 +177,14 @@ class KeymapAt(NamedTuple):
 
 KEY_ASSIGN_MAP: Dict[KeymapAt, list[KeyAssign]] = {
     KeymapAt("3D View", "VIEW_3D"): [
-        KeyAssign(FocusModifier_Operator.bl_idname, "X", "PRESS", True, True, False),
+        KeyAssign(
+            FocusModifier_Operator.bl_idname,
+            "X",
+            "PRESS",
+            True,
+            True,
+            False,
+        ),
     ]
 }
 
