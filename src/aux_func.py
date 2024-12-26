@@ -89,14 +89,15 @@ def share_node_group_if_exists(type: Type, obj: Object) -> None:
         bpy.data.node_groups.remove(to_delete)
 
 
-def load_primitive_from_asset(type: Type, context: Context) -> Object:
+def load_primitive_from_asset(type: Type, context: Context, set_rot: bool) -> Object:
     obj = append_object_from_asset(type, context)
     # share duplicate resources
     share_node_group_if_exists(type, obj)
     # move to 3d-cursor's position and rotation
     cur = context.scene.cursor
     obj.location = cur.location
-    obj.rotation_euler = cur.rotation_euler
+    if set_rot:
+        obj.rotation_euler = cur.rotation_euler
     return obj
 
 
