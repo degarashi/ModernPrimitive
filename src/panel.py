@@ -3,6 +3,7 @@ from bpy.types import Panel, Context
 from .modifier_select import FocusModifier_Operator
 from .convert import ConvertToCube_Operator
 from .cube import DCube_CenterOrigin_Operator
+from .constants import MODERN_PRIMITIVE_CATEGORY
 
 
 class MPR_PT_Main(Panel):
@@ -10,7 +11,7 @@ class MPR_PT_Main(Panel):
     bl_label = "Modern Primitive"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_category = "Tool"
+    bl_category = MODERN_PRIMITIVE_CATEGORY
 
     def draw(self, ctx: Context) -> None:
         layout = self.layout
