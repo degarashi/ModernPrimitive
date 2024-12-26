@@ -16,6 +16,7 @@ from .aux_func import (
     make_primitive_property_name,
 )
 from .constants import MODERN_PRIMITIVE_PREFIX
+from .modern_primitive import VIEW3D_MT_mesh_modern_prim
 
 
 def save_other_modifier_state(mods: ObjectModifiers) -> Dict[str, bool]:
@@ -184,6 +185,15 @@ KEY_ASSIGN_MAP: Dict[KeymapAt, list[KeyAssign]] = {
             True,
             True,
             False,
+        ),
+        KeyAssign(
+            "wm.call_menu",
+            "M",
+            "PRESS",
+            True,
+            False,
+            True,
+            prop={"name": VIEW3D_MT_mesh_modern_prim.bl_idname},
         ),
     ]
 }
