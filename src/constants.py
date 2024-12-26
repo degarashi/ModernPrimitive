@@ -20,6 +20,7 @@ class Type(Enum):
 MODERN_PRIMITIVE_TAG = "[ModernPrimitive]"
 # used by property-name, operator-id...
 MODERN_PRIMITIVE_PREFIX = "mpr"
+MODERN_PRIMITIVE_CATEGORY = "MPR"
 ASSET_DIR_NAME = "assets"
 
 
