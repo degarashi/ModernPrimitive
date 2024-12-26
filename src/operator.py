@@ -1,4 +1,5 @@
 from bpy.types import bpy_struct, Context, Operator
+from bpy.props import BoolProperty
 from . import aux_func
 from .exception import DGFileNotFound, DGObjectNotFound
 from .primitive import (
@@ -19,10 +20,11 @@ from .primitive import (
 
 class OperatorBase(Operator):
     bl_options = {"REGISTER", "UNDO"}
+    set_cursor_rot: BoolProperty(name="Set Cursor's Rotation", default=False)
 
     def handle_primitive(self, context: Context) -> set[str]:
         try:
-            aux_func.load_primitive_from_asset(self.type, context)
+            aux_func.load_primitive_from_asset(self.type, context, self.set_cursor_rot)
         except (DGFileNotFound, DGObjectNotFound) as e:
             self.report({"ERROR"}, str(e))
             return {"CANCELLED"}
