@@ -93,8 +93,10 @@ def load_primitive_from_asset(type: Type, context: Context) -> Object:
     obj = append_object_from_asset(type, context)
     # share duplicate resources
     share_node_group_if_exists(type, obj)
-    # move to 3d-cursor's position
-    obj.location = context.scene.cursor.location
+    # move to 3d-cursor's position and rotation
+    cur = context.scene.cursor
+    obj.location = cur.location
+    obj.rotation_euler = cur.rotation_euler
     return obj
 
 
