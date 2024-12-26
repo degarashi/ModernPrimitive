@@ -1,4 +1,4 @@
-from .constants import Type
+from .constants import Type, MODERN_PRIMITIVE_PREFIX
 from .aux_func import node_group_name
 
 
@@ -11,7 +11,7 @@ class PrimitiveInfo:
     @classmethod
     @property
     def bl_idname(cls):
-        return f"mesh.make_modern_{cls.type_name.lower()}"
+        return f"mesh.{MODERN_PRIMITIVE_PREFIX}_make_{cls.type_name.lower()}"
 
     @classmethod
     @property

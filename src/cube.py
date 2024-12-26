@@ -1,5 +1,5 @@
 from bpy.types import Operator, Context, Object
-from .constants import Type
+from .constants import Type, MODERN_PRIMITIVE_PREFIX
 from .aux_func import is_modern_primitive_specific
 import bpy.utils
 from .aux_node import get_interface_value, set_interface_value
@@ -7,7 +7,7 @@ from mathutils import Vector
 
 
 class DCube_CenterOrigin_Operator(Operator):
-    bl_idname = "object.deformable_cube_origin_center"
+    bl_idname = f"object.{MODERN_PRIMITIVE_PREFIX}_dcube_origin_center"
     bl_label = "Set DeformableCube Origin to Center"
     bl_options = {"REGISTER", "UNDO"}
 

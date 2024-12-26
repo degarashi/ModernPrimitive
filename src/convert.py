@@ -12,11 +12,13 @@ from .aux_func import (
 )
 from bpy.props import BoolProperty, EnumProperty
 from .aux_node import set_interface_values
+from .constants import MODERN_PRIMITIVE_PREFIX
+
 
 class ConvertToCube_Operator(Operator):
     """Make Modern Cube From Object"""
 
-    bl_idname = "mesh.convert_to_modern_cube"
+    bl_idname = f"mesh.{MODERN_PRIMITIVE_PREFIX}_convert_to_cube"
     bl_label = "Convert object to ModernCube"
     bl_options = {"REGISTER", "UNDO"}
 
@@ -53,9 +55,9 @@ class ConvertToCube_Operator(Operator):
         center = (b_min + b_max) / 2
 
         if self.cube_type == "Cube":
-            bpy.ops.mesh.make_modern_cube()
+            bpy.ops.mesh.mpr_make_cube()
         else:
-            bpy.ops.mesh.make_modern_deformablecube()
+            bpy.ops.mesh.mpr_make_deformablecube()
 
         cube = get_object_just_added(context)
         cube.matrix_world = from_obj.matrix_world

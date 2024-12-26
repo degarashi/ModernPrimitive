@@ -15,6 +15,7 @@ from .aux_func import (
     is_primitive_mod,
     make_primitive_property_name,
 )
+from .constants import MODERN_PRIMITIVE_PREFIX
 
 
 def save_other_modifier_state(mods: ObjectModifiers) -> Dict[str, bool]:
@@ -55,7 +56,7 @@ class FocusModifier_Operator(Operator):
 
     ENTRY_NAME = make_primitive_property_name("original_modifier_viewstate")
 
-    bl_idname = "object.focus_modernprimitive_modifier"
+    bl_idname = f"object.{MODERN_PRIMITIVE_PREFIX}_focus_modifier"
     bl_label = "Focus/Unfocus ModernPrimitive Modifier"
     bl_options = {"REGISTER", "UNDO"}
 

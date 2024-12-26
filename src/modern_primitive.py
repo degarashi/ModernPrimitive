@@ -1,10 +1,11 @@
 import bpy
 from bpy.types import Context, Menu, bpy_struct
 from . import operator as dg_ops
+from .constants import MODERN_PRIMITIVE_PREFIX
 
 
 class VIEW3D_MT_mesh_modern_prim(Menu):
-    bl_idname = "VIEW3D_MT_mesh_modern_prim"
+    bl_idname = f"VIEW3D_MT_{MODERN_PRIMITIVE_PREFIX}_append"
     bl_label = "Modern Primitive"
 
     def draw(self, context: Context | None) -> None:
