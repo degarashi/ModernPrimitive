@@ -35,6 +35,14 @@ DeformableCube's "set origin to center" operator <br>
 <img src="./doc_images/usage_deformable_cube_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_capsule_0.jpg" alt="" width="25%" />
 
 # Changelog
+## v0.0.12
+- Activate newly added primitive when added
+- When append primitive, set 3d-cursor's rotation (as well as position)
+<img src="./doc_images/set_cursor_rotation.jpg" alt="" width="50%" />
+
+- Added "Create" panel
+<img src="./doc_images/create_panel.jpg" alt="" width="50%" />
+
 ## v0.0.11
 - Changed Cube's initial dimension (X=2m, Y=2.19m, Z=2m) to (X=2m, Y=2m, Z=2m)
 - Added panel UI to Tools tab
