@@ -1,5 +1,5 @@
 import bpy
-from typing import cast, Dict, NamedTuple, Any
+from typing import cast, Dict, NamedTuple
 from bpy.types import (
     Context,
     Object,
@@ -17,6 +17,7 @@ from .aux_func import (
 )
 from .constants import MODERN_PRIMITIVE_PREFIX
 from .modern_primitive import VIEW3D_MT_mesh_modern_prim
+from .key import KeyAssign
 
 
 def save_other_modifier_state(mods: ObjectModifiers) -> Dict[str, bool]:
@@ -122,41 +123,6 @@ def disable_other_mods(mods: ObjectModifiers) -> None:
 
 
 addon_keymaps: list[tuple[KeyMap, KeyMapItem]] = []
-
-
-class KeyAssign:
-    def __init__(
-        self,
-        idname: str,
-        key: str,
-        event: str,
-        ctrl: bool,
-        alt: bool,
-        shift: bool,
-        *,
-        prop: Dict[str, Any] | None = None,
-    ):
-        self._idname = idname
-        self._key = key
-        self._event = event
-        self._ctrl = ctrl
-        self._alt = alt
-        self._shift = shift
-        self._prop = prop
-
-    def register(self, km: KeyMap) -> KeyMapItem:
-        kmi = km.keymap_items.new(
-            self._idname,
-            self._key,
-            self._event,
-            ctrl=self._ctrl,
-            alt=self._alt,
-            shift=self._shift,
-        )
-        if isinstance(self._prop, dict):
-            for k, v in self._prop.items():
-                setattr(kmi.properties, k, v)
-        return kmi
 
 
 def menu_func(self, context: Context) -> None:
