@@ -49,7 +49,6 @@ def is_other_modifier_state_valid(mods: ObjectModifiers, data: Dict[str, bool]) 
     return found_pmod
 
 
-# ModernCubeでない時はPollを無効化
 class FocusModifier_Operator(Operator):
     """
     focus to ModernPrimitive modifier only(save other modifier's state)
