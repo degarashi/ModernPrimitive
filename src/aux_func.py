@@ -91,6 +91,10 @@ def share_node_group_if_exists(type: Type, obj: Object) -> None:
 
 def load_primitive_from_asset(type: Type, context: Context, set_rot: bool) -> Object:
     obj = append_object_from_asset(type, context)
+    # This line may not be necessary,
+    # but sometimes it doesn't work well unless you do this...?
+    context.view_layer.objects.active = None
+    context.view_layer.objects.active = obj
     # share duplicate resources
     share_node_group_if_exists(type, obj)
     # move to 3d-cursor's position and rotation
