@@ -15,6 +15,7 @@ class Type(Enum):
     Spring = auto()
     DeformableCube = auto()
     Capsule = auto()
+    QuadSphere = auto()
 
 
 MODERN_PRIMITIVE_TAG = "[ModernPrimitive]"

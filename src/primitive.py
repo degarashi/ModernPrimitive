@@ -80,3 +80,7 @@ class PrimitiveInfo_DeformableCube(PrimitiveInfo):
 
 class PrimitiveInfo_Capsule(PrimitiveInfo):
     type = Type.Capsule
+
+
+class PrimitiveInfo_QuadSphere(PrimitiveInfo):
+    type = Type.QuadSphere

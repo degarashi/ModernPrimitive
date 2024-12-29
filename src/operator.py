@@ -15,6 +15,7 @@ from .primitive import (
     PrimitiveInfo_Spring,
     PrimitiveInfo_DeformableCube,
     PrimitiveInfo_Capsule,
+    PrimitiveInfo_QuadSphere,
 )
 
 
@@ -223,6 +224,22 @@ class MakeCapsule_Operator(OperatorBase, PrimitiveInfo_Capsule):
         return self.handle_primitive(context)
 
 
+class MakeQuadSphere_Operator(OperatorBase, PrimitiveInfo_QuadSphere):
+    """Make Modern QuadSphere"""
+
+    P = PrimitiveInfo_QuadSphere
+    bl_idname = P.bl_idname
+    bl_label = P.bl_label
+
+    @classmethod
+    @property
+    def menu_icon(cls):
+        return "META_CUBE"
+
+    def execute(self, context: Context | None) -> set[str]:
+        return self.handle_primitive(context)
+
+
 OPS: list[type[bpy_struct]] = [
     MakeCube_Operator,
     MakeCone_Operator,
@@ -236,6 +253,7 @@ OPS: list[type[bpy_struct]] = [
     MakeSpring_Operator,
     MakeDeformableCube_Operator,
     MakeCapsule_Operator,
+    MakeQuadSphere_Operator,
 ]
 
 
