@@ -23,6 +23,12 @@ class OperatorBase(Operator):
     bl_options = {"REGISTER", "UNDO"}
     set_cursor_rot: BoolProperty(name="Set Cursor's Rotation", default=False)
 
+    @classmethod
+    def poll(cls, context: Context | None) -> bool:
+        if context is None:
+            return False
+        return context.mode == "OBJECT"
+
     def handle_primitive(self, context: Context) -> set[str]:
         try:
             aux_func.load_primitive_from_asset(self.type, context, self.set_cursor_rot)
