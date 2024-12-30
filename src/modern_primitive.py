@@ -8,6 +8,12 @@ class VIEW3D_MT_mesh_modern_prim(Menu):
     bl_idname = f"VIEW3D_MT_{MODERN_PRIMITIVE_PREFIX}_append"
     bl_label = "Modern Primitive"
 
+    @classmethod
+    def poll(cls, context: Context | None) -> bool:
+        if context is None:
+            return False
+        return context.mode == "OBJECT"
+
     def draw(self, context: Context | None) -> None:
         layout = self.layout
         layout.operator_context = "INVOKE_REGION_WIN"
