@@ -28,6 +28,9 @@ class TextDrawer:
     def is_running(self) -> bool:
         return self._handle is not None
 
+    def set_text(self, text: str) -> None:
+        self._text = text
+
     def show(self, context: Context) -> bool:
         if not self.is_running():
             self._handle = SpaceView3D.draw_handler_add(
