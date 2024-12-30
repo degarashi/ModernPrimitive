@@ -1,5 +1,5 @@
 import bpy
-from bpy.types import Scene, Context
+from bpy.types import Scene, Context, Object
 from bpy.app.handlers import persistent
 from .aux_func import is_modern_primitive
 from .text import TextDrawer
@@ -7,8 +7,9 @@ from .text import TextDrawer
 textdraw_warning = TextDrawer("Warning: Editing ModernPrimitive's Basemesh")
 
 
-# Active Object または SelectedObjectsにModernPrimitiveが含まれている
-def has_primitive_mesh(context: Context) -> bool:
+# get ModernPrimitive from Active object and Selected object
+def get_primitive_mesh(context: Context) -> set[Object]:
+    ret: set[Object] = set()
     objs = context.selected_objects[:]
     act = context.active_object
     if act is not None:
@@ -16,14 +17,17 @@ def has_primitive_mesh(context: Context) -> bool:
 
     for obj in objs:
         if is_modern_primitive(obj):
-            return True
+            ret.add(obj)
+
+    return ret
 
 
 @persistent
 def check_editmesh(scene: Scene):
     context = bpy.context
     if context.mode == "EDIT_MESH":
-        if has_primitive_mesh(context):
+        pm = get_primitive_mesh(context)
+        if len(pm) > 0:
             if textdraw_warning.show(context):
                 context.area.tag_redraw()
             return
