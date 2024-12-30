@@ -56,8 +56,16 @@ class TextDrawer:
         region = get_region(context, "VIEW_3D", "WINDOW")
         if region is not None:
             font_id: int = 0
+            blf.enable(font_id, blf.WORD_WRAP)
+            blf.word_wrap(font_id, 1024)
+            blf.enable(font_id, blf.SHADOW)
+            blf.shadow_offset(font_id, 1, -1)
+
             blf.color(font_id, 1, 0.15, 0.15, 1)
             blf.size(font_id, 20)
             w, h = blf.dimensions(font_id, self._text)
             blf.position(font_id, region.width / 2 - w / 2, region.height - 120, 0)
             blf.draw(font_id, self._text)
+
+            blf.disable(font_id, blf.WORD_WRAP)
+            blf.disable(font_id, blf.SHADOW)
