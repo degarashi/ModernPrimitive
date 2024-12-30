@@ -7,6 +7,7 @@ if "bpy" in locals():
     importlib.reload(cube)  # noqa: F821
     importlib.reload(version)  # noqa: F821
     importlib.reload(panel)  # noqa: F821
+    importlib.reload(check_editmesh)  # noqa: F821
 else:
     from .src import modern_primitive
     from .src import modifier_select
@@ -14,6 +15,7 @@ else:
     from .src import cube
     from .src import version
     from .src import panel
+    from .src import check_editmesh
 
 import bpy  # noqa: F401
 
@@ -26,6 +28,7 @@ def register():
     cube.register()
     version.register()
     panel.register()
+    check_editmesh.register()
 
 
 def unregister():
@@ -36,3 +39,4 @@ def unregister():
     cube.unregister()
     version.unregister()
     panel.unregister()
+    check_editmesh.unregister()
