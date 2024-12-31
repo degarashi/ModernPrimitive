@@ -51,12 +51,12 @@ def load_handler(new_file: str):
     check_editmesh(bpy.context.scene)
 
 
-handler_depsh_update = bpy.app.handlers.depsgraph_update_post
+handler_deps_update = bpy.app.handlers.depsgraph_update_post
 handler_loadpost = bpy.app.handlers.load_post
 
 
 def register() -> None:
-    handler_depsh_update.append(check_editmesh)
+    handler_deps_update.append(check_editmesh)
     handler_loadpost.append(load_handler)
 
 
@@ -64,5 +64,5 @@ def unregister() -> None:
     # if textdrawer is draweing something, hide it now
     textdraw_warning.hide(bpy.context)
 
-    handler_depsh_update.remove(check_editmesh)
+    handler_deps_update.remove(check_editmesh)
     handler_loadpost.remove(load_handler)
