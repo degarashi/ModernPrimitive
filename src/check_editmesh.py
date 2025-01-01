@@ -40,10 +40,12 @@ def check_editmesh(scene: Scene):
         if len(pm) > 0:
             textdraw_warning.set_text(make_warning_message(pm))
             if textdraw_warning.show(context):
-                context.area.tag_redraw()
+                if context.area is not None:
+                    context.area.tag_redraw()
             return
     if textdraw_warning.hide(context):
-        context.area.tag_redraw()
+        if context.area is not None:
+            context.area.tag_redraw()
 
 
 @persistent
