@@ -35,6 +35,11 @@ DeformableCube's "set origin to center" operator <br>
 <img src="./doc_images/usage_deformable_cube_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_capsule_0.jpg" alt="" width="25%" />
 
 # Changelog
+## v0.0.14
+- Warning message when attempting to edit a ModernPrimitive mesh
+- "Make ModernPrimitive" operators are valid only in OBJECT mode
+<img src="./doc_images/error_message_0.jpg" alt="" width="75%" />
+
 ## v0.0.13
 - Added QuadSphere primitive
 <img src="./doc_images/usage_quad_sphere_0.jpg" alt="" width="50%" />
