@@ -4,11 +4,12 @@ from bpy.app.handlers import persistent
 from .aux_func import make_primitive_property_name, is_primitive_mod
 
 
-class ObjectHold:
-    # Entry name to save the original wireframe state
-    # (before the wireframe is forcibly displayed by the add-on)
-    ENTRY_NAME = make_primitive_property_name("original_wireframe_state")
+# Entry name to save the original wireframe state
+# (before the wireframe is forcibly displayed by the add-on)
+ENTRY_NAME = make_primitive_property_name("original_wireframe_state")
 
+
+class ObjectHold:
     def __init__(self):
         self._obj: Object | None = None
         # Is there a state update request from the drawing hook? (on_draw_hook)
@@ -17,7 +18,7 @@ class ObjectHold:
     # Switch target object
     def _set_target(self, obj: Object | None) -> None:
         assert self._obj != obj
-        ent_name = self.__class__.ENTRY_NAME
+        ent_name = ENTRY_NAME
 
         # Restore wireframe drawing state
         if self._obj is not None:
