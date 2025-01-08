@@ -5,6 +5,7 @@ from .convert import ConvertToCube_Operator
 from .cube import DCube_CenterOrigin_Operator
 from .constants import MODERN_PRIMITIVE_CATEGORY
 from .operator import OPS, OperatorBase
+from .switch_wireframe import SwitchWireframe
 
 
 class MPR_PT_Create(Panel):
@@ -54,6 +55,10 @@ class MPR_PT_Main(Panel):
         box = layout.box()
         box.label(text="D-Cube:")
         box.operator(DCube_CenterOrigin_Operator.bl_idname, text="Set origin to Center")
+
+        box = layout.box()
+        box.label(text="Viewport Display")
+        box.operator(SwitchWireframe.bl_idname)
 
 
 def register() -> None:
