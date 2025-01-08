@@ -6,6 +6,8 @@ from .cube import DCube_CenterOrigin_Operator
 from .constants import MODERN_PRIMITIVE_CATEGORY
 from .operator import OPS, OperatorBase
 from .switch_wireframe import SwitchWireframe
+from .aux_func import get_target_object
+from .wireframe import ENTRY_NAME
 
 
 class MPR_PT_Create(Panel):
@@ -57,8 +59,15 @@ class MPR_PT_Main(Panel):
         box.operator(DCube_CenterOrigin_Operator.bl_idname, text="Set origin to Center")
 
         box = layout.box()
-        box.label(text="Viewport Display")
-        box.operator(SwitchWireframe.bl_idname)
+        box.column().label(text="Viewport Display")
+        sp = box.split(factor=0.3)
+        sp.label(text="Wireframe:")
+
+        obj = get_target_object(ctx)
+        view_text = f"{obj[ENTRY_NAME]}" if obj is not None else ""
+        sp.label(text=view_text)
+
+        sp.operator(SwitchWireframe.bl_idname, text="Switch")
 
 
 def register() -> None:
