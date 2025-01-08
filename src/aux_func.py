@@ -165,3 +165,13 @@ def make_primitive_property_name(name: str) -> str:
 
 def is_primitive_property(name: str) -> bool:
     return name.startswith(MODERN_PRIMITIVE_PREFIX + "_")
+
+
+# Return active and selected objects
+def get_target_object(context: Context) -> Object | None:
+    obj = context.view_layer.objects.active
+    if obj is not None and is_modern_primitive(obj):
+        sel = context.selected_objects
+        if obj in sel:
+            return obj
+    return None
