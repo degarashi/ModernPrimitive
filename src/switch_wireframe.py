@@ -1,7 +1,7 @@
-from bpy.types import Operator, Context, Object
+from bpy.types import Operator, Context
 from bpy.utils import register_class, unregister_class
 from .constants import MODERN_PRIMITIVE_PREFIX
-from .aux_func import is_modern_primitive
+from .aux_func import get_target_object
 from .wireframe import ObjectHold
 
 
@@ -12,17 +12,8 @@ class SwitchWireframe(Operator):
     bl_label = "Switch wireframe"
 
     @classmethod
-    def get_object(cls, context: Context) -> Object | None:
-        obj = context.view_layer.objects.active
-        if obj is not None and is_modern_primitive(obj):
-            sel = context.selected_objects
-            if obj in sel:
-                return obj
-        return None
-
-    @classmethod
     def poll(cls, context: Context | None) -> bool:
-        return cls.get_object(context) is not None
+        return get_target_object(context) is not None
 
     def execute(self, context: Context | None) -> set[str]:
         obj = context.view_layer.objects.active
