@@ -23,10 +23,13 @@ class ObjectHold:
         # Restore wireframe drawing state
         if self._obj is not None:
             if self._obj_is_alive():
-                # Restore previously selected objects from propertry
-                self._obj.show_wire = self._obj.get(ent_name, False)
-                # Delete it as it is no longer used
-                del self._obj[ent_name]
+                try:
+                    # Restore previously selected objects from propertry
+                    self._obj.show_wire = self._obj[ent_name]
+                    # Delete it as it is no longer used
+                    del self._obj[ent_name]
+                except KeyError:
+                    self._obj.show_wire = False
 
         self._obj = obj
 
