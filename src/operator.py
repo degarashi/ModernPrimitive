@@ -37,6 +37,9 @@ class OperatorBase(Operator):
             return {"CANCELLED"}
         return {"FINISHED"}
 
+    def execute(self, context: Context | None) -> set[str]:
+        return self.handle_primitive(context)
+
 
 class MakeCube_Operator(OperatorBase, PrimitiveInfo_Cube):
     """Make Modern Cube"""
@@ -45,9 +48,6 @@ class MakeCube_Operator(OperatorBase, PrimitiveInfo_Cube):
     bl_idname = P.bl_idname
     bl_label = P.bl_label
 
-    def execute(self, context: Context | None) -> set[str]:
-        return self.handle_primitive(context)
-
 
 class MakeCone_Operator(OperatorBase, PrimitiveInfo_Cone):
     """Make Modern Cone"""
@@ -55,9 +55,6 @@ class MakeCone_Operator(OperatorBase, PrimitiveInfo_Cone):
     P = PrimitiveInfo_Cone
     bl_idname = P.bl_idname
     bl_label = P.bl_label
-
-    def execute(self, context: Context | None) -> set[str]:
-        return self.handle_primitive(context)
 
 
 class MakeCylinder_Operator(OperatorBase, PrimitiveInfo_Cylinder):
@@ -72,9 +69,6 @@ class MakeCylinder_Operator(OperatorBase, PrimitiveInfo_Cylinder):
     def menu_icon(cls):
         return "MESH_" + cls.type_name.upper()
 
-    def execute(self, context: Context | None) -> set[str]:
-        return self.handle_primitive(context)
-
 
 class MakeGrid_Operator(OperatorBase, PrimitiveInfo_Grid):
     """Make Modern Grid"""
@@ -88,9 +82,6 @@ class MakeGrid_Operator(OperatorBase, PrimitiveInfo_Grid):
     def menu_icon(cls):
         return "MESH_" + cls.type_name.upper()
 
-    def execute(self, context: Context | None) -> set[str]:
-        return self.handle_primitive(context)
-
 
 class MakeTorus_Operator(OperatorBase, PrimitiveInfo_Torus):
     """Make Modern Torus"""
@@ -103,9 +94,6 @@ class MakeTorus_Operator(OperatorBase, PrimitiveInfo_Torus):
     @property
     def menu_icon(cls):
         return "MESH_" + cls.type_name.upper()
-
-    def execute(self, context: Context | None) -> set[str]:
-        return self.handle_primitive(context)
 
 
 class MakeICOSphere_Operator(OperatorBase, PrimitiveInfo_ICOSphere):
@@ -125,9 +113,6 @@ class MakeICOSphere_Operator(OperatorBase, PrimitiveInfo_ICOSphere):
     def menu_icon(cls):
         return "MESH_" + cls.type_name.upper()
 
-    def execute(self, context: Context | None) -> set[str]:
-        return self.handle_primitive(context)
-
 
 class MakeUVSphere_Operator(OperatorBase, PrimitiveInfo_UVSphere):
     """Make Modern UV Sphere"""
@@ -146,9 +131,6 @@ class MakeUVSphere_Operator(OperatorBase, PrimitiveInfo_UVSphere):
     def menu_icon(cls):
         return "MESH_" + cls.type_name.upper()
 
-    def execute(self, context: Context | None) -> set[str]:
-        return self.handle_primitive(context)
-
 
 class MakeTube_Operator(OperatorBase, PrimitiveInfo_Tube):
     """Make Modern Tube"""
@@ -161,9 +143,6 @@ class MakeTube_Operator(OperatorBase, PrimitiveInfo_Tube):
     @property
     def menu_icon(cls):
         return "SURFACE_NCYLINDER"
-
-    def execute(self, context: Context | None) -> set[str]:
-        return self.handle_primitive(context)
 
 
 class MakeGear_Operator(OperatorBase, PrimitiveInfo_Gear):
@@ -178,9 +157,6 @@ class MakeGear_Operator(OperatorBase, PrimitiveInfo_Gear):
     def menu_icon(cls):
         return "PREFERENCES"
 
-    def execute(self, context: Context | None) -> set[str]:
-        return self.handle_primitive(context)
-
 
 class MakeSpring_Operator(OperatorBase, PrimitiveInfo_Spring):
     """Make Modern Spring"""
@@ -193,9 +169,6 @@ class MakeSpring_Operator(OperatorBase, PrimitiveInfo_Spring):
     @property
     def menu_icon(cls):
         return "MOD_SCREW"
-
-    def execute(self, context: Context | None) -> set[str]:
-        return self.handle_primitive(context)
 
 
 class MakeDeformableCube_Operator(OperatorBase, PrimitiveInfo_DeformableCube):
@@ -210,9 +183,6 @@ class MakeDeformableCube_Operator(OperatorBase, PrimitiveInfo_DeformableCube):
     def menu_icon(cls):
         return "META_CUBE"
 
-    def execute(self, context: Context | None) -> set[str]:
-        return self.handle_primitive(context)
-
 
 class MakeCapsule_Operator(OperatorBase, PrimitiveInfo_Capsule):
     """Make Modern Capsule"""
@@ -226,9 +196,6 @@ class MakeCapsule_Operator(OperatorBase, PrimitiveInfo_Capsule):
     def menu_icon(cls):
         return "MESH_CAPSULE"
 
-    def execute(self, context: Context | None) -> set[str]:
-        return self.handle_primitive(context)
-
 
 class MakeQuadSphere_Operator(OperatorBase, PrimitiveInfo_QuadSphere):
     """Make Modern QuadSphere"""
@@ -241,9 +208,6 @@ class MakeQuadSphere_Operator(OperatorBase, PrimitiveInfo_QuadSphere):
     @property
     def menu_icon(cls):
         return "META_CUBE"
-
-    def execute(self, context: Context | None) -> set[str]:
-        return self.handle_primitive(context)
 
 
 OPS: list[type[bpy_struct]] = [
