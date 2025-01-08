@@ -35,6 +35,13 @@ DeformableCube's "set origin to center" operator <br>
 <img src="./doc_images/usage_deformable_cube_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_capsule_0.jpg" alt="" width="25%" />
 
 # Changelog
+## v0.0.15
+- show object's wireframe when ModernPrimitive is active and selected
+
+To change ModernPrimitive's Viewport Display property, use ModernPrimitive-Panel:
+Use the button in the viewport display section of the modern primitive panel, or select a modifier other than the modern primitive modifier, cancel the wireframe display by the add-on, and set the object's viewport display checkbox as usual.
+<img src="./doc_images/switch_fireframe_panel.jpg" alt="" width="50%" />
+
 ## v0.0.14
 - Warning message when attempting to edit a ModernPrimitive mesh
 - "Make ModernPrimitive" operators are valid only in OBJECT mode
