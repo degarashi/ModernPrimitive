@@ -29,6 +29,7 @@ class VersionInt:
     def __ge__(self, other) -> bool:
         return self.num >= other.num
 
+    # Read MAX_DIGITS of numbers at the end of the string
     @classmethod
     def get_version_from_string(cls, v_str: str):
         res = cls.RE_DIGITS.match(v_str)
@@ -40,6 +41,7 @@ class VersionInt:
 _version_num: list[VersionInt] = []
 
 
+# A set of primitive type and version number
 class TypeAndVersion:
     RE_TYPE_AND_DIGIT = re.compile(r"(\w+)(_.+)$")
 
@@ -47,6 +49,8 @@ class TypeAndVersion:
         self.type = typ
         self.version = ver
 
+    # Extract the primitive type + version number
+    # from the node group name (returns none if it cannot be identified)
     @classmethod
     def get_type_and_version(cls, src: str):
         if src.startswith(MODERN_PRIMITIVE_TAG):
@@ -72,11 +76,13 @@ def unregister() -> None:
     pass
 
 
+# Is the version number of the primitive that comes with the add-on already read?
 def _is_version_num_loaded() -> bool:
     global _version_num
     return len(_version_num) > 0
 
 
+# Read the version number of the primitive that comes with the add-on
 def _prepare_version_num() -> None:
     for _i in range(len(Type)):
         _version_num.append(VersionInt(0))
@@ -107,9 +113,8 @@ def _prepare_version_num() -> None:
                 raise DGNodeGroupNotFound(type_p.name, str(p))
 
 
+# Get the version number of the primitive attached to the add-on
 def get_primitive_version(type_p: Type) -> VersionInt:
     if not _is_version_num_loaded():
         _prepare_version_num()
     return _version_num[type_p.value - 1]
-
-
