@@ -6,8 +6,10 @@ from .constants import (
     MODERN_PRIMITIVE_TAG,
     get_assets_dir,
 )
+from functools import total_ordering
 
 
+@total_ordering
 class VersionInt:
     MAX_DIGITS = 4
     MAX_NUMBER = pow(10, MAX_DIGITS) - 1
