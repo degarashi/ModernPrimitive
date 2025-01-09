@@ -24,9 +24,6 @@ class VersionInt:
     def __eq__(self, other) -> bool:
         return self.num == other.num
 
-    def __ne__(self, other) -> bool:
-        return self.num != other.num
-
     def __ge__(self, other) -> bool:
         return self.num >= other.num
 
