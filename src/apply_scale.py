@@ -37,7 +37,7 @@ def _is_uniform(vec: Vector) -> bool:
 def _abs_sum(*args) -> Any:
     s = abs(args[0])
     for a in args[1:]:
-        s += a
+        s += abs(a)
     return s
 
 
