@@ -41,3 +41,6 @@ class DGNodeGroupNotFound(DGException):
         if base_file is not None:
             msg += f"\nwhere: {base_file}"
         super().__init__(msg)
+
+class DGInvalidInput(DGException):
+    pass
