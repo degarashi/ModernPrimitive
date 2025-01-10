@@ -35,6 +35,17 @@ DeformableCube's "set origin to center" operator <br>
 <img src="./doc_images/usage_deformable_cube_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_capsule_0.jpg" alt="" width="25%" />
 
 # Changelog
+## v0.0.16
+- added "Apply Scaling" operator
+If you scale a primitive, the size of the gizmo will no longer match the shape. In such cases, you can modify the size of the gizmo by applying a scale value.
+The apply scaling operator has two modes. In strict mode, if the shape cannot be maintained by applying the scaling value, no processing is performed.
+Normal mode allows the shape to change slightly.
+<img src="./doc_images/apply_scaling_0.jpg" alt="" width="75%" />
+
+For example, with a cylinder shape like the one below, the elliptical shape cannot be maintained when scaling values are applied, so an error will occur in strict mode.
+Processing in normal mode preserves the shape as much as possible while setting the radius to a reasonable intermediate value.
+<img src="./doc_images/apply_scaling_1.jpg" alt="" width="75%" />
+
 ## v0.0.15
 - show object's wireframe when ModernPrimitive is active and selected
 
