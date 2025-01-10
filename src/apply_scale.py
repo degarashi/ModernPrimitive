@@ -25,7 +25,7 @@ def _xyz_scale(obj: Object, mod: NodesModifier, max_index: int) -> None:
 def _isclose(*args) -> bool:
     base = args[0]
     for a in args[1:]:
-        if not math.isclose(base, a):
+        if not math.isclose(base, a, rel_tol=1e-6):
             return False
     return True
 
