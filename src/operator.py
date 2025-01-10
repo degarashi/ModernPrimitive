@@ -17,11 +17,26 @@ from .primitive import (
     PrimitiveInfo_Capsule,
     PrimitiveInfo_QuadSphere,
 )
+from mathutils import Vector
+
+
+def get_view3d_pos(context: Context) -> Vector:
+    region = context.space_data.region_3d
+    # view matrix
+    v_mat = region.view_matrix
+    # The position of the viewpoint can be obtained as a position vector
+    #   of the inverse matrix of the view matrix
+    return v_mat.inverted().translation
 
 
 class OperatorBase(Operator):
     bl_options = {"REGISTER", "UNDO"}
     set_cursor_rot: BoolProperty(name="Set Cursor's Rotation", default=False)
+    appropriate_size: BoolProperty(
+        name="Appropriate Size",
+        default=False,
+        description="Initialize primitive to appropriate size",
+    )
 
     @classmethod
     def poll(cls, context: Context | None) -> bool:
@@ -33,10 +48,24 @@ class OperatorBase(Operator):
 
     def handle_primitive(self, context: Context) -> set[str]:
         try:
-            aux_func.load_primitive_from_asset(self.type, context, self.set_cursor_rot)
+            obj = aux_func.load_primitive_from_asset(
+                self.type, context, self.set_cursor_rot
+            )
         except (DGFileNotFound, DGObjectNotFound) as e:
             self.report({"ERROR"}, str(e))
             return {"CANCELLED"}
+
+        if self.appropriate_size:
+            # Adjust the scaling value depending on the distance from the viewpoint
+            view_loc = get_view3d_pos(context)
+            cur_loc = context.scene.cursor.location
+            distance = (view_loc - cur_loc).length
+
+            # TODO: The scaling constant and minimum value are hard-coded,
+            #   so we will do something about it later.
+            size = max(1e-5, distance / 10)
+            obj.scale = Vector([size] * 3)
+
         return {"FINISHED"}
 
     def execute(self, context: Context | None) -> set[str]:
