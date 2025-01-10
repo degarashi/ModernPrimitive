@@ -8,6 +8,7 @@ from .operator import OPS, OperatorBase
 from .switch_wireframe import SwitchWireframe
 from .aux_func import get_target_object
 from .wireframe import ENTRY_NAME
+from .apply_scale import ApplyScale_Operator
 
 
 class MPR_PT_Create(Panel):
@@ -68,6 +69,14 @@ class MPR_PT_Main(Panel):
         sp.label(text=view_text)
 
         sp.operator(SwitchWireframe.bl_idname, text="Switch")
+
+        box = layout.box()
+        box.label(text="Apply")
+        row = box.row()
+        btn = row.operator(ApplyScale_Operator.bl_idname, text="Scale")
+        btn.strict = False
+        btn = row.operator(ApplyScale_Operator.bl_idname, text="Scale (Strict Mode)")
+        btn.strict = True
 
 
 def register() -> None:
