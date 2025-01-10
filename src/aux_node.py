@@ -4,7 +4,7 @@ from bpy.types import (
     NodesModifier,
     Context,
 )
-from typing import Any, Iterable
+from typing import Any, Iterable, Callable
 
 
 def find_group_input(node_group: NodeGroup) -> NodeGroupInput:
@@ -38,3 +38,24 @@ def set_interface_values(
 def get_interface_value(mod: NodesModifier, name: str) -> Any:
     sock_name = find_interface_name(mod.node_group, name)
     return mod[sock_name]
+
+
+def get_interface_values(mod: NodesModifier, data: Iterable[str]) -> dict[str, Any]:
+    ret: dict[str, Any] = {}
+    for d in data:
+        ret[d] = get_interface_value(mod, d)
+    return ret
+
+
+def modify_interface_value(
+    mod: NodesModifier, ent: str, proc: Callable[[Any], Any]
+) -> None:
+    value = proc(get_interface_value(mod, ent))
+    set_interface_value(mod, (ent, value))
+
+
+def swap_interface_value(mod: NodesModifier, ent0: str, ent1: str) -> None:
+    val0 = get_interface_value(mod, ent0)
+    val1 = get_interface_value(mod, ent1)
+    set_interface_value(mod, (ent1, val0))
+    set_interface_value(mod, (ent0, val1))
