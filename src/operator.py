@@ -27,6 +27,8 @@ class OperatorBase(Operator):
     def poll(cls, context: Context | None) -> bool:
         if context is None:
             return False
+        if context.space_data.type != "VIEW_3D":
+            return False
         return context.mode == "OBJECT"
 
     def handle_primitive(self, context: Context) -> set[str]:
