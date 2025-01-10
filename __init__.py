@@ -10,6 +10,7 @@ if "bpy" in locals():
     importlib.reload(check_editmesh)  # noqa: F821
     importlib.reload(wireframe)  # noqa: F821
     importlib.reload(switch_wireframe) # noqa: F821
+    importlib.reload(apply_scale) # noqa: F821
 else:
     from .src import modern_primitive
     from .src import modifier_select
@@ -20,6 +21,7 @@ else:
     from .src import check_editmesh
     from .src import wireframe
     from .src import switch_wireframe
+    from .src import apply_scale
 
 import bpy  # noqa: F401
 
@@ -35,6 +37,7 @@ def register():
     check_editmesh.register()
     wireframe.register()
     switch_wireframe.register()
+    apply_scale.register()
 
 
 def unregister():
@@ -48,3 +51,4 @@ def unregister():
     check_editmesh.unregister()
     wireframe.unregister()
     switch_wireframe.unregister()
+    apply_scale.unregister()
