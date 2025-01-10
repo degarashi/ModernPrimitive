@@ -67,14 +67,18 @@ def _rotate_x180(obj: Object) -> None:
     obj.rotation_mode = rot_mode
 
 
+def _check_xy_same(vec: Vector, warn: WarnProc) -> None:
+    if not _is_xy_same(vec):
+        warn(f"Object XY scale is not equal: x={vec.x}, y={vec.y}")
+
+
 def proc_cube(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
     _xyz_scale(obj, mod, 3)
 
 
 def proc_cone(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
     # -- xy scaling --
-    if not _is_xy_same(obj.scale):
-        warn("Object XY scale is not equal")
+    _check_xy_same(obj.scale, warn)
 
     scale_val = _abs_average_xy(obj.scale)
     modify_interface_value(mod, "Radius Top", lambda val: val * scale_val)
@@ -101,8 +105,7 @@ def proc_torus(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
 
 def proc_cylinder(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
     # -- xy scaling --
-    if not _is_xy_same(obj.scale):
-        warn("Object XY scale is not equal")
+    _check_xy_same(obj.scale, warn)
 
     scale_val = _abs_average_xy(obj.scale)
     modify_interface_value(mod, "Radius", lambda val: val * scale_val)
@@ -129,8 +132,7 @@ def proc_icosphere(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
 
 
 def proc_tube(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
-    if not _is_xy_same(obj.scale):
-        warn(f"Object XY scale is not equal: x={obj.scale.x}, y={obj.scale.y}")
+    _check_xy_same(obj.scale, warn)
 
     # -- xy scaling --
     scale_val = _abs_average_xy(obj.scale)
@@ -145,8 +147,7 @@ def proc_tube(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
 
 
 def proc_gear(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
-    if not _is_xy_same(obj.scale):
-        warn("Object XY scale is not equal")
+    _check_xy_same(obj.scale, warn)
 
     # -- xy scaling --
     scale_val = _abs_average_xy(obj.scale)
