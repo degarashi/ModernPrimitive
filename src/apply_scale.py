@@ -69,7 +69,9 @@ def _rotate_x180(obj: Object) -> None:
 
 def _check_xy_same(vec: Vector, warn: WarnProc) -> None:
     if not _is_xy_same(vec):
-        warn(f"Object XY scale is not equal: x={vec.x:.8f}, y={vec.y:.8f}")
+        warn(f"Object XY scale is not equal: ({vec.x:.8f}, {vec.y:.8f})")
+    elif vec.x < 0:
+        warn("Negative XY scaling can change shape")
 
 
 def proc_cube(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
