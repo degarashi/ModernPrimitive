@@ -72,12 +72,15 @@ class OperatorBase(Operator):
             size = max(1e-5, distance / 10)
             obj.scale = Vector([size] * 3)
 
+        mod = obj.modifiers[0]
         # Apply smooth shading
-        set_interface_value(obj.modifiers[0], ("Smooth", self.smooth))
+        set_interface_value(mod, ("Smooth", self.smooth))
         # Apply smooth shading angle
         set_interface_value(
-            obj.modifiers[0], ("Smooth Angle", math.radians(self.smooth_angle_deg))
+            mod, ("Smooth Angle", math.radians(self.smooth_angle_deg))
         )
+        # Since the node group value has been changed, update it here
+        mod.node_group.interface_update(context)
 
         return {"FINISHED"}
 
