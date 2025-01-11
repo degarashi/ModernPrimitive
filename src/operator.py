@@ -1,5 +1,5 @@
 from bpy.types import bpy_struct, Context, Operator
-from bpy.props import BoolProperty
+from bpy.props import BoolProperty, FloatProperty
 from . import aux_func
 from .exception import DGFileNotFound, DGObjectNotFound
 from .primitive import (
@@ -19,6 +19,7 @@ from .primitive import (
 )
 from mathutils import Vector
 from .aux_node import set_interface_value
+import math
 
 
 def get_view3d_pos(context: Context) -> Vector:
@@ -39,6 +40,9 @@ class OperatorBase(Operator):
         description="Initialize primitive to appropriate size",
     )
     smooth: BoolProperty(name="Smooth Shading", default=False)
+    smooth_angle_deg: FloatProperty(
+        name="Smooth Angle", default=45.0, min=0.0, max=180.0
+    )
 
     @classmethod
     def poll(cls, context: Context | None) -> bool:
@@ -70,6 +74,10 @@ class OperatorBase(Operator):
 
         # Apply smooth shading
         set_interface_value(obj.modifiers[0], ("Smooth", self.smooth))
+        # Apply smooth shading angle
+        set_interface_value(
+            obj.modifiers[0], ("Smooth Angle", math.radians(self.smooth_angle_deg))
+        )
 
         return {"FINISHED"}
 
