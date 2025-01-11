@@ -35,6 +35,16 @@ DeformableCube's "set origin to center" operator <br>
 <img src="./doc_images/usage_deformable_cube_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_capsule_0.jpg" alt="" width="25%" />
 
 # Changelog
+## v0.0.17
+- added "Smooth Shading" option
+
+<img src="./doc_images/smooth_option_1.jpg" alt="" width="75%" />
+<img src="./doc_images/smooth_option_0.jpg" alt="" width="75%" />
+
+- added "Appropriate Size" option to MakePrimitive operator
+
+Scales the primitive according to the distance from the viewpoint to the 3D cursor, keeping the apparent size constant.
+
 ## v0.0.16
 - added "Apply Scaling" operator
 
