@@ -18,6 +18,7 @@ from .primitive import (
     PrimitiveInfo_QuadSphere,
 )
 from mathutils import Vector
+from .aux_node import set_interface_value
 
 
 def get_view3d_pos(context: Context) -> Vector:
@@ -37,6 +38,7 @@ class OperatorBase(Operator):
         default=False,
         description="Initialize primitive to appropriate size",
     )
+    smooth: BoolProperty(name="Smooth Shading", default=False)
 
     @classmethod
     def poll(cls, context: Context | None) -> bool:
@@ -65,6 +67,9 @@ class OperatorBase(Operator):
             #   so we will do something about it later.
             size = max(1e-5, distance / 10)
             obj.scale = Vector([size] * 3)
+
+        # Apply smooth shading
+        set_interface_value(obj.modifiers[0], ("Smooth", self.smooth))
 
         return {"FINISHED"}
 
