@@ -91,8 +91,12 @@ def _prepare_version_num() -> None:
     for t in Type:
         str_to_type[t.name.lower()] = t
 
+    # Enumerate blend files in the asset directory (excluding those starting with __)
     path = get_assets_dir()
     for p in path.iterdir():
+        if p.stem.startswith("__"):
+            continue
+
         type_p: Type
         try:
             type_p = str_to_type[p.stem]
