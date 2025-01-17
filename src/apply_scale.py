@@ -268,7 +268,12 @@ class ApplyScale_Operator(Operator):
             else:
                 # For now, make sure it doesn't work unless it's the latest version
                 if get_primitive_version(typ_ver.type) > typ_ver.version:
-                    self.report({"ERROR"}, "Primitive version is not up to date")
+                    self.report(
+                        {"ERROR"},
+                        """Primitive version is not up to date
+(Unfortunately, there is no way to update automatically at this time,
+ so please convert it manually.)""",
+                    )
                     continue
 
                 # is_modern_primitive() assumes modifier number 0,
