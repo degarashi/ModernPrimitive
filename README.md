@@ -40,7 +40,7 @@ DeformableCube's "set origin to center" operator <br>
 <img src="./doc_images/uv_menu.jpg" alt="" width="75%" />
 
 Set the materials as usual.<br>
-To specify uv coordinates, please specify the name specified in \"uv name\" in the shader attribute (default is uvmap)
+To specify uv coordinates, please specify the name specified in \"uv name\" in the shader attribute (default is "UVMap")
 <img src="./doc_images/attribute_get.jpg" alt="" width="70%" />
 
 ### UV coordinate generation type
