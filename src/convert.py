@@ -67,9 +67,9 @@ class ConvertToCube_Operator(Operator):
                 cube.modifiers[0],
                 context,
                 (
-                    ("SizeX", (b_max.x - b_min.x) / 2),
-                    ("SizeY", (b_max.y - b_min.y) / 2),
-                    ("SizeZ", (b_max.z - b_min.z) / 2),
+                    ("Size X", (b_max.x - b_min.x) / 2),
+                    ("Size Y", (b_max.y - b_min.y) / 2),
+                    ("Size Z", (b_max.z - b_min.z) / 2),
                 ),
             )
             cube.location = from_obj.matrix_world @ center
@@ -78,12 +78,12 @@ class ConvertToCube_Operator(Operator):
                 cube.modifiers[0],
                 context,
                 (
-                    ("MinX", -b_min.x),
-                    ("MaxX", b_max.x),
-                    ("MinY", -b_min.y),
-                    ("MaxY", b_max.y),
-                    ("MinZ", -b_min.z),
-                    ("MaxZ", b_max.z),
+                    ("Min X", -b_min.x),
+                    ("Max X", b_max.x),
+                    ("Min Y", -b_min.y),
+                    ("Max Y", b_max.y),
+                    ("Min Z", -b_min.z),
+                    ("Max Z", b_max.z),
                 ),
             )
         cube.name = from_obj.name + "_converted"

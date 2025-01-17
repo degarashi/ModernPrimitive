@@ -15,7 +15,7 @@ WarnProc = Callable[[str], None]
 
 
 def _xyz_scale(obj: Object, mod: NodesModifier, max_index: int) -> None:
-    SIZE_ENT = ("SizeX", "SizeY", "SizeZ")
+    SIZE_ENT = ("Size X", "Size Y", "Size Z")
 
     for i in range(max_index):
         scale_val = abs(obj.scale[i])
@@ -83,8 +83,8 @@ def proc_cone(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
     _check_xy_same(obj.scale, warn)
 
     scale_val = _abs_average_xy(obj.scale)
-    modify_interface_value(mod, "Radius Top", lambda val: val * scale_val)
-    modify_interface_value(mod, "Radius Bottom", lambda val: val * scale_val)
+    modify_interface_value(mod, "Top Radius", lambda val: val * scale_val)
+    modify_interface_value(mod, "Bottom Radius", lambda val: val * scale_val)
 
     # -- z scaling --
     modify_interface_value(mod, "Height", lambda val: val * abs(obj.scale.z))
@@ -102,7 +102,7 @@ def proc_torus(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
 
     scale_val = _abs_average_vec(obj.scale)
     modify_interface_value(mod, "Radius", lambda val: val * scale_val)
-    modify_interface_value(mod, "SecondaryRadius", lambda val: val * scale_val)
+    modify_interface_value(mod, "Ring Radius", lambda val: val * scale_val)
 
 
 def proc_cylinder(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
@@ -138,8 +138,8 @@ def proc_tube(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
 
     # -- xy scaling --
     scale_val = _abs_average_xy(obj.scale)
-    modify_interface_value(mod, "OuterRadius", lambda val: val * scale_val)
-    modify_interface_value(mod, "InnerRadius", lambda val: val * scale_val)
+    modify_interface_value(mod, "Outer Radius", lambda val: val * scale_val)
+    modify_interface_value(mod, "Inner Radius", lambda val: val * scale_val)
 
     # -- z scaling --
     scale_val = abs(obj.scale.z)
@@ -170,27 +170,27 @@ def proc_spring(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
         warn("Object is not uniformly scaled")
 
     scale_val = _abs_average_vec(obj.scale)
-    modify_interface_value(mod, "Start Radius", lambda val: val * scale_val)
-    modify_interface_value(mod, "End Radius", lambda val: val * scale_val)
+    modify_interface_value(mod, "Bottom Radius", lambda val: val * scale_val)
+    modify_interface_value(mod, "Top Radius", lambda val: val * scale_val)
     modify_interface_value(mod, "Ring Radius", lambda val: val * scale_val)
     modify_interface_value(mod, "Height", lambda val: val * scale_val)
 
 
 def proc_dcube(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
-    modify_interface_value(mod, "MinX", lambda val: val * abs(obj.scale.x))
-    modify_interface_value(mod, "MaxX", lambda val: val * abs(obj.scale.x))
+    modify_interface_value(mod, "Min X", lambda val: val * abs(obj.scale.x))
+    modify_interface_value(mod, "Max X", lambda val: val * abs(obj.scale.x))
     if obj.scale.x < 0:
-        swap_interface_value(mod, "MinX", "MaxX")
+        swap_interface_value(mod, "Min X", "Max X")
 
-    modify_interface_value(mod, "MinY", lambda val: val * abs(obj.scale.y))
-    modify_interface_value(mod, "MaxY", lambda val: val * abs(obj.scale.y))
+    modify_interface_value(mod, "Min Y", lambda val: val * abs(obj.scale.y))
+    modify_interface_value(mod, "Max Y", lambda val: val * abs(obj.scale.y))
     if obj.scale.y < 0:
-        swap_interface_value(mod, "MinY", "MaxY")
+        swap_interface_value(mod, "Min Y", "Max Y")
 
-    modify_interface_value(mod, "MinZ", lambda val: val * abs(obj.scale.z))
-    modify_interface_value(mod, "MaxZ", lambda val: val * abs(obj.scale.z))
+    modify_interface_value(mod, "Min Z", lambda val: val * abs(obj.scale.z))
+    modify_interface_value(mod, "Max Z", lambda val: val * abs(obj.scale.z))
     if obj.scale.z < 0:
-        swap_interface_value(mod, "MinZ", "MaxZ")
+        swap_interface_value(mod, "Min Z", "Max Z")
 
 
 def proc_capsule(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:

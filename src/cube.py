@@ -28,8 +28,8 @@ class DCube_CenterOrigin_Operator(Operator):
         postfix = ("X", "Y", "Z")
         center = Vector()
         for i in range(3):
-            min_name = "Min" + postfix[i]
-            max_name = "Max" + postfix[i]
+            min_name = "Min " + postfix[i]
+            max_name = "Max " + postfix[i]
             # min = minus-value
             min_v = get_interface_value(mod, min_name)
             max_v = get_interface_value(mod, max_name)
