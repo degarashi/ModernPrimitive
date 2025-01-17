@@ -2,7 +2,7 @@ from .constants import Type, MODERN_PRIMITIVE_PREFIX
 from .aux_func import node_group_name
 
 
-class PrimitiveInfo:
+class Primitive:
     @classmethod
     @property
     def type_name(cls):
@@ -34,53 +34,53 @@ class PrimitiveInfo:
         return node_group_name(cls.type)
 
 
-class PrimitiveInfo_Cube(PrimitiveInfo):
+class Primitive_Cube(Primitive):
     type = Type.Cube
 
 
-class PrimitiveInfo_Cone(PrimitiveInfo):
+class Primitive_Cone(Primitive):
     type = Type.Cone
 
 
-class PrimitiveInfo_Grid(PrimitiveInfo):
+class Primitive_Grid(Primitive):
     type = Type.Grid
 
 
-class PrimitiveInfo_Torus(PrimitiveInfo):
+class Primitive_Torus(Primitive):
     type = Type.Torus
 
 
-class PrimitiveInfo_Cylinder(PrimitiveInfo):
+class Primitive_Cylinder(Primitive):
     type = Type.Cylinder
 
 
-class PrimitiveInfo_UVSphere(PrimitiveInfo):
+class Primitive_UVSphere(Primitive):
     type = Type.UVSphere
 
 
-class PrimitiveInfo_ICOSphere(PrimitiveInfo):
+class Primitive_ICOSphere(Primitive):
     type = Type.ICOSphere
 
 
-class PrimitiveInfo_Tube(PrimitiveInfo):
+class Primitive_Tube(Primitive):
     type = Type.Tube
 
 
-class PrimitiveInfo_Gear(PrimitiveInfo):
+class Primitive_Gear(Primitive):
     type = Type.Gear
 
 
-class PrimitiveInfo_Spring(PrimitiveInfo):
+class Primitive_Spring(Primitive):
     type = Type.Spring
 
 
-class PrimitiveInfo_DeformableCube(PrimitiveInfo):
+class Primitive_DeformableCube(Primitive):
     type = Type.DeformableCube
 
 
-class PrimitiveInfo_Capsule(PrimitiveInfo):
+class Primitive_Capsule(Primitive):
     type = Type.Capsule
 
 
-class PrimitiveInfo_QuadSphere(PrimitiveInfo):
+class Primitive_QuadSphere(Primitive):
     type = Type.QuadSphere

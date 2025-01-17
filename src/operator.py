@@ -3,19 +3,19 @@ from bpy.props import BoolProperty, FloatProperty
 from . import aux_func
 from .exception import DGFileNotFound, DGObjectNotFound
 from .primitive import (
-    PrimitiveInfo_Cube,
-    PrimitiveInfo_Cone,
-    PrimitiveInfo_Grid,
-    PrimitiveInfo_Cylinder,
-    PrimitiveInfo_ICOSphere,
-    PrimitiveInfo_UVSphere,
-    PrimitiveInfo_Torus,
-    PrimitiveInfo_Tube,
-    PrimitiveInfo_Gear,
-    PrimitiveInfo_Spring,
-    PrimitiveInfo_DeformableCube,
-    PrimitiveInfo_Capsule,
-    PrimitiveInfo_QuadSphere,
+    Primitive_Cube,
+    Primitive_Cone,
+    Primitive_Grid,
+    Primitive_Cylinder,
+    Primitive_ICOSphere,
+    Primitive_UVSphere,
+    Primitive_Torus,
+    Primitive_Tube,
+    Primitive_Gear,
+    Primitive_Spring,
+    Primitive_DeformableCube,
+    Primitive_Capsule,
+    Primitive_QuadSphere,
 )
 from mathutils import Vector
 from .aux_node import set_interface_value
@@ -88,26 +88,26 @@ class OperatorBase(Operator):
         return self.handle_primitive(context)
 
 
-class MakeCube_Operator(OperatorBase, PrimitiveInfo_Cube):
+class MakeCube_Operator(OperatorBase, Primitive_Cube):
     """Make Modern Cube"""
 
-    P = PrimitiveInfo_Cube
+    P = Primitive_Cube
     bl_idname = P.bl_idname
     bl_label = P.bl_label
 
 
-class MakeCone_Operator(OperatorBase, PrimitiveInfo_Cone):
+class MakeCone_Operator(OperatorBase, Primitive_Cone):
     """Make Modern Cone"""
 
-    P = PrimitiveInfo_Cone
+    P = Primitive_Cone
     bl_idname = P.bl_idname
     bl_label = P.bl_label
 
 
-class MakeCylinder_Operator(OperatorBase, PrimitiveInfo_Cylinder):
+class MakeCylinder_Operator(OperatorBase, Primitive_Cylinder):
     """Make Modern Cylinder"""
 
-    P = PrimitiveInfo_Cylinder
+    P = Primitive_Cylinder
     bl_idname = P.bl_idname
     bl_label = P.bl_label
 
@@ -117,10 +117,10 @@ class MakeCylinder_Operator(OperatorBase, PrimitiveInfo_Cylinder):
         return "MESH_" + cls.type_name.upper()
 
 
-class MakeGrid_Operator(OperatorBase, PrimitiveInfo_Grid):
+class MakeGrid_Operator(OperatorBase, Primitive_Grid):
     """Make Modern Grid"""
 
-    P = PrimitiveInfo_Grid
+    P = Primitive_Grid
     bl_idname = P.bl_idname
     bl_label = P.bl_label
 
@@ -130,10 +130,10 @@ class MakeGrid_Operator(OperatorBase, PrimitiveInfo_Grid):
         return "MESH_" + cls.type_name.upper()
 
 
-class MakeTorus_Operator(OperatorBase, PrimitiveInfo_Torus):
+class MakeTorus_Operator(OperatorBase, Primitive_Torus):
     """Make Modern Torus"""
 
-    P = PrimitiveInfo_Torus
+    P = Primitive_Torus
     bl_idname = P.bl_idname
     bl_label = P.bl_label
 
@@ -143,10 +143,10 @@ class MakeTorus_Operator(OperatorBase, PrimitiveInfo_Torus):
         return "MESH_" + cls.type_name.upper()
 
 
-class MakeICOSphere_Operator(OperatorBase, PrimitiveInfo_ICOSphere):
+class MakeICOSphere_Operator(OperatorBase, Primitive_ICOSphere):
     """Make Modern Ico Sphere"""
 
-    P = PrimitiveInfo_ICOSphere
+    P = Primitive_ICOSphere
     bl_idname = P.bl_idname
     bl_label = P.bl_label
 
@@ -161,10 +161,10 @@ class MakeICOSphere_Operator(OperatorBase, PrimitiveInfo_ICOSphere):
         return "MESH_" + cls.type_name.upper()
 
 
-class MakeUVSphere_Operator(OperatorBase, PrimitiveInfo_UVSphere):
+class MakeUVSphere_Operator(OperatorBase, Primitive_UVSphere):
     """Make Modern UV Sphere"""
 
-    P = PrimitiveInfo_UVSphere
+    P = Primitive_UVSphere
     bl_idname = P.bl_idname
     bl_label = P.bl_label
 
@@ -179,10 +179,10 @@ class MakeUVSphere_Operator(OperatorBase, PrimitiveInfo_UVSphere):
         return "MESH_" + cls.type_name.upper()
 
 
-class MakeTube_Operator(OperatorBase, PrimitiveInfo_Tube):
+class MakeTube_Operator(OperatorBase, Primitive_Tube):
     """Make Modern Tube"""
 
-    P = PrimitiveInfo_Tube
+    P = Primitive_Tube
     bl_idname = P.bl_idname
     bl_label = P.bl_label
 
@@ -192,10 +192,10 @@ class MakeTube_Operator(OperatorBase, PrimitiveInfo_Tube):
         return "SURFACE_NCYLINDER"
 
 
-class MakeGear_Operator(OperatorBase, PrimitiveInfo_Gear):
+class MakeGear_Operator(OperatorBase, Primitive_Gear):
     """Make Modern Gear"""
 
-    P = PrimitiveInfo_Gear
+    P = Primitive_Gear
     bl_idname = P.bl_idname
     bl_label = P.bl_label
 
@@ -205,10 +205,10 @@ class MakeGear_Operator(OperatorBase, PrimitiveInfo_Gear):
         return "PREFERENCES"
 
 
-class MakeSpring_Operator(OperatorBase, PrimitiveInfo_Spring):
+class MakeSpring_Operator(OperatorBase, Primitive_Spring):
     """Make Modern Spring"""
 
-    P = PrimitiveInfo_Spring
+    P = Primitive_Spring
     bl_idname = P.bl_idname
     bl_label = P.bl_label
 
@@ -218,10 +218,10 @@ class MakeSpring_Operator(OperatorBase, PrimitiveInfo_Spring):
         return "MOD_SCREW"
 
 
-class MakeDeformableCube_Operator(OperatorBase, PrimitiveInfo_DeformableCube):
+class MakeDeformableCube_Operator(OperatorBase, Primitive_DeformableCube):
     """Make Modern Deformable Cube"""
 
-    P = PrimitiveInfo_DeformableCube
+    P = Primitive_DeformableCube
     bl_idname = P.bl_idname
     bl_label = P.bl_label
 
@@ -231,10 +231,10 @@ class MakeDeformableCube_Operator(OperatorBase, PrimitiveInfo_DeformableCube):
         return "META_CUBE"
 
 
-class MakeCapsule_Operator(OperatorBase, PrimitiveInfo_Capsule):
+class MakeCapsule_Operator(OperatorBase, Primitive_Capsule):
     """Make Modern Capsule"""
 
-    P = PrimitiveInfo_Capsule
+    P = Primitive_Capsule
     bl_idname = P.bl_idname
     bl_label = P.bl_label
 
@@ -244,10 +244,10 @@ class MakeCapsule_Operator(OperatorBase, PrimitiveInfo_Capsule):
         return "MESH_CAPSULE"
 
 
-class MakeQuadSphere_Operator(OperatorBase, PrimitiveInfo_QuadSphere):
+class MakeQuadSphere_Operator(OperatorBase, Primitive_QuadSphere):
     """Make Modern QuadSphere"""
 
-    P = PrimitiveInfo_QuadSphere
+    P = Primitive_QuadSphere
     bl_idname = P.bl_idname
     bl_label = P.bl_label
 
