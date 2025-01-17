@@ -35,6 +35,27 @@ DeformableCube's "set origin to center" operator <br>
 <img src="./doc_images/usage_deformable_cube_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_capsule_0.jpg" alt="" width="25%" />
 
 # Changelog
+## v0.0.18
+- added UV-Coord Generation
+<img src="./doc_images/uv_menu.jpg" alt="" width="75%" />
+
+Set the materials as usual.<br>
+To specify uv coordinates, please specify the name specified in \"uv name\" in the shader attribute (default is uvmap)
+<img src="./doc_images/attribute_get.jpg" alt="" width="70%" />
+
+### UV coordinate generation type
+<img src="./doc_images/uv_generation_type.jpg" alt="" width="75%" />
+
+- Simple
+Generates uv coordinates according to a fixed rule regardless of the size of the primitive.
+<img src="./doc_images/simple_uv.jpg" alt="" width="40%" />
+
+- Evenly (Slow)
+Keep the texel density as constant as possible. As it says "slow", processing takes time.<br>
+Please be careful about the number of polygon divisions when using this option.
+<img src="./doc_images/evenly_uv.jpg" alt="" width="40%" />
+
+
 ## v0.0.17
 - added "Smooth Shading" option
 
