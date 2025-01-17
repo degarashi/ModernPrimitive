@@ -5,7 +5,7 @@ from typing import Callable, cast, Any
 from mathutils import Vector, Quaternion
 from .constants import MODERN_PRIMITIVE_PREFIX, Type
 from .aux_func import is_modern_primitive
-from .aux_node import get_interface_value, swap_interface_value, modify_interface_value
+from .aux_node import swap_interface_value, modify_interface_value
 from .version import TypeAndVersion, get_primitive_version
 from .exception import DGInvalidInput
 import math
