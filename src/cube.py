@@ -4,6 +4,7 @@ from .aux_func import is_modern_primitive_specific
 import bpy.utils
 from .aux_node import get_interface_value, set_interface_value
 from mathutils import Vector
+from .primitive_prop import get_min, get_max
 
 
 class DCube_CenterOrigin_Operator(Operator):
@@ -25,11 +26,10 @@ class DCube_CenterOrigin_Operator(Operator):
         # use no mesh data (modifier only)
 
         mod = obj.modifiers[0]
-        postfix = ("X", "Y", "Z")
         center = Vector()
         for i in range(3):
-            min_name = "Min " + postfix[i]
-            max_name = "Max " + postfix[i]
+            min_name = get_min(i).name
+            max_name = get_max(i).name
             # min = minus-value
             min_v = get_interface_value(mod, min_name)
             max_v = get_interface_value(mod, max_name)

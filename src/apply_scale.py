@@ -9,13 +9,14 @@ from .aux_node import swap_interface_value, modify_interface_value
 from .version import TypeAndVersion, get_primitive_version
 from .exception import DGInvalidInput
 import math
+from . import primitive_prop as prop
 
 
 WarnProc = Callable[[str], None]
 
 
 def _xyz_scale(obj: Object, mod: NodesModifier, max_index: int) -> None:
-    SIZE_ENT = ("Size X", "Size Y", "Size Z")
+    SIZE_ENT = (prop.SizeX.name, prop.SizeY.name, prop.SizeZ.name)
 
     for i in range(max_index):
         scale_val = abs(obj.scale[i])
@@ -83,11 +84,11 @@ def proc_cone(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
     _check_xy_same(obj.scale, warn)
 
     scale_val = _abs_average_xy(obj.scale)
-    modify_interface_value(mod, "Top Radius", lambda val: val * scale_val)
-    modify_interface_value(mod, "Bottom Radius", lambda val: val * scale_val)
+    modify_interface_value(mod, prop.TopRadius.name, lambda val: val * scale_val)
+    modify_interface_value(mod, prop.BottomRadius.name, lambda val: val * scale_val)
 
     # -- z scaling --
-    modify_interface_value(mod, "Height", lambda val: val * abs(obj.scale.z))
+    modify_interface_value(mod, prop.Height.name, lambda val: val * abs(obj.scale.z))
     if obj.scale.z < 0:
         _rotate_x180(obj)
 
@@ -101,8 +102,8 @@ def proc_torus(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
         warn("Object is not uniformly scaled")
 
     scale_val = _abs_average_vec(obj.scale)
-    modify_interface_value(mod, "Radius", lambda val: val * scale_val)
-    modify_interface_value(mod, "Ring Radius", lambda val: val * scale_val)
+    modify_interface_value(mod, prop.Radius.name, lambda val: val * scale_val)
+    modify_interface_value(mod, prop.RingRadius.name, lambda val: val * scale_val)
 
 
 def proc_cylinder(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
@@ -110,11 +111,11 @@ def proc_cylinder(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
     _check_xy_same(obj.scale, warn)
 
     scale_val = _abs_average_xy(obj.scale)
-    modify_interface_value(mod, "Radius", lambda val: val * scale_val)
+    modify_interface_value(mod, prop.Radius.name, lambda val: val * scale_val)
 
     # -- z scaling --
     scale_val = abs(obj.scale.z)
-    modify_interface_value(mod, "Height", lambda val: val * scale_val)
+    modify_interface_value(mod, prop.Height.name, lambda val: val * scale_val)
     if obj.scale.z < 0:
         _rotate_x180(obj)
 
@@ -130,7 +131,7 @@ def proc_icosphere(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
 
     scale_val = _abs_average_vec(obj.scale)
     # TODO: The variable name is hard-coded, so do something about it
-    modify_interface_value(mod, "Radius", lambda val: val * scale_val)
+    modify_interface_value(mod, prop.Radius.name, lambda val: val * scale_val)
 
 
 def proc_tube(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
@@ -138,12 +139,12 @@ def proc_tube(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
 
     # -- xy scaling --
     scale_val = _abs_average_xy(obj.scale)
-    modify_interface_value(mod, "Outer Radius", lambda val: val * scale_val)
-    modify_interface_value(mod, "Inner Radius", lambda val: val * scale_val)
+    modify_interface_value(mod, prop.OuterRadius.name, lambda val: val * scale_val)
+    modify_interface_value(mod, prop.InnerRadius.name, lambda val: val * scale_val)
 
     # -- z scaling --
     scale_val = abs(obj.scale.z)
-    modify_interface_value(mod, "Height", lambda val: val * scale_val)
+    modify_interface_value(mod, prop.Height.name, lambda val: val * scale_val)
     if obj.scale.z < 0:
         _rotate_x180(obj)
 
@@ -153,14 +154,16 @@ def proc_gear(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
 
     # -- xy scaling --
     scale_val = _abs_average_xy(obj.scale)
-    modify_interface_value(mod, "Outer Radius", lambda val: val * scale_val)
-    modify_interface_value(mod, "Inner Radius", lambda val: val * scale_val)
-    modify_interface_value(mod, "InnerCircle Radius", lambda val: val * scale_val)
-    modify_interface_value(mod, "Fillet Radius", lambda val: val * scale_val)
+    modify_interface_value(mod, prop.OuterRadius.name, lambda val: val * scale_val)
+    modify_interface_value(mod, prop.InnerRadius.name, lambda val: val * scale_val)
+    modify_interface_value(
+        mod, prop.InnerCircleRadius.name, lambda val: val * scale_val
+    )
+    modify_interface_value(mod, prop.FilletRadius.name, lambda val: val * scale_val)
 
     # -- z scaling --
     scale_val = abs(obj.scale.z)
-    modify_interface_value(mod, "Height", lambda val: val * scale_val)
+    modify_interface_value(mod, prop.Height.name, lambda val: val * scale_val)
 
 
 def proc_spring(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
@@ -170,27 +173,27 @@ def proc_spring(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
         warn("Object is not uniformly scaled")
 
     scale_val = _abs_average_vec(obj.scale)
-    modify_interface_value(mod, "Bottom Radius", lambda val: val * scale_val)
-    modify_interface_value(mod, "Top Radius", lambda val: val * scale_val)
-    modify_interface_value(mod, "Ring Radius", lambda val: val * scale_val)
-    modify_interface_value(mod, "Height", lambda val: val * scale_val)
+    modify_interface_value(mod, prop.BottomRadius.name, lambda val: val * scale_val)
+    modify_interface_value(mod, prop.TopRadius.name, lambda val: val * scale_val)
+    modify_interface_value(mod, prop.RingRadius.name, lambda val: val * scale_val)
+    modify_interface_value(mod, prop.Height.name, lambda val: val * scale_val)
 
 
 def proc_dcube(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
-    modify_interface_value(mod, "Min X", lambda val: val * abs(obj.scale.x))
-    modify_interface_value(mod, "Max X", lambda val: val * abs(obj.scale.x))
+    modify_interface_value(mod, prop.MinX.name, lambda val: val * abs(obj.scale.x))
+    modify_interface_value(mod, prop.MaxX.name, lambda val: val * abs(obj.scale.x))
     if obj.scale.x < 0:
-        swap_interface_value(mod, "Min X", "Max X")
+        swap_interface_value(mod, prop.MinX.name, prop.MaxX.name)
 
-    modify_interface_value(mod, "Min Y", lambda val: val * abs(obj.scale.y))
-    modify_interface_value(mod, "Max Y", lambda val: val * abs(obj.scale.y))
+    modify_interface_value(mod, prop.MinY.name, lambda val: val * abs(obj.scale.y))
+    modify_interface_value(mod, prop.MaxY.name, lambda val: val * abs(obj.scale.y))
     if obj.scale.y < 0:
-        swap_interface_value(mod, "Min Y", "Max Y")
+        swap_interface_value(mod, prop.MinY.name, prop.MaxY.name)
 
-    modify_interface_value(mod, "Min Z", lambda val: val * abs(obj.scale.z))
-    modify_interface_value(mod, "Max Z", lambda val: val * abs(obj.scale.z))
+    modify_interface_value(mod, prop.MinZ.name, lambda val: val * abs(obj.scale.z))
+    modify_interface_value(mod, prop.MaxZ.name, lambda val: val * abs(obj.scale.z))
     if obj.scale.z < 0:
-        swap_interface_value(mod, "Min Z", "Max Z")
+        swap_interface_value(mod, prop.MinZ.name, prop.MaxZ.name)
 
 
 def proc_capsule(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
@@ -199,11 +202,11 @@ def proc_capsule(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
 
     # -- xy scaling --
     scale_val = _abs_average_xy(obj.scale)
-    modify_interface_value(mod, "Radius", lambda val: val * scale_val)
+    modify_interface_value(mod, prop.Radius.name, lambda val: val * scale_val)
 
     # -- z scaling --
     scale_val = abs(obj.scale.z)
-    modify_interface_value(mod, "Height", lambda val: val * scale_val)
+    modify_interface_value(mod, prop.Height.name, lambda val: val * scale_val)
 
 
 def proc_quadsphere(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:

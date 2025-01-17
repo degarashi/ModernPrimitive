@@ -13,6 +13,7 @@ from .aux_func import (
 from bpy.props import BoolProperty, EnumProperty
 from .aux_node import set_interface_values
 from .constants import MODERN_PRIMITIVE_PREFIX
+from . import primitive_prop as prop
 
 
 class ConvertToCube_Operator(Operator):
@@ -67,9 +68,9 @@ class ConvertToCube_Operator(Operator):
                 cube.modifiers[0],
                 context,
                 (
-                    ("Size X", (b_max.x - b_min.x) / 2),
-                    ("Size Y", (b_max.y - b_min.y) / 2),
-                    ("Size Z", (b_max.z - b_min.z) / 2),
+                    (prop.SizeX.name, (b_max.x - b_min.x) / 2),
+                    (prop.SizeY.name, (b_max.y - b_min.y) / 2),
+                    (prop.SizeZ.name, (b_max.z - b_min.z) / 2),
                 ),
             )
             cube.location = from_obj.matrix_world @ center
@@ -78,12 +79,12 @@ class ConvertToCube_Operator(Operator):
                 cube.modifiers[0],
                 context,
                 (
-                    ("Min X", -b_min.x),
-                    ("Max X", b_max.x),
-                    ("Min Y", -b_min.y),
-                    ("Max Y", b_max.y),
-                    ("Min Z", -b_min.z),
-                    ("Max Z", b_max.z),
+                    (prop.MinX.name, -b_min.x),
+                    (prop.MaxX.name, b_max.x),
+                    (prop.MinY.name, -b_min.y),
+                    (prop.MaxY.name, b_max.y),
+                    (prop.MinZ.name, -b_min.z),
+                    (prop.MaxZ.name, b_max.z),
                 ),
             )
         cube.name = from_obj.name + "_converted"
