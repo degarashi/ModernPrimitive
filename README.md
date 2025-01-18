@@ -35,6 +35,9 @@ DeformableCube's "set origin to center" operator <br>
 <img src="./doc_images/usage_deformable_cube_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_capsule_0.jpg" alt="" width="25%" />
 
 # Changelog
+## v0.0.19
+- set the subtype of the parameter that specifies the size to "Distance"
+
 ## v0.0.18
 - added UV-Coord Generation
 <img src="./doc_images/uv_menu.jpg" alt="" width="75%" />
