@@ -1,6 +1,6 @@
 import bpy
 from bpy.types import Context, Menu, bpy_struct
-from . import operator as dg_ops
+from . import make_primitive as dg_ops
 from .constants import MODERN_PRIMITIVE_PREFIX
 
 

@@ -4,7 +4,7 @@ from .modifier_select import FocusModifier_Operator
 from .convert import ConvertToCube_Operator
 from .cube import DCube_CenterOrigin_Operator
 from .constants import MODERN_PRIMITIVE_CATEGORY
-from .operator import OPS, OperatorBase
+from .make_primitive import OPS, OperatorBase
 from .switch_wireframe import SwitchWireframe
 from .aux_func import get_target_object
 from .wireframe import ENTRY_NAME
