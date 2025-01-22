@@ -19,9 +19,7 @@ class VIEW3D_MT_mesh_modern_prim(Menu):
         layout.operator_context = "INVOKE_REGION_WIN"
 
         for ops in dg_ops.OPS:
-            layout.operator(
-                ops.bl_idname, text=str(ops.menu_text), icon=str(ops.menu_icon)
-            )  # pyright: ignore[reportAttributeAccessIssue]
+            dg_ops.make_operator_to_layout(context, layout, ops)
 
 
 def menu_func(self, context: Context) -> None:
