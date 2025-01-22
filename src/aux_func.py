@@ -8,7 +8,12 @@ from bpy.types import (
     NodesModifier,
     Modifier,
 )
-from .exception import DGFileNotFound, DGObjectNotFound, DGInvalidVersionNumber
+from .exception import (
+    DGFileNotFound,
+    DGObjectNotFound,
+    DGInvalidVersionNumber,
+    DGUnknownType,
+)
 from .constants import (
     Type,
     ASSET_DIR_NAME,
@@ -149,6 +154,13 @@ def node_group_name_prefix(type: Type) -> str:
 
 def node_group_name(type: Type, version: VersionInt) -> str:
     return node_group_name_prefix(type) + str(version)
+
+
+def type_from_modifier_name(name: str) -> Type:
+    if name.startswith(MODERN_PRIMITIVE_TAG):
+        name_s = name[len(MODERN_PRIMITIVE_TAG) :]
+        return Type[name_s]
+    raise DGUnknownType()
 
 
 def modifier_name(type: Type) -> str:
