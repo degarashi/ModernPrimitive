@@ -54,9 +54,7 @@ class OperatorBase(Operator):
 
     def handle_primitive(self, context: Context) -> set[str]:
         try:
-            obj = load_primitive_from_asset(
-                self.type, context, self.set_cursor_rot
-            )
+            obj = load_primitive_from_asset(self.type, context, self.set_cursor_rot)
         except (DGFileNotFound, DGObjectNotFound) as e:
             self.report({"ERROR"}, str(e))
             return {"CANCELLED"}
@@ -76,9 +74,7 @@ class OperatorBase(Operator):
         # Apply smooth shading
         set_interface_value(mod, ("Smooth", self.smooth))
         # Apply smooth shading angle
-        set_interface_value(
-            mod, ("Smooth Angle", math.radians(self.smooth_angle_deg))
-        )
+        set_interface_value(mod, ("Smooth Angle", math.radians(self.smooth_angle_deg)))
         # Since the node group value has been changed, update it here
         mod.node_group.interface_update(context)
 
