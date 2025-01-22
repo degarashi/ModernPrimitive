@@ -1,6 +1,11 @@
-from bpy.types import bpy_struct, Context, Operator, SpaceView3D
+from bpy.types import bpy_struct, Context, Operator, SpaceView3D, UILayout
 from bpy.props import BoolProperty, FloatProperty
-from .aux_func import load_primitive_from_asset, register_class, unregister_class
+from .aux_func import (
+    load_primitive_from_asset,
+    register_class,
+    unregister_class,
+    get_addon_preferences,
+)
 from .exception import DGFileNotFound, DGObjectNotFound
 from .primitive import (
     Primitive_Cube,
@@ -278,3 +283,24 @@ def register() -> None:
 
 def unregister() -> None:
     unregister_class(OPS)
+
+
+def make_operator_to_layout(
+    context: Context, layout: UILayout, op: OperatorBase
+) -> None:
+    pref = get_addon_preferences(context)
+    p_app_size = pref.make_appropriate_size
+    p_cur_rot = pref.make_cursors_rot
+    p_smooth = pref.make_smooth_shading
+
+    p = layout.operator(
+        op.bl_idname,
+        text=op.menu_text,
+        icon=op.menu_icon,
+    )
+    # Read and set default values from preferences
+    # Since each default value is false,
+    #   OR boolean it with the value of preferences
+    p.appropriate_size |= p_app_size
+    p.set_cursor_rot |= p_cur_rot
+    p.smooth |= p_smooth
