@@ -7,6 +7,7 @@ from bpy.types import (
     NodeGroup,
     NodesModifier,
     Modifier,
+    AddonPreferences
 )
 from .exception import (
     DGFileNotFound,
@@ -20,6 +21,7 @@ from .constants import (
     MODERN_PRIMITIVE_TAG,
     MODERN_PRIMITIVE_PREFIX,
     get_addon_dir,
+    get_addon_name,
 )
 from mathutils import Vector
 from collections.abc import Iterable
@@ -187,3 +189,6 @@ def get_target_object(context: Context) -> Object | None:
         if obj in sel:
             return obj
     return None
+
+def get_addon_preferences(context: Context) -> AddonPreferences:
+    return context.preferences.addons[get_addon_name()].preferences
