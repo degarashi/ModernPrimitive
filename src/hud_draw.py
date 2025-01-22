@@ -2,7 +2,7 @@ import bpy
 import blf
 from typing import Any, cast, Iterable
 from mathutils import Vector, Matrix, Color
-from bpy.types import Operator, Context, Event, SpaceView3D, Object, Modifier
+from bpy.types import Operator, Context, SpaceView3D, Object, Modifier, Scene
 from bpy.utils import register_class, unregister_class
 from .aux_func import is_modern_primitive, type_from_modifier_name
 from .constants import Type, MODERN_PRIMITIVE_PREFIX
@@ -10,6 +10,7 @@ from .aux_node import get_interface_values
 from .exception import DGUnknownType
 from . import primitive_prop as P
 from bpy.props import BoolProperty
+from bpy.app.handlers import persistent
 
 
 def make_color256(r: int, g: int, b: int) -> Color:
@@ -826,10 +827,24 @@ class MPR_Hud(Operator):
         return {"FINISHED"}
 
 
+handler_deps_update = bpy.app.handlers.depsgraph_update_post
+
+
+@persistent
+def handle_update(scene: Scene) -> None:
+    if handle_update in handler_deps_update:
+        handler_deps_update.remove(handle_update)
+    # Enabled by default for now
+    bpy.ops.ui.mpr_show_hud(show=True)
+
+
 def register() -> None:
     register_class(MPR_Hud)
+    handler_deps_update.append(handle_update)
 
 
 def unregister() -> None:
     MPR_Hud.cleanup()
     unregister_class(MPR_Hud)
+    if handle_update in handler_deps_update:
+        handler_deps_update.remove(handle_update)
