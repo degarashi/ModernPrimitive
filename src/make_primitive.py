@@ -1,6 +1,6 @@
 from bpy.types import bpy_struct, Context, Operator
 from bpy.props import BoolProperty, FloatProperty
-from . import aux_func
+from .aux_func import load_primitive_from_asset, register_class, unregister_class
 from .exception import DGFileNotFound, DGObjectNotFound
 from .primitive import (
     Primitive_Cube,
@@ -54,7 +54,7 @@ class OperatorBase(Operator):
 
     def handle_primitive(self, context: Context) -> set[str]:
         try:
-            obj = aux_func.load_primitive_from_asset(
+            obj = load_primitive_from_asset(
                 self.type, context, self.set_cursor_rot
             )
         except (DGFileNotFound, DGObjectNotFound) as e:
@@ -275,8 +275,8 @@ OPS: list[type[bpy_struct]] = [
 
 
 def register() -> None:
-    aux_func.register_class(OPS)
+    register_class(OPS)
 
 
 def unregister() -> None:
-    aux_func.unregister_class(OPS)
+    unregister_class(OPS)
