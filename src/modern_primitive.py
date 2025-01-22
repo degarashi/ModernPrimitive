@@ -1,4 +1,5 @@
 import bpy
+from . import aux_func
 from bpy.types import Context, Menu, bpy_struct
 from . import make_primitive as dg_ops
 from .constants import MODERN_PRIMITIVE_PREFIX
@@ -29,12 +30,21 @@ def menu_func(self, context: Context) -> None:
 
 
 MENU_TARGET = bpy.types.VIEW3D_MT_mesh_add
-
 MENUS: list[type[bpy_struct]] = [
     VIEW3D_MT_mesh_modern_prim,
 ]
 
-from . import aux_func
+
+def gizmo_props(self, context: Context):
+    layout = self.layout
+    layout.separator()
+    layout.label(text="Modern Primitive")
+    layout.prop(context.window_manager, "show_gizmo_values")
+
+
+def update_show_gizmo_values(self, context: Context) -> None:
+    should_show = context.window_manager.show_gizmo_values
+    bpy.ops.ui.mpr_show_hud(show=should_show)
 
 
 def register() -> None:
@@ -42,8 +52,16 @@ def register() -> None:
     dg_ops.register()
     MENU_TARGET.prepend(menu_func)
 
+    bpy.types.WindowManager.show_gizmo_values = bpy.props.BoolProperty(
+        name="Show Gizmo Values", default=True, update=update_show_gizmo_values
+    )
+    bpy.types.VIEW3D_PT_gizmo_display.append(gizmo_props)
+
 
 def unregister() -> None:
     aux_func.unregister_class(MENUS)
     dg_ops.unregister()
     MENU_TARGET.remove(menu_func)
+
+    bpy.types.VIEW3D_PT_gizmo_display.remove(gizmo_props)
+    del bpy.types.WindowManager.show_gizmo_values
