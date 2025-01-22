@@ -6,7 +6,7 @@ from .cube import DCube_CenterOrigin_Operator
 from .constants import MODERN_PRIMITIVE_CATEGORY
 from .make_primitive import OPS, OperatorBase
 from .switch_wireframe import SwitchWireframe
-from .aux_func import get_target_object
+from .aux_func import get_target_object, get_addon_preferences
 from .wireframe import ENTRY_NAME
 from .apply_scale import ApplyScale_Operator
 
@@ -23,13 +23,24 @@ class MPR_PT_Create(Panel):
         layout = self.layout
         grid = layout.grid_flow(columns=2, row_major=True)
 
+        pref = get_addon_preferences(context)
+        p_app_size = pref.make_appropriate_size
+        p_cur_rot = pref.make_cursors_rot
+        p_smooth = pref.make_smooth_shading
+
         def add_op(op: OperatorBase) -> None:
             nonlocal grid
-            grid.operator(
+            p = grid.operator(
                 op.bl_idname,
                 text=op.menu_text,
                 icon=op.menu_icon,
             )
+            # Read and set default values from preferences
+            # Since each default value is false,
+            #   OR boolean it with the value of preferences
+            p.appropriate_size |= p_app_size
+            p.set_cursor_rot |= p_cur_rot
+            p.smooth |= p_smooth
 
         for op in OPS:
             add_op(op)
