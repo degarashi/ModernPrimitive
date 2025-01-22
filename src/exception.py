@@ -44,3 +44,6 @@ class DGNodeGroupNotFound(DGException):
 
 class DGInvalidInput(DGException):
     pass
+
+class DGUnknownType(DGException):
+    pass
