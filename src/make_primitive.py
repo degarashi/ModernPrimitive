@@ -1,4 +1,4 @@
-from bpy.types import bpy_struct, Context, Operator
+from bpy.types import bpy_struct, Context, Operator, SpaceView3D
 from bpy.props import BoolProperty, FloatProperty
 from .aux_func import load_primitive_from_asset, register_class, unregister_class
 from .exception import DGFileNotFound, DGObjectNotFound
@@ -47,6 +47,8 @@ class OperatorBase(Operator):
     @classmethod
     def poll(cls, context: Context | None) -> bool:
         if context is None:
+            return False
+        if type(context.space_data) is not SpaceView3D:
             return False
         if context.space_data.type != "VIEW_3D":
             return False
