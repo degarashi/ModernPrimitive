@@ -25,6 +25,7 @@ from .primitive import (
 from mathutils import Vector
 from .aux_node import set_interface_value
 import math
+import bpy.ops
 
 
 def get_view3d_pos(context: Context) -> Vector:
@@ -84,6 +85,9 @@ class OperatorBase(Operator):
         set_interface_value(mod, ("Smooth Angle", math.radians(self.smooth_angle_deg)))
         # Since the node group value has been changed, update it here
         mod.node_group.interface_update(context)
+
+        if self.appropriate_size:
+            bpy.ops.object.mpr_apply_scale(strict=True)
 
         return {"FINISHED"}
 
