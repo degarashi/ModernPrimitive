@@ -1,22 +1,28 @@
-from enum import Enum
+from enum import Enum, auto
 from typing import NamedTuple
+
+
+class PropType(Enum):
+    # related to size
+    Size = auto()
+    # related to number of divisions
+    Division = auto()
+
+    # around xy axis
+    Width = auto()
+    # around z-axis
+    Height = auto()
+    # related to smooth display
+    Smooth = auto()
+
+
+PT = PropType
 
 
 class Prop(NamedTuple):
     name: str
     type: type
-
-
-SizeX = Prop("Size X", float)
-SizeY = Prop("Size Y", float)
-SizeZ = Prop("Size Z", float)
-
-MinX = Prop("Min X", float)
-MinY = Prop("Min Y", float)
-MinZ = Prop("Min Z", float)
-MaxX = Prop("Max X", float)
-MaxY = Prop("Max Y", float)
-MaxZ = Prop("Max Z", float)
+    prop_type: set[PT]
 
 
 def get_min(index: int) -> Prop:
@@ -27,42 +33,54 @@ def get_max(index: int) -> Prop:
     return (MaxX, MaxY, MaxZ)[index]
 
 
-Height = Prop("Height", float)
+SizeX = Prop("Size X", float, {PT.Size, PT.Width})
+SizeY = Prop("Size Y", float, {PT.Size, PT.Width})
+SizeZ = Prop("Size Z", float, {PT.Size, PT.Height})
 
-Radius = Prop("Radius", float)
-TopRadius = Prop("Top Radius", float)
-BottomRadius = Prop("Bottom Radius", float)
-RingRadius = Prop("Ring Radius", float)
-OuterRadius = Prop("Outer Radius", float)
-InnerRadius = Prop("Inner Radius", float)
+MinX = Prop("Min X", float, {PT.Size, PT.Width})
+MinY = Prop("Min Y", float, {PT.Size, PT.Width})
+MinZ = Prop("Min Z", float, {PT.Size, PT.Height})
+MaxX = Prop("Max X", float, {PT.Size, PT.Width})
+MaxY = Prop("Max Y", float, {PT.Size, PT.Width})
+MaxZ = Prop("Max Z", float, {PT.Size, PT.Height})
 
-DivisionX = Prop("Division X", float)
-DivisionY = Prop("Division Y", float)
-DivisionZ = Prop("Division Z", float)
-DivisionCircle = Prop("Div Circle", int)
-DivisionSide = Prop("Div Side", int)
-DivisionFill = Prop("Div Fill", int)
-DivisionRing = Prop("Div Ring", int)
-DivisionCap = Prop("Div Cap", int)
-GlobalDivision = Prop("Global Division", float)
 
-Fill = Prop("Fill", bool)
-Centered = Prop("Centered", bool)
+Height = Prop("Height", float, {PT.Size, PT.Height})
 
-Smooth = Prop("Smooth", bool)
-SmoothAngle = Prop("Smooth Angle", float)
-Subdivision = Prop("Subdivision", int)
+Radius = Prop("Radius", float, {PT.Size})
+TopRadius = Prop("Top Radius", float, {PT.Size, PT.Width})
+BottomRadius = Prop("Bottom Radius", float, {PT.Size, PT.Width})
+RingRadius = Prop("Ring Radius", float, {PT.Size})
+OuterRadius = Prop("Outer Radius", float, {PT.Size})
+InnerRadius = Prop("Inner Radius", float, {PT.Size})
 
-UVType = Prop("UV Type", Enum)
-UVName = Prop("UV Name", str)
+DivisionX = Prop("Division X", float, {PT.Division, PT.Width})
+DivisionY = Prop("Division Y", float, {PT.Division, PT.Width})
+DivisionZ = Prop("Division Z", float, {PT.Division, PT.Height})
+DivisionCircle = Prop("Div Circle", int, {PT.Division, PT.Width})
+DivisionSide = Prop("Div Side", int, {PT.Division, PT.Height})
+DivisionFill = Prop("Div Fill", int, {PT.Division})
+DivisionRing = Prop("Div Ring", int, {PT.Division})
+DivisionCap = Prop("Div Cap", int, {PT.Division})
+GlobalDivision = Prop("Global Division", float, {PT.Division})
 
-NumBlades = Prop("Num Blades", int)
-Twist = Prop("Twist", float)
+Fill = Prop("Fill", bool, {})
+Centered = Prop("Centered", bool, {})
 
-FilletCount = Prop("Fillet Count", int)
-FilletRadius = Prop("Fillet Radius", float)
+Smooth = Prop("Smooth", bool, {PT.Smooth})
+SmoothAngle = Prop("Smooth Angle", float, {PT.Smooth})
+Subdivision = Prop("Subdivision", int, {PT.Division})
 
-InnerCircleRadius = Prop("InnerCircle Radius", float)
-InnerCircleDivision = Prop("InnerCircle Division", int)
+UVType = Prop("UV Type", Enum, {})
+UVName = Prop("UV Name", str, {})
 
-Rotations = Prop("Rotations", float)
+NumBlades = Prop("Num Blades", int, {PT.Division})
+Twist = Prop("Twist", float, {})
+
+FilletCount = Prop("Fillet Count", int, {})
+FilletRadius = Prop("Fillet Radius", float, {})
+
+InnerCircleRadius = Prop("InnerCircle Radius", float, {PT.Size})
+InnerCircleDivision = Prop("InnerCircle Division", int, {PT.Division})
+
+Rotations = Prop("Rotations", float, {})
