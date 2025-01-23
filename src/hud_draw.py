@@ -10,7 +10,6 @@ from .aux_node import get_interface_values
 from .exception import DGUnknownType
 from . import primitive_prop as P
 from bpy.props import BoolProperty
-from bpy.app.handlers import persistent
 
 
 def make_color256(r: int, g: int, b: int) -> Color:
@@ -827,24 +826,18 @@ class MPR_Hud(Operator):
         return {"FINISHED"}
 
 
-handler_deps_update = bpy.app.handlers.depsgraph_update_post
-
-
-@persistent
-def handle_update(scene: Scene) -> None:
-    if handle_update in handler_deps_update:
-        handler_deps_update.remove(handle_update)
+def init_gizmo_value_show() -> None:
     # Enabled by default for now
     bpy.ops.ui.mpr_show_hud(show=True)
 
 
 def register() -> None:
     register_class(MPR_Hud)
-    handler_deps_update.append(handle_update)
+    # This means not calling the operator now,
+    # but after initialization is complete, but there may be a better way.
+    bpy.app.timers.register(init_gizmo_value_show, first_interval=0)
 
 
 def unregister() -> None:
     MPR_Hud.cleanup()
     unregister_class(MPR_Hud)
-    if handle_update in handler_deps_update:
-        handler_deps_update.remove(handle_update)
