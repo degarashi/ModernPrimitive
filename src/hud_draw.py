@@ -14,6 +14,7 @@ from .aux_node import get_interface_values
 from .exception import DGUnknownType
 from . import primitive_prop as P
 from bpy.props import BoolProperty
+from . import primitive as PR
 
 
 def make_color256(r: int, g: int, b: int) -> Color:
@@ -198,22 +199,14 @@ def make_drawer(blf: Any, context: Context, m_world: Matrix) -> Drawer:
 
 
 def proc_cube(mod: Modifier, d: Drawer) -> None:
-    input = (
-        P.SizeX.name,
-        P.SizeY.name,
-        P.SizeZ.name,
-        P.DivisionX.name,
-        P.DivisionY.name,
-        P.DivisionZ.name,
-        P.GlobalDivision.name,
-    )
-    out = get_interface_values(mod, input)
+    out = get_interface_values(mod, PR.Primitive_Cube.get_param_names())
     size_x = out[P.SizeX.name]
     size_y = out[P.SizeY.name]
     size_z = out[P.SizeZ.name]
     div_x = out[P.DivisionX.name]
     div_y = out[P.DivisionY.name]
     div_z = out[P.DivisionZ.name]
+    div_g = out[P.GlobalDivision.name]
 
     d.draw_text_at_2(
         d.color_x,
@@ -239,20 +232,12 @@ def proc_cube(mod: Modifier, d: Drawer) -> None:
     d.draw_text_at(
         d.color_secondary,
         Vector((-size_x, -size_y, size_z)),
-        f"{out[P.GlobalDivision.name]:.2f}",
+        f"{div_g:.2f}",
     )
 
 
 def proc_cone(mod: Modifier, d: Drawer) -> None:
-    input = (
-        P.DivisionSide.name,
-        P.DivisionFill.name,
-        P.DivisionCircle.name,
-        P.TopRadius.name,
-        P.BottomRadius.name,
-        P.Height.name,
-    )
-    out = get_interface_values(mod, input)
+    out = get_interface_values(mod, PR.Primitive_Cone.get_param_names())
     div_side = out[P.DivisionSide.name]
     div_fill = out[P.DivisionFill.name]
     div_circle = out[P.DivisionCircle.name]
@@ -289,15 +274,7 @@ def proc_cone(mod: Modifier, d: Drawer) -> None:
 
 
 def proc_cylinder(mod: Modifier, d: Drawer) -> None:
-    input = (
-        P.Radius.name,
-        P.Height.name,
-        P.DivisionCircle.name,
-        P.DivisionSide.name,
-        P.DivisionFill.name,
-        P.Centered.name,
-    )
-    out = get_interface_values(mod, input)
+    out = get_interface_values(mod, PR.Primitive_Cylinder.get_param_names())
     radius = out[P.Radius.name]
     height = out[P.Height.name]
     div_circle = out[P.DivisionCircle.name]
@@ -335,14 +312,7 @@ def proc_cylinder(mod: Modifier, d: Drawer) -> None:
 
 
 def proc_grid(mod: Modifier, d: Drawer) -> None:
-    input = (
-        P.SizeX.name,
-        P.SizeY.name,
-        P.DivisionX.name,
-        P.DivisionY.name,
-        P.GlobalDivision.name,
-    )
-    out = get_interface_values(mod, input)
+    out = get_interface_values(mod, PR.Primitive_Grid.get_param_names())
     size_x = out[P.SizeX.name]
     size_y = out[P.SizeY.name]
     div_x = out[P.DivisionX.name]
@@ -366,11 +336,7 @@ def proc_grid(mod: Modifier, d: Drawer) -> None:
 
 
 def proc_icosphere(mod: Modifier, d: Drawer) -> None:
-    input = (
-        P.Radius.name,
-        P.Subdivision.name,
-    )
-    out = get_interface_values(mod, input)
+    out = get_interface_values(mod, PR.Primitive_ICOSphere.get_param_names())
     radius = out[P.Radius.name]
     subd = out[P.Subdivision.name]
     d.draw_text_at_2(
@@ -390,13 +356,7 @@ def proc_icosphere(mod: Modifier, d: Drawer) -> None:
 
 
 def proc_torus(mod: Modifier, d: Drawer) -> None:
-    input = (
-        P.Radius.name,
-        P.RingRadius.name,
-        P.DivisionRing.name,
-        P.DivisionCircle.name,
-    )
-    out = get_interface_values(mod, input)
+    out = get_interface_values(mod, PR.Primitive_Torus.get_param_names())
     radius = out[P.Radius.name]
     ring_radius = out[P.RingRadius.name]
     div_ring = out[P.DivisionRing.name]
@@ -420,8 +380,7 @@ def proc_torus(mod: Modifier, d: Drawer) -> None:
 
 
 def proc_uvsphere(mod: Modifier, d: Drawer) -> None:
-    input = (P.Radius.name, P.DivisionRing.name, P.DivisionCircle.name)
-    out = get_interface_values(mod, input)
+    out = get_interface_values(mod, PR.Primitive_UVSphere.get_param_names())
     radius = out[P.Radius.name]
     div_ring = out[P.DivisionRing.name]
     div_circle = out[P.DivisionCircle.name]
@@ -437,15 +396,7 @@ def proc_uvsphere(mod: Modifier, d: Drawer) -> None:
 
 
 def proc_tube(mod: Modifier, d: Drawer) -> None:
-    input = (
-        P.DivisionCircle.name,
-        P.Height.name,
-        P.DivisionSide.name,
-        P.OuterRadius.name,
-        P.InnerRadius.name,
-        P.Centered.name,
-    )
-    out = get_interface_values(mod, input)
+    out = get_interface_values(mod, PR.Primitive_Tube.get_param_names())
     div_circle = out[P.DivisionCircle.name]
     height = out[P.Height.name]
     div_side = out[P.DivisionSide.name]
@@ -482,18 +433,7 @@ def proc_tube(mod: Modifier, d: Drawer) -> None:
 
 
 def proc_gear(mod: Modifier, d: Drawer) -> None:
-    input = (
-        P.NumBlades.name,
-        P.InnerRadius.name,
-        P.OuterRadius.name,
-        P.Twist.name,
-        P.InnerCircleDivision.name,
-        P.InnerCircleRadius.name,
-        P.FilletCount.name,
-        P.FilletRadius.name,
-        P.Height.name,
-    )
-    out = get_interface_values(mod, input)
+    out = get_interface_values(mod, PR.Primitive_Gear.get_param_names())
     num_blades = out[P.NumBlades.name]
     inner_radius = out[P.InnerRadius.name]
     outer_radius = out[P.OuterRadius.name]
@@ -555,16 +495,7 @@ def proc_gear(mod: Modifier, d: Drawer) -> None:
 
 
 def proc_spring(mod: Modifier, d: Drawer) -> None:
-    input = (
-        P.DivisionCircle.name,
-        P.Rotations.name,
-        P.BottomRadius.name,
-        P.TopRadius.name,
-        P.Height.name,
-        P.DivisionRing.name,
-        P.RingRadius.name,
-    )
-    out = get_interface_values(mod, input)
+    out = get_interface_values(mod, PR.Primitive_Spring.get_param_names())
     div_circle = out[P.DivisionCircle.name]
     rotations = out[P.Rotations.name]
     bottom_radius = out[P.BottomRadius.name]
@@ -607,15 +538,7 @@ def proc_spring(mod: Modifier, d: Drawer) -> None:
 
 
 def proc_dcube(mod: Modifier, d: Drawer) -> None:
-    input = (
-        P.MinX.name,
-        P.MaxX.name,
-        P.MinY.name,
-        P.MaxY.name,
-        P.MinZ.name,
-        P.MaxZ.name,
-    )
-    out = get_interface_values(mod, input)
+    out = get_interface_values(mod, PR.Primitive_DeformableCube.get_param_names())
     min_x = out[P.MinX.name]
     max_x = out[P.MaxX.name]
     min_y = out[P.MinY.name]
@@ -672,14 +595,7 @@ def proc_dcube(mod: Modifier, d: Drawer) -> None:
 
 
 def proc_capsule(mod: Modifier, d: Drawer) -> None:
-    input = (
-        P.DivisionCircle.name,
-        P.DivisionCap.name,
-        P.DivisionSide.name,
-        P.Height.name,
-        P.Radius.name,
-    )
-    out = get_interface_values(mod, input)
+    out = get_interface_values(mod, PR.Primitive_Capsule.get_param_names())
     div_circle = out[P.DivisionCircle.name]
     div_cap = out[P.DivisionCap.name]
     div_side = out[P.DivisionSide.name]
@@ -714,8 +630,7 @@ def proc_capsule(mod: Modifier, d: Drawer) -> None:
 
 
 def proc_quadsphere(mod: Modifier, d: Drawer) -> None:
-    input = (P.Subdivision.name, P.Radius.name)
-    out = get_interface_values(mod, input)
+    out = get_interface_values(mod, PR.Primitive_QuadSphere.get_param_names())
     subd = out[P.Subdivision.name]
     radius = out[P.Radius.name]
 
