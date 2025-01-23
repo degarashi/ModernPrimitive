@@ -47,3 +47,6 @@ class DGInvalidInput(DGException):
 
 class DGUnknownType(DGException):
     pass
+
+class DGPropertyNotFound(DGException):
+    pass
