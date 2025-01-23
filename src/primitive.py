@@ -188,3 +188,20 @@ class Primitive_Capsule(Primitive):
 class Primitive_QuadSphere(Primitive):
     type = Type.QuadSphere
     param: tuple[P.Prop] = (P.Subdivision, P.Radius)
+
+
+TYPE_TO_PRIMITIVE: dict[Type, Primitive] = {
+    Type.Cube: Primitive_Cube,
+    Type.Cone: Primitive_Cone,
+    Type.Grid: Primitive_Grid,
+    Type.Torus: Primitive_Torus,
+    Type.Cylinder: Primitive_Cylinder,
+    Type.UVSphere: Primitive_UVSphere,
+    Type.ICOSphere: Primitive_ICOSphere,
+    Type.Tube: Primitive_Tube,
+    Type.Gear: Primitive_Gear,
+    Type.Spring: Primitive_Spring,
+    Type.DeformableCube: Primitive_DeformableCube,
+    Type.Capsule: Primitive_Capsule,
+    Type.QuadSphere: Primitive_QuadSphere,
+}
