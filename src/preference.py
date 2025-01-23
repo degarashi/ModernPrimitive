@@ -29,7 +29,9 @@ class Preference(AddonPreferences):
         box.prop(self, "make_appropriate_size")
         box.prop(self, "make_smooth_shading")
 
-        layout.prop(self, "show_gizmo_value")
+        box = layout.box()
+        box.label(text="HUD")
+        box.prop(self, "show_gizmo_value", text="Show Gizmo Value (Initial state)")
 
 
 def register() -> None:
