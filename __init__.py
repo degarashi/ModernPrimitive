@@ -13,6 +13,7 @@ if "bpy" in locals():
     importlib.reload(apply_scale) # noqa: F821
     importlib.reload(preference) # noqa: F821
     importlib.reload(hud_draw) # noqa: F821
+    importlib.reload(restore_default)  # noqa: F821
 else:
     from .src import modern_primitive
     from .src import modifier_select
@@ -26,6 +27,7 @@ else:
     from .src import apply_scale
     from .src import preference
     from .src import hud_draw
+    from .src import restore_default
 
 import bpy  # noqa: F401
 
@@ -44,6 +46,7 @@ def register():
     apply_scale.register()
     preference.register()
     hud_draw.register()
+    restore_default.register()
 
 
 def unregister():
@@ -60,3 +63,4 @@ def unregister():
     apply_scale.unregister()
     preference.unregister()
     hud_draw.unregister()
+    restore_default.unregister()
