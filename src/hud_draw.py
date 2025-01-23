@@ -2,7 +2,7 @@ import bpy
 import blf
 from typing import Any, cast, Iterable
 from mathutils import Vector, Matrix, Color
-from bpy.types import Operator, Context, SpaceView3D, Object, Modifier, Scene
+from bpy.types import Operator, Context, SpaceView3D, Object, Modifier
 from bpy.utils import register_class, unregister_class
 from .aux_func import (
     is_modern_primitive,
