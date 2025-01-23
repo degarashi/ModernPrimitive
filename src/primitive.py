@@ -1,6 +1,7 @@
 from .constants import Type, MODERN_PRIMITIVE_PREFIX
 from .aux_func import node_group_name
 from . import primitive_prop as P
+from typing import Callable
 
 
 class Primitive:
@@ -40,6 +41,14 @@ class Primitive:
         for p in cls.param:
             ret.add(p.name)
         return ret
+
+    @classmethod
+    def get_param_if(cls, chk: Callable[[P.Prop], bool]) -> tuple[P.Prop]:
+        return tuple(p for p in cls.param if chk(p))
+
+    @classmethod
+    def get_params(cls) -> tuple[P.Prop]:
+        return cls.param
 
 
 class Primitive_Cube(Primitive):
