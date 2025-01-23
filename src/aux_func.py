@@ -190,5 +190,16 @@ def get_target_object(context: Context) -> Object | None:
             return obj
     return None
 
+
+# Return the selected modern primitive
+def get_selected_primitive(context: Context) -> list[Object]:
+    ret: list[Object] = []
+    sel = context.selected_objects
+    for obj in sel:
+        if is_modern_primitive(obj):
+            ret.append(obj)
+    return ret
+
+
 def get_addon_preferences(context: Context) -> AddonPreferences:
     return context.preferences.addons[get_addon_name()].preferences
