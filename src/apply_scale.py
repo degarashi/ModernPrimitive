@@ -4,7 +4,7 @@ from bpy.types import Operator, Context, Object, NodesModifier
 from typing import Callable, cast, Any
 from mathutils import Vector, Quaternion
 from .constants import MODERN_PRIMITIVE_PREFIX, Type
-from .aux_func import is_modern_primitive
+from .aux_func import get_selected_primitive
 from .aux_node import swap_interface_value, modify_interface_value
 from .version import TypeAndVersion, get_primitive_version
 from .exception import DGInvalidInput
@@ -231,15 +231,6 @@ PROC_MAP: dict[Type, apply_proc] = {
 }
 
 
-def _get_selected_primitive(context: Context) -> list[Object]:
-    ret: list[Object] = []
-    sel = context.selected_objects
-    for obj in sel:
-        if is_modern_primitive(obj):
-            ret.append(obj)
-    return ret
-
-
 class ApplyScale_Operator(Operator):
     """Apply scaling to ModernPrimitive Object"""
 
@@ -251,7 +242,7 @@ class ApplyScale_Operator(Operator):
 
     @classmethod
     def poll(cls, context: Context | None) -> bool:
-        return len(_get_selected_primitive(context)) > 0
+        return len(get_selected_primitive(context)) > 0
 
     def warn(self, msg: str) -> None:
         self.report({"WARNING"}, msg)
@@ -261,7 +252,7 @@ class ApplyScale_Operator(Operator):
 
     def execute(self, context: Context | None) -> set[str]:
         warn = self.warn if not self.strict else self.warn_as_error
-        objs = _get_selected_primitive(context)
+        objs = get_selected_primitive(context)
         for obj in objs:
             typ_ver = TypeAndVersion.get_type_and_version(
                 obj.modifiers[0].node_group.name
