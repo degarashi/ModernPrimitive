@@ -4,7 +4,11 @@ from typing import Any, cast, Iterable
 from mathutils import Vector, Matrix, Color
 from bpy.types import Operator, Context, SpaceView3D, Object, Modifier, Scene
 from bpy.utils import register_class, unregister_class
-from .aux_func import is_modern_primitive, type_from_modifier_name
+from .aux_func import (
+    is_modern_primitive,
+    type_from_modifier_name,
+    get_addon_preferences,
+)
 from .constants import Type, MODERN_PRIMITIVE_PREFIX
 from .aux_node import get_interface_values
 from .exception import DGUnknownType
@@ -826,12 +830,32 @@ class MPR_Hud(Operator):
         return {"FINISHED"}
 
 
+# Display status of gizmo values from preferences
+show_value_flag = None
+
+
+# Set the gizmo value only once for the first time
 def init_gizmo_value_show() -> None:
     # Enabled by default for now
     bpy.ops.ui.mpr_show_hud(show=True)
 
+    # Do nothing if the flag value is not set due to some mistake
+    if show_value_flag is None:
+        pass
+    else:
+        # Set gizmo value display according to preferences value
+        print("INIT: " + str(show_value_flag))
+        bpy.ops.ui.mpr_show_hud(show=show_value_flag)
+
+        # Set the flag value to the window manager property value
+        bpy.context.window_manager.show_gizmo_values = show_value_flag
+
 
 def register() -> None:
+    # show-gizmo flag from preferences
+    global show_value_flag
+    show_value_flag = get_addon_preferences(bpy.context).show_gizmo_value
+
     register_class(MPR_Hud)
     # This means not calling the operator now,
     # but after initialization is complete, but there may be a better way.

@@ -17,6 +17,10 @@ class Preference(AddonPreferences):
     make_smooth_shading: BoolProperty(name="Smooth Shading", default=False)
     # ------
 
+    # --- Gizmo Option ---
+    show_gizmo_value: BoolProperty(name="Show Gizmo Value", default=True)
+    # ------
+
     def draw(self, ctx: Context) -> None:
         layout = self.layout
         box = layout.box()
@@ -24,6 +28,8 @@ class Preference(AddonPreferences):
         box.prop(self, "make_cursors_rot")
         box.prop(self, "make_appropriate_size")
         box.prop(self, "make_smooth_shading")
+
+        layout.prop(self, "show_gizmo_value")
 
 
 def register() -> None:
