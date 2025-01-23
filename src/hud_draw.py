@@ -844,7 +844,6 @@ def init_gizmo_value_show() -> None:
         pass
     else:
         # Set gizmo value display according to preferences value
-        print("INIT: " + str(show_value_flag))
         bpy.ops.ui.mpr_show_hud(show=show_value_flag)
 
         # Set the flag value to the window manager property value
