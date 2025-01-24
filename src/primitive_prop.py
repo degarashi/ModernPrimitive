@@ -29,6 +29,9 @@ class Prop(NamedTuple):
         # This is done on the premise that there is no Prop of the same name
         return hash(f"{self.name}")
 
+    def has_tag(self, pt: PropType) -> bool:
+        return pt in self.prop_type
+
 
 def get_min(index: int) -> Prop:
     return (MinX, MinY, MinZ)[index]
