@@ -5,15 +5,15 @@ from bpy.types import (
     Context,
 )
 from typing import cast
-from .aux_func import (
+from ..aux_func import (
     get_bound_box,
     get_object_just_added,
     is_modern_primitive,
 )
 from bpy.props import BoolProperty, EnumProperty
-from .aux_node import set_interface_values
-from .constants import MODERN_PRIMITIVE_PREFIX
-from . import primitive_prop as prop
+from ..aux_node import set_interface_values
+from ..constants import MODERN_PRIMITIVE_PREFIX
+from .. import primitive_prop as prop
 
 
 class ConvertToCube_Operator(Operator):

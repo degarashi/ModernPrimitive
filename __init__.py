@@ -3,7 +3,7 @@ if "bpy" in locals():
 
     importlib.reload(modern_primitive)  # noqa: F821
     importlib.reload(modifier_select)  # noqa: F821
-    importlib.reload(convert)  # noqa: F821
+    importlib.reload(convert_to_cube)  # noqa: F821
     importlib.reload(cube)  # noqa: F821
     importlib.reload(version)  # noqa: F821
     importlib.reload(panel)  # noqa: F821
@@ -17,7 +17,7 @@ if "bpy" in locals():
 else:
     from .src import modern_primitive
     from .src import modifier_select
-    from .src import convert
+    from .src.convert import convert_to_cube
     from .src import cube
     from .src import version
     from .src import panel
@@ -36,7 +36,7 @@ def register():
     print("-------------ModernPrimitive::register()--------------")
     modern_primitive.register()
     modifier_select.register()
-    convert.register()
+    convert_to_cube.register()
     cube.register()
     version.register()
     panel.register()
@@ -53,7 +53,7 @@ def unregister():
     print("-------------ModernPrimitive::unregister()-----------")
     modern_primitive.unregister()
     modifier_select.unregister()
-    convert.unregister()
+    convert_to_cube.unregister()
     cube.unregister()
     version.unregister()
     panel.unregister()
