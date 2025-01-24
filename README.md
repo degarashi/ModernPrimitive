@@ -35,15 +35,10 @@ DeformableCube's "set origin to center" operator <br>
 <img src="./doc_images/usage_deformable_cube_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_capsule_0.jpg" alt="" width="25%" />
 
 # Changelog
-## v0.0.20
-- added Preferences panel
-<img src="./doc_images/preferences_0.jpg" alt="" width="80%" />
-<br>
-
-- Implemented a function to display gizmo values on the screen in real time
-
-You can switch from the Gizmo menu.
-<img src="./doc_images/show_gizmo_ui.jpg" alt="" width="80%" />
+## v0.0.21
+- added Restore Default Parameters operator
+<img src="./doc_images/restore_default_0.jpg" alt="" width="35%" />
+<img src="./doc_images/restore_default_1.jpg" alt="" width="50%" />
 
 ## Other
 [<ins>View all log</ins>](CHANGELOG.md)
