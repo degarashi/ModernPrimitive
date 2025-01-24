@@ -79,16 +79,19 @@ class MPR_PT_Main(Panel):
         btn.reset_size_mode = "All"
         btn.reset_division = True
         btn.reset_division_mode = "All"
+        btn.reset_other = True
 
         btn = row.operator(RestoreDefault_Operator.bl_idname, text="Size")
         btn.reset_size = True
         btn.reset_size_mode = "All"
         btn.reset_division = False
+        btn.reset_other = False
 
         btn = row.operator(RestoreDefault_Operator.bl_idname, text="Division")
         btn.reset_size = False
         btn.reset_division = True
         btn.reset_division_mode = "All"
+        btn.reset_other = False
 
 
 def register() -> None:
