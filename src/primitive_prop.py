@@ -8,6 +8,8 @@ class PropType(Enum):
     Size = auto()
     # related to number of divisions
     Division = auto()
+    # not Size or Division
+    Other = auto()
 
     # around xy axis
     Width = auto()
