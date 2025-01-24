@@ -1,5 +1,6 @@
 from enum import Enum, auto
 from typing import NamedTuple
+from .exception import DGPropertyNotFound
 
 
 class PropType(Enum):
@@ -23,6 +24,10 @@ class Prop(NamedTuple):
     name: str
     type: type
     prop_type: set[PT]
+
+    def __hash__(self):
+        # This is done on the premise that there is no Prop of the same name
+        return hash(f"{self.name}")
 
 
 def get_min(index: int) -> Prop:
@@ -84,3 +89,57 @@ InnerCircleRadius = Prop("InnerCircle Radius", float, {PT.Size})
 InnerCircleDivision = Prop("InnerCircle Division", int, {PT.Division})
 
 Rotations = Prop("Rotations", float, {})
+
+PROP_LIST: list[Prop] = [
+    SizeX,
+    SizeY,
+    SizeZ,
+    MinX,
+    MinY,
+    MinZ,
+    MaxX,
+    MaxY,
+    MaxZ,
+    Height,
+    Radius,
+    TopRadius,
+    BottomRadius,
+    RingRadius,
+    OuterRadius,
+    InnerRadius,
+    DivisionX,
+    DivisionY,
+    DivisionZ,
+    DivisionCircle,
+    DivisionSide,
+    DivisionFill,
+    DivisionRing,
+    DivisionCap,
+    GlobalDivision,
+    Fill,
+    Centered,
+    Smooth,
+    SmoothAngle,
+    Subdivision,
+    UVType,
+    UVName,
+    NumBlades,
+    Twist,
+    FilletCount,
+    FilletRadius,
+    InnerCircleRadius,
+    InnerCircleDivision,
+    Rotations,
+]
+PROP_MAP: dict[str, Prop] = {}
+
+
+def prop_from_name(name: str) -> Prop:
+    if len(PROP_MAP) == 0:
+        for p in PROP_LIST:
+            PROP_MAP[p.name] = p
+
+    if name in PROP_MAP:
+        return PROP_MAP[name]
+
+    raise DGPropertyNotFound()
