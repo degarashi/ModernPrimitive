@@ -85,15 +85,15 @@ UVType = Prop("UV Type", Enum, {})
 UVName = Prop("UV Name", str, {})
 
 NumBlades = Prop("Num Blades", int, {PT.Division})
-Twist = Prop("Twist", float, {})
+Twist = Prop("Twist", float, {PT.Other})
 
-FilletCount = Prop("Fillet Count", int, {})
-FilletRadius = Prop("Fillet Radius", float, {})
+FilletCount = Prop("Fillet Count", int, {PT.Other})
+FilletRadius = Prop("Fillet Radius", float, {PT.Other})
 
 InnerCircleRadius = Prop("InnerCircle Radius", float, {PT.Size})
 InnerCircleDivision = Prop("InnerCircle Division", int, {PT.Division})
 
-Rotations = Prop("Rotations", float, {})
+Rotations = Prop("Rotations", float, {PT.Other})
 
 PROP_LIST: list[Prop] = [
     SizeX,
