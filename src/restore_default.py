@@ -35,6 +35,7 @@ class RestoreDefault_Operator(Operator):
     reset_division_mode: EnumProperty(
         name="Division Mode", items=reset_list, default="All"
     )
+    reset_other: BoolProperty(name="Other", default=True)
 
     @classmethod
     def poll(cls, context: Context | None) -> bool:
@@ -50,6 +51,8 @@ class RestoreDefault_Operator(Operator):
         layout.prop(self, "reset_division")
         if self.reset_division:
             layout.prop(self, "reset_division_mode")
+
+        layout.prop(self, "reset_other")
 
     def execute(self, context: Context) -> set[str]:
         sel = get_selected_primitive(context)
@@ -78,6 +81,10 @@ class RestoreDefault_Operator(Operator):
                             valid |= k.has_tag(PropType.Width)
                         case "Height":
                             valid |= k.has_tag(PropType.Height)
+
+                if k.has_tag(PropType.Other) and self.reset_other:
+                    valid = True
+
                 if valid:
                     params.append((k.name, v))
             set_interface_values(mod, context, params)
