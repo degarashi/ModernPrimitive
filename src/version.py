@@ -7,6 +7,8 @@ from .constants import (
     get_assets_dir,
 )
 from functools import total_ordering
+from typing import Callable
+from pathlib import Path
 
 
 @total_ordering
@@ -80,6 +82,26 @@ def unregister() -> None:
 def _is_version_num_loaded() -> bool:
     global _version_num
     return len(_version_num) > 0
+
+
+def iterate_blend_files_by_type(proc: Callable[[Type, Path], None]) -> None:
+    str_to_type: dict[str, Type] = {}
+    for t in Type:
+        str_to_type[t.name.lower()] = t
+
+    # Enumerate blend files in the asset directory (excluding those starting with __)
+    path = get_assets_dir()
+    for p in path.iterdir():
+        if p.stem.startswith("__"):
+            continue
+
+        type_p: Type
+        try:
+            type_p = str_to_type[p.stem]
+        except KeyError as e:
+            raise DGUnknownAssetFound(str(p)) from e
+
+        proc(type_p, str(p))
 
 
 # Read the version number of the primitive that comes with the add-on
