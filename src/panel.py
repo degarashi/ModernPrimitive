@@ -9,6 +9,7 @@ from .switch_wireframe import SwitchWireframe
 from .aux_func import get_target_object
 from .wireframe import ENTRY_NAME
 from .apply_scale import ApplyScale_Operator
+from .restore_default import RestoreDefault_Operator
 
 
 class MPR_PT_Create(Panel):
@@ -69,6 +70,25 @@ class MPR_PT_Main(Panel):
         btn.strict = False
         btn = row.operator(ApplyScale_Operator.bl_idname, text="Scale (Strict Mode)")
         btn.strict = True
+
+        box = layout.box()
+        box.label(text="Restore Default")
+        row = box.row()
+        btn = row.operator(RestoreDefault_Operator.bl_idname, text="All")
+        btn.reset_size = True
+        btn.reset_size_mode = "All"
+        btn.reset_division = True
+        btn.reset_division_mode = "All"
+
+        btn = row.operator(RestoreDefault_Operator.bl_idname, text="Size")
+        btn.reset_size = True
+        btn.reset_size_mode = "All"
+        btn.reset_division = False
+
+        btn = row.operator(RestoreDefault_Operator.bl_idname, text="Division")
+        btn.reset_size = False
+        btn.reset_division = True
+        btn.reset_division_mode = "All"
 
 
 def register() -> None:
