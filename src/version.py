@@ -106,25 +106,7 @@ def iterate_blend_files_by_type(proc: Callable[[Type, Path], None]) -> None:
 
 # Read the version number of the primitive that comes with the add-on
 def _prepare_version_num() -> None:
-    for _i in range(len(Type)):
-        _version_num.append(VersionInt(0))
-
-    str_to_type: dict[str, Type] = {}
-    for t in Type:
-        str_to_type[t.name.lower()] = t
-
-    # Enumerate blend files in the asset directory (excluding those starting with __)
-    path = get_assets_dir()
-    for p in path.iterdir():
-        if p.stem.startswith("__"):
-            continue
-
-        type_p: Type
-        try:
-            type_p = str_to_type[p.stem]
-        except KeyError as e:
-            raise DGUnknownAssetFound(str(p)) from e
-
+    def proc(type_p: Type, p: Path) -> None:
         with bpy.data.libraries.load(str(p)) as (data_from, data_to):
             found: bool = False
             # find appropriate mesh name
@@ -137,6 +119,11 @@ def _prepare_version_num() -> None:
                     break
             if not found:
                 raise DGNodeGroupNotFound(type_p.name, str(p))
+
+    for _i in range(len(Type)):
+        _version_num.append(VersionInt(0))
+
+    iterate_blend_files_by_type(proc)
 
 
 # Get the version number of the primitive attached to the add-on
