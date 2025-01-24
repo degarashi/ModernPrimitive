@@ -1,7 +1,7 @@
 import bpy
 from bpy.utils import register_class, unregister_class
 from bpy.types import Operator, Context, Object
-from bpy.props import BoolProperty
+from bpy.props import BoolProperty, EnumProperty
 from typing import Any
 from .constants import MODERN_PRIMITIVE_PREFIX, Type
 from . import primitive as P
@@ -15,6 +15,13 @@ from .aux_node import get_interface_values, set_interface_values
 from .primitive_prop import PropType
 
 
+reset_list = (
+    ("All", "All", "Around XYZ axis"),
+    ("Width", "Width", "Around XY axis"),
+    ("Height", "Height", "Around Z axis"),
+)
+
+
 class RestoreDefault_Operator(Operator):
     """Restore primitive parameteres to default"""
 
@@ -23,11 +30,26 @@ class RestoreDefault_Operator(Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     reset_size: BoolProperty(name="Reset Size", default=True)
+    reset_size_mode: EnumProperty(name="Size Mode", items=reset_list, default="All")
     reset_division: BoolProperty(name="Reset Division", default=True)
+    reset_division_mode: EnumProperty(
+        name="Division Mode", items=reset_list, default="All"
+    )
 
     @classmethod
     def poll(cls, context: Context | None) -> bool:
         return len(get_selected_primitive(context)) > 0
+
+    def draw(self, context: Context):
+        layout = self.layout
+
+        layout.prop(self, "reset_size")
+        if self.reset_size:
+            layout.prop(self, "reset_size_mode")
+
+        layout.prop(self, "reset_division")
+        if self.reset_division:
+            layout.prop(self, "reset_division_mode")
 
     def execute(self, context: Context) -> set[str]:
         sel = get_selected_primitive(context)
@@ -39,10 +61,23 @@ class RestoreDefault_Operator(Operator):
             params: list[tuple[str, Any]] = []
             for k, v in def_val.items():
                 valid = False
-                if self.reset_size and k.has_tag(PropType.Size):
-                    valid = True
-                if self.reset_division and k.has_tag(PropType.Division):
-                    valid = True
+                if k.has_tag(PropType.Size) and self.reset_size:
+                    match self.reset_size_mode:
+                        case "All":
+                            valid = True
+                        case "Width":
+                            valid |= k.has_tag(PropType.Width)
+                        case "Height":
+                            valid |= k.has_tag(PropType.Height)
+
+                if k.has_tag(PropType.Division) and self.reset_division:
+                    match self.reset_division_mode:
+                        case "All":
+                            valid = True
+                        case "Width":
+                            valid |= k.has_tag(PropType.Width)
+                        case "Height":
+                            valid |= k.has_tag(PropType.Height)
                 if valid:
                     params.append((k.name, v))
             set_interface_values(mod, context, params)
