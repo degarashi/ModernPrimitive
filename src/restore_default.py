@@ -1,6 +1,7 @@
 import bpy
 from bpy.utils import register_class, unregister_class
 from bpy.types import Operator, Context, Object
+from bpy.props import BoolProperty
 from typing import Any
 from .constants import MODERN_PRIMITIVE_PREFIX, Type
 from . import primitive as P
@@ -11,6 +12,7 @@ from .aux_func import (
     get_blend_file_path,
 )
 from .aux_node import get_interface_values, set_interface_values
+from .primitive_prop import PropType
 
 
 class RestoreDefault_Operator(Operator):
@@ -19,6 +21,9 @@ class RestoreDefault_Operator(Operator):
     bl_idname = f"object.{MODERN_PRIMITIVE_PREFIX}_restore_default"
     bl_label = "Restore Primitive Paramteres To Default"
     bl_options = {"REGISTER", "UNDO"}
+
+    reset_size: BoolProperty(name="Reset Size", default=True)
+    reset_division: BoolProperty(name="Reset Division", default=True)
 
     @classmethod
     def poll(cls, context: Context | None) -> bool:
@@ -31,10 +36,15 @@ class RestoreDefault_Operator(Operator):
             typ = type_from_modifier_name(mod.name)
             def_val = get_default_value(typ)
 
-            # For now, all reset
             params: list[tuple[str, Any]] = []
             for k, v in def_val.items():
-                params.append((k.name, v))
+                valid = False
+                if self.reset_size and k.has_tag(PropType.Size):
+                    valid = True
+                if self.reset_division and k.has_tag(PropType.Division):
+                    valid = True
+                if valid:
+                    params.append((k.name, v))
             set_interface_values(mod, context, params)
 
         return {"FINISHED"}
