@@ -203,3 +203,10 @@ def get_selected_primitive(context: Context) -> list[Object]:
 
 def get_addon_preferences(context: Context) -> AddonPreferences:
     return context.preferences.addons[get_addon_name()].preferences
+
+
+def copy_rotation(dst: Object, src: Object) -> None:
+    dst.rotation_mode = src.rotation_mode
+    dst.rotation_axis_angle = src.rotation_axis_angle
+    dst.rotation_quaternion = src.rotation_quaternion
+    dst.rotation_euler = src.rotation_euler
