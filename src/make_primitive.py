@@ -26,6 +26,7 @@ from mathutils import Vector
 from .aux_node import set_interface_value
 import math
 import bpy.ops
+from typing import Iterable
 
 
 def get_view3d_pos(context: Context) -> Vector:
@@ -264,21 +265,21 @@ class MakeQuadSphere_Operator(OperatorBase, Primitive_QuadSphere):
         return "META_CUBE"
 
 
-OPS: list[type[bpy_struct]] = [
+OPS: Iterable[type[bpy_struct]] = (
     MakeCube_Operator,
+    MakeDeformableCube_Operator,
+    MakeUVSphere_Operator,
+    MakeICOSphere_Operator,
+    MakeQuadSphere_Operator,
     MakeCone_Operator,
     MakeCylinder_Operator,
     MakeGrid_Operator,
-    MakeICOSphere_Operator,
     MakeTorus_Operator,
-    MakeUVSphere_Operator,
     MakeTube_Operator,
     MakeGear_Operator,
     MakeSpring_Operator,
-    MakeDeformableCube_Operator,
     MakeCapsule_Operator,
-    MakeQuadSphere_Operator,
-]
+)
 
 
 def register() -> None:
