@@ -1,7 +1,16 @@
 from bpy.utils import register_class, unregister_class
 from bpy.types import Panel, Context
 from .modifier_select import FocusModifier_Operator
-from .convert import ConvertToCube_Operator
+from .convert import (
+    ConvertToCube_Operator,
+    ConvertToGrid_Operator,
+    ConvertToSphere_Operator,
+    ConvertToCylinder_Operator,
+    ConvertToCone_Operator,
+    ConvertToTorus_Operator,
+    ConvertToTube_Operator,
+    ConvertToCapsule_Operator,
+)
 from .cube import DCube_CenterOrigin_Operator
 from .constants import MODERN_PRIMITIVE_CATEGORY
 from .make_primitive import OPS_GROUPS, make_operator_to_layout
@@ -47,12 +56,25 @@ class MPR_PT_Main(Panel):
         layout.operator(FocusModifier_Operator.bl_idname, text="Focus/Unfocus Modifier")
 
         box = layout.box()
-        row = box.row()
-        row.label(text="Convert to")
-        c = row.operator(ConvertToCube_Operator.bl_idname, text="Cube")
+        box.label(text="Convert to")
+        grid = box.grid_flow(columns=3, row_major=True)
+        c = grid.operator(ConvertToCube_Operator.bl_idname, text="Cube")
         c.cube_type = "Cube"
-        c = row.operator(ConvertToCube_Operator.bl_idname, text="D-Cube")
+        c = grid.operator(ConvertToCube_Operator.bl_idname, text="D-Cube")
         c.cube_type = "DeformableCube"
+        grid.operator(ConvertToGrid_Operator.bl_idname, text="Grid")
+
+        s = grid.operator(ConvertToSphere_Operator.bl_idname, text="UV Sphere")
+        s.sphere_type = "UVSphere"
+        s = grid.operator(ConvertToSphere_Operator.bl_idname, text="ICO Sphere")
+        s.sphere_type = "ICOSphere"
+        s = grid.operator(ConvertToSphere_Operator.bl_idname, text="Quad Sphere")
+        s.sphere_type = "QuadSphere"
+        grid.operator(ConvertToCylinder_Operator.bl_idname, text="Cylinder")
+        grid.operator(ConvertToCone_Operator.bl_idname, text="Cone")
+        grid.operator(ConvertToTorus_Operator.bl_idname, text="Torus")
+        grid.operator(ConvertToTube_Operator.bl_idname, text="Tube")
+        grid.operator(ConvertToCapsule_Operator.bl_idname, text="Capsule")
 
         box = layout.box()
         box.label(text="D-Cube:")
