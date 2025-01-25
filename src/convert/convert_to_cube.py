@@ -1,29 +1,30 @@
-import bpy
+import bpy.ops
 from bpy.types import (
     Object,
-    Operator,
     Context,
 )
-from typing import cast
+from .convert_to_baseop import ConvertTo_BaseOperator
 from ..aux_func import (
     get_bound_box,
     get_object_just_added,
-    is_modern_primitive,
 )
-from bpy.props import BoolProperty, EnumProperty
+from bpy.props import EnumProperty
 from ..aux_node import set_interface_values
-from ..constants import MODERN_PRIMITIVE_PREFIX
 from .. import primitive_prop as prop
+from ..constants import Type
 
 
-class ConvertToCube_Operator(Operator):
+class _ConvertToCube_Operator(ConvertTo_BaseOperator):
+    type = Type.Cube
+
+
+class ConvertToCube_Operator(_ConvertToCube_Operator):
     """Make Modern Cube From Object"""
 
-    bl_idname = f"mesh.{MODERN_PRIMITIVE_PREFIX}_convert_to_cube"
-    bl_label = "Convert object to ModernCube"
-    bl_options = {"REGISTER", "UNDO"}
+    B = _ConvertToCube_Operator
+    bl_idname = B.bl_idname
+    bl_label = B.bl_label
 
-    keep_original: BoolProperty(name="Keep Original", default=False)
     cube_type: EnumProperty(
         name="Cube Type",
         default="Cube",
@@ -33,26 +34,8 @@ class ConvertToCube_Operator(Operator):
         ],
     )
 
-    @classmethod
-    def poll(cls, context: Context | None) -> bool:
-        if context is None:
-            return False
-        context = cast(Context, context)
-
-        sel = context.selected_objects
-        if len(sel) == 0:
-            return False
-        for obj in sel:
-            if obj is None or obj.type != "MESH":
-                return False
-        return True
-
-    def _make_cube(self, context: Context, from_obj: Object) -> None:
-        # bound_box update
-        if is_modern_primitive(from_obj):
-            bpy.ops.object.mode_set(mode="OBJECT")
-        from_obj.data.update()
-        (b_min, b_max) = get_bound_box(from_obj.bound_box)
+    def _handle_proc(self, context: Context, obj: Object) -> Object:
+        (b_min, b_max) = get_bound_box(obj.bound_box)
         center = (b_min + b_max) / 2
 
         if self.cube_type == "Cube":
@@ -61,7 +44,7 @@ class ConvertToCube_Operator(Operator):
             bpy.ops.mesh.mpr_make_deformablecube()
 
         cube = get_object_just_added(context)
-        cube.matrix_world = from_obj.matrix_world
+        cube.matrix_world = obj.matrix_world
 
         if self.cube_type == "Cube":
             set_interface_values(
@@ -73,7 +56,7 @@ class ConvertToCube_Operator(Operator):
                     (prop.SizeZ.name, (b_max.z - b_min.z) / 2),
                 ),
             )
-            cube.location = from_obj.matrix_world @ center
+            cube.location = obj.matrix_world @ center
         else:
             set_interface_values(
                 cube.modifiers[0],
@@ -87,16 +70,7 @@ class ConvertToCube_Operator(Operator):
                     (prop.MaxZ.name, b_max.z),
                 ),
             )
-        cube.name = from_obj.name + "_converted"
-
-    def execute(self, context: Context | None) -> set[str]:
-        sel = context.selected_objects.copy()
-        for obj in sel:
-            self._make_cube(context, obj)
-        if not self.keep_original:
-            for obj in sel:
-                bpy.data.objects.remove(obj)
-        return {"FINISHED"}
+        return cube
 
 
 MENU_TARGET = bpy.types.VIEW3D_MT_object_convert
