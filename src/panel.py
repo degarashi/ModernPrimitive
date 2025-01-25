@@ -4,7 +4,7 @@ from .modifier_select import FocusModifier_Operator
 from .convert import ConvertToCube_Operator
 from .cube import DCube_CenterOrigin_Operator
 from .constants import MODERN_PRIMITIVE_CATEGORY
-from .make_primitive import OPS, make_operator_to_layout
+from .make_primitive import OPS_GROUPS, make_operator_to_layout
 from .switch_wireframe import SwitchWireframe
 from .aux_func import get_target_object
 from .wireframe import ENTRY_NAME
@@ -22,10 +22,16 @@ class MPR_PT_Create(Panel):
 
     def draw(self, context) -> None:
         layout = self.layout
-        grid = layout.grid_flow(columns=2, row_major=True)
 
-        for op in OPS:
-            make_operator_to_layout(context, grid, op)
+        first: bool = True
+        for _, ops in OPS_GROUPS.items():
+            if first:
+                first = False
+            else:
+                layout.separator()
+            grid = layout.grid_flow(columns=2, row_major=True)
+            for op in ops:
+                make_operator_to_layout(context, grid, op)
 
 
 class MPR_PT_Main(Panel):
