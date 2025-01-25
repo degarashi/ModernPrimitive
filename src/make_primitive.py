@@ -281,6 +281,28 @@ OPS: Iterable[type[bpy_struct]] = (
     MakeCapsule_Operator,
 )
 
+OPS_GROUPS: dict[str, Iterable[type[bpy_struct]]] = {
+    "Cube": (
+        MakeCube_Operator,
+        MakeDeformableCube_Operator,
+    ),
+    "Sphere": (
+        MakeUVSphere_Operator,
+        MakeICOSphere_Operator,
+        MakeQuadSphere_Operator,
+    ),
+    "Other": (
+        MakeCone_Operator,
+        MakeCylinder_Operator,
+        MakeGrid_Operator,
+        MakeTorus_Operator,
+        MakeTube_Operator,
+        MakeGear_Operator,
+        MakeSpring_Operator,
+        MakeCapsule_Operator,
+    ),
+}
+
 
 def register() -> None:
     register_class(OPS)
