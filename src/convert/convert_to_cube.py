@@ -82,10 +82,8 @@ def menu_func(self, context: Context) -> None:
 
 
 def register() -> None:
-    bpy.utils.register_class(ConvertToCube_Operator)
     MENU_TARGET.append(menu_func)
 
 
 def unregister() -> None:
     MENU_TARGET.remove(menu_func)
-    bpy.utils.unregister_class(ConvertToCube_Operator)
