@@ -19,8 +19,10 @@ class VIEW3D_MT_mesh_modern_prim(Menu):
         layout = self.layout
         layout.operator_context = "INVOKE_REGION_WIN"
 
-        for ops in dg_ops.OPS:
-            dg_ops.make_operator_to_layout(context, layout, ops)
+        for _, ops in dg_ops.OPS_GROUPS.items():
+            layout.separator()
+            for op in ops:
+                dg_ops.make_operator_to_layout(context, layout, op)
 
 
 def menu_func(self, context: Context) -> None:
