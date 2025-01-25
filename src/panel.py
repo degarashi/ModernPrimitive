@@ -1,7 +1,7 @@
 from bpy.utils import register_class, unregister_class
 from bpy.types import Panel, Context
 from .modifier_select import FocusModifier_Operator
-from .convert.convert_to_cube import ConvertToCube_Operator
+from .convert import ConvertToCube_Operator
 from .cube import DCube_CenterOrigin_Operator
 from .constants import MODERN_PRIMITIVE_CATEGORY
 from .make_primitive import OPS, make_operator_to_layout
