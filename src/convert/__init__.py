@@ -4,6 +4,7 @@ from .convert_to_sphere import ConvertToSphere_Operator
 from .convert_to_cylinder import ConvertToCylinder_Operator
 from .convert_to_cone import ConvertToCone_Operator
 from .convert_to_torus import ConvertToTorus_Operator
+from .convert_to_tube import ConvertToTube_Operator
 from bpy.utils import register_class, unregister_class
 
 _CLS = (
@@ -13,6 +14,7 @@ _CLS = (
     ConvertToCylinder_Operator,
     ConvertToCone_Operator,
     ConvertToTorus_Operator,
+    ConvertToTube_Operator,
 )
 
 
