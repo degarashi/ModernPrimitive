@@ -24,6 +24,9 @@ MODERN_PRIMITIVE_PREFIX = "mpr"
 MODERN_PRIMITIVE_CATEGORY = "MPR"
 ASSET_DIR_NAME = "assets"
 
+MIN_SIZE = 1e-5
+MIN_RADIUS = 1e-5
+
 
 def get_addon_dir() -> Path:
     return Path(__file__).parent.parent
