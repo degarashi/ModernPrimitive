@@ -2,11 +2,9 @@ from bpy.types import (
     Context,
     Object,
 )
-from .convert_to_baseop import ConvertTo_BaseOperator
-from bpy.utils import register_class, unregister_class
+from .convert_to_baseop import ConvertTo_BaseOperator, BBox
 import bpy.ops
 from ..aux_func import (
-    get_bound_box,
     get_object_just_added,
     copy_rotation,
 )
@@ -26,11 +24,8 @@ class ConvertToGrid_Operator(_ConvertToGrid_Operator):
     bl_idname = B.bl_idname
     bl_label = B.bl_label
 
-    def _handle_proc(self, context: Context, obj: Object) -> Object:
+    def _handle_proc(self, context: Context, obj: Object, bbox: BBox) -> Object:
         # I just want the size on the XY plane, so I can use a bounding box
-
-        (b_min, b_max) = get_bound_box(obj.bound_box)
-        b_diff = b_max - b_min
 
         bpy.ops.mesh.mpr_make_grid()
         grid = get_object_just_added(context)
@@ -39,12 +34,11 @@ class ConvertToGrid_Operator(_ConvertToGrid_Operator):
             mod,
             context,
             (
-                (prop.SizeX.name, b_diff.x / 2),
-                (prop.SizeY.name, b_diff.y / 2),
+                (prop.SizeX.name, bbox.size.x / 2),
+                (prop.SizeY.name, bbox.size.y / 2),
             ),
         )
-        center = (b_min + b_max) / 2
-        center = obj.matrix_world @ center
+        center = obj.matrix_world @ bbox.center
         grid.location = center
         copy_rotation(grid, obj)
         grid.scale = obj.scale

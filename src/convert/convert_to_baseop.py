@@ -1,13 +1,16 @@
-from bpy.types import (
-    Operator,
-    Context,
-)
+from bpy.types import Operator, Context, Object
 from ..constants import MODERN_PRIMITIVE_PREFIX
 from typing import cast
 from bpy.props import BoolProperty
 import bpy
-from ..aux_func import is_modern_primitive
-from ..apply_scale import ApplyScale_Operator
+from ..aux_func import is_modern_primitive, get_bound_box
+
+
+class BBox:
+    def __init__(self, obj: Object, context: Context):
+        (self.min, self.max) = get_bound_box(obj.bound_box)
+        self.size = self.max - self.min
+        self.center = (self.min + self.max) / 2
 
 
 class ConvertTo_BaseOperator(Operator):
@@ -52,7 +55,9 @@ class ConvertTo_BaseOperator(Operator):
                 bpy.ops.object.mode_set(mode="OBJECT")
             obj.data.update()
 
-            new_obj = self._handle_proc(context, obj)
+            # get bound_box info (size, average)
+            bbox = BBox(obj, context)
+            new_obj = self._handle_proc(context, obj, bbox)
             new_obj.name = obj.name + "_converted"
             if self.apply_scale:
                 bpy.ops.object.mpr_apply_scale(strict=False)

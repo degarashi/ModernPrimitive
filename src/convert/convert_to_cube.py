@@ -3,9 +3,8 @@ from bpy.types import (
     Object,
     Context,
 )
-from .convert_to_baseop import ConvertTo_BaseOperator
+from .convert_to_baseop import ConvertTo_BaseOperator, BBox
 from ..aux_func import (
-    get_bound_box,
     get_object_just_added,
 )
 from bpy.props import EnumProperty
@@ -34,10 +33,7 @@ class ConvertToCube_Operator(_ConvertToCube_Operator):
         ],
     )
 
-    def _handle_proc(self, context: Context, obj: Object) -> Object:
-        (b_min, b_max) = get_bound_box(obj.bound_box)
-        center = (b_min + b_max) / 2
-
+    def _handle_proc(self, context: Context, obj: Object, bbox: BBox) -> Object:
         if self.cube_type == "Cube":
             bpy.ops.mesh.mpr_make_cube()
         else:
@@ -51,23 +47,23 @@ class ConvertToCube_Operator(_ConvertToCube_Operator):
                 cube.modifiers[0],
                 context,
                 (
-                    (prop.SizeX.name, (b_max.x - b_min.x) / 2),
-                    (prop.SizeY.name, (b_max.y - b_min.y) / 2),
-                    (prop.SizeZ.name, (b_max.z - b_min.z) / 2),
+                    (prop.SizeX.name, bbox.size.x / 2),
+                    (prop.SizeY.name, bbox.size.y / 2),
+                    (prop.SizeZ.name, bbox.size.z / 2),
                 ),
             )
-            cube.location = obj.matrix_world @ center
+            cube.location = obj.matrix_world @ bbox.center
         else:
             set_interface_values(
                 cube.modifiers[0],
                 context,
                 (
-                    (prop.MinX.name, -b_min.x),
-                    (prop.MaxX.name, b_max.x),
-                    (prop.MinY.name, -b_min.y),
-                    (prop.MaxY.name, b_max.y),
-                    (prop.MinZ.name, -b_min.z),
-                    (prop.MaxZ.name, b_max.z),
+                    (prop.MinX.name, -bbox.min.x),
+                    (prop.MaxX.name, bbox.max.x),
+                    (prop.MinY.name, -bbox.min.y),
+                    (prop.MaxY.name, bbox.max.y),
+                    (prop.MinZ.name, -bbox.min.z),
+                    (prop.MaxZ.name, bbox.max.z),
                 ),
             )
         return cube
