@@ -1,7 +1,7 @@
 import bpy
 from bpy.types import Scene, Object, Context
 from bpy.app.handlers import persistent
-from .aux_func import make_primitive_property_name, is_primitive_mod
+from .aux_func import make_primitive_property_name, is_primitive_mod, obj_is_alive
 
 
 # Entry name to save the original wireframe state
@@ -22,7 +22,7 @@ class ObjectHold:
 
         # Restore wireframe drawing state
         if self._obj is not None:
-            if self._obj_is_alive():
+            if obj_is_alive(self._obj):
                 try:
                     # Restore previously selected objects from propertry
                     self._obj.show_wire = self._obj[ent_name]
@@ -41,14 +41,6 @@ class ObjectHold:
             # Display objects in wireframe
             self._obj.show_wire = True
 
-    # Is the object valid in blender?
-    def _obj_is_alive(self) -> bool:
-        assert self._obj is not None
-        try:
-            return bool(self._obj.name) or True
-        except ReferenceError:
-            return False
-
     # Determine whether the object is eligible for wireframe display
     @staticmethod
     def _obj_is_eligible(obj: Object, act: Object | None, sel: list[Object]) -> bool:
@@ -66,7 +58,7 @@ class ObjectHold:
         assert self._obj is not None
         return (
             self.__class__._obj_is_eligible(self._obj, act, sel)
-            and self._obj_is_alive()
+            and obj_is_alive(self._obj)
         )
 
     def check_state(self, act: Object | None, sel: list[Object]) -> None:
