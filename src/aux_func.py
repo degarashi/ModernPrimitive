@@ -31,6 +31,15 @@ from collections.abc import Iterable
 from .version import VersionInt, get_primitive_version
 
 
+# Is the object valid in blender?
+def obj_is_alive(obj: Object) -> bool:
+    assert obj is not None
+    try:
+        return bool(obj.name) or True
+    except ReferenceError:
+        return False
+
+
 class BackupSelection:
     def __init__(self, context: Context, deselect_all: bool = False):
         self._bkup_active = context.active_object
