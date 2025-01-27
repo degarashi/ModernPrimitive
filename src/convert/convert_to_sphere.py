@@ -5,10 +5,11 @@ from bpy.types import (
 from .convert_to_baseop import ConvertTo_BaseOperator, BBox
 import bpy.ops
 
-from ..aux_func import get_object_just_added, copy_rotation
+from ..aux_func import get_object_just_added
 from .. import primitive_prop as prop
 from ..aux_node import set_interface_values
 from bpy.props import EnumProperty
+from mathutils import Matrix
 
 
 class _ConvertToSphere_Operator(ConvertTo_BaseOperator):
@@ -60,8 +61,8 @@ class ConvertToSphere_Operator(_ConvertToSphere_Operator):
             ((prop.Radius.name, max(bbox.size.x, bbox.size.y, bbox.size.z) / 2),),
         )
 
-        center = obj.matrix_world @ bbox.center
-        sphere.location = center
-        copy_rotation(sphere, obj)
-        sphere.scale = obj.scale
+        t, r, s = obj.matrix_world.decompose()
+        t = obj.matrix_world @ bbox.center
+        sphere.matrix_world = Matrix.LocRotScale(t, r, s)
+
         return sphere
