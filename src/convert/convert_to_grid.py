@@ -6,11 +6,11 @@ from .convert_to_baseop import ConvertTo_BaseOperator, BBox
 import bpy.ops
 from ..aux_func import (
     get_object_just_added,
-    copy_rotation,
 )
 from ..aux_node import set_interface_values
 from .. import primitive_prop as prop
 from ..constants import Type
+from mathutils import Matrix
 
 
 class _ConvertToGrid_Operator(ConvertTo_BaseOperator):
@@ -38,8 +38,9 @@ class ConvertToGrid_Operator(_ConvertToGrid_Operator):
                 (prop.SizeY.name, bbox.size.y / 2),
             ),
         )
-        center = obj.matrix_world @ bbox.center
-        grid.location = center
-        copy_rotation(grid, obj)
-        grid.scale = obj.scale
+
+        t, r, s = obj.matrix_world.decompose()
+        t = obj.matrix_world @ bbox.center
+        grid.matrix_world = Matrix.LocRotScale(t, r, s)
+
         return grid
