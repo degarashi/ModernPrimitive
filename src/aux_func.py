@@ -31,6 +31,21 @@ from collections.abc import Iterable
 from .version import VersionInt, get_primitive_version
 
 
+class BackupSelection:
+    def __init__(self, context: Context, deselect_all: bool = False):
+        self._bkup_active = context.active_object
+        self._bkup_sel = context.selected_objects.copy()
+        if deselect_all:
+            for s in self._bkup_sel:
+                s.select_set(False)
+
+    def restore(self, context: Context) -> None:
+        context.view_layer.objects.active = self._bkup_active
+        for s in self._bkup_sel:
+            if obj_is_alive(s):
+                s.select_set(True)
+
+
 def register_class(cls: list[type[bpy_struct]]) -> None:
     for cl in cls:
         bpy.utils.register_class(cl)
