@@ -1,5 +1,6 @@
 import bpy
 import sys
+from typing import cast
 from bpy.types import (
     Object,
     Context,
@@ -7,7 +8,9 @@ from bpy.types import (
     NodeGroup,
     NodesModifier,
     Modifier,
-    AddonPreferences
+    AddonPreferences,
+    Mesh,
+    MeshVertex,
 )
 from .exception import (
     DGFileNotFound,
@@ -210,3 +213,12 @@ def copy_rotation(dst: Object, src: Object) -> None:
     dst.rotation_axis_angle = src.rotation_axis_angle
     dst.rotation_quaternion = src.rotation_quaternion
     dst.rotation_euler = src.rotation_euler
+
+
+def get_real_vertices(context: Context, obj: Object) -> tuple[Vector]:
+    depsgraph = context.evaluated_depsgraph_get()
+    eval_obj = obj.evaluated_get(depsgraph)
+    mesh: Mesh = eval_obj.to_mesh()
+    verts: tuple[Vector] = tuple(v.co for v in cast(MeshVertex, mesh.vertices))
+    eval_obj.to_mesh_clear()
+    return verts
