@@ -47,6 +47,9 @@ class ConvertTo_BaseOperator(Operator):
                 return False
         return True
 
+    def _handle_proc(self, context: Context, obj: Object, bbox: BBox) -> Object:
+        raise NotImplementedError("This method should be implemented by subclass")
+
     def execute(self, context: Context | None) -> set[str]:
         sel = context.selected_objects.copy()
         for obj in sel:
