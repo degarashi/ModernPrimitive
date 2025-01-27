@@ -130,7 +130,6 @@ def proc_icosphere(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
         warn("Object is not uniformly scaled")
 
     scale_val = _abs_average_vec(obj.scale)
-    # TODO: The variable name is hard-coded, so do something about it
     modify_interface_value(mod, prop.Radius.name, lambda val: val * scale_val)
 
 
