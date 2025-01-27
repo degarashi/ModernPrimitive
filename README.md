@@ -35,10 +35,10 @@ DeformableCube's "set origin to center" operator <br>
 <img src="./doc_images/usage_deformable_cube_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_capsule_0.jpg" alt="" width="25%" />
 
 # Changelog
-## v0.0.21
-- added Restore Default Parameters operator
-<img src="./doc_images/restore_default_0.jpg" alt="" width="35%" />
-<img src="./doc_images/restore_default_1.jpg" alt="" width="50%" />
+## v0.0.22
+- added Convert to (Grid, Sphere, Cylinder, Cone, Torus, Tube, Capsule) operators
+<img src="./doc_images/convert_others_0.jpg" alt="" width="40%" />
+Note: In the current implementation, the Z axis is Height and the XY axis is considered Width. In addition, the number of polygon splits remains in the initial setting.
 
 ## Other
 [<ins>View all log</ins>](CHANGELOG.md)

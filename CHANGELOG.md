@@ -1,4 +1,9 @@
 # Changelog
+## v0.0.21
+- added Restore Default Parameters operator
+<img src="./doc_images/restore_default_0.jpg" alt="" width="35%" />
+<img src="./doc_images/restore_default_1.jpg" alt="" width="50%" />
+
 ## v0.0.20
 - added Preferences panel
 <img src="./doc_images/preferences_0.jpg" alt="" width="80%" />
