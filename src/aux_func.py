@@ -244,10 +244,16 @@ def copy_rotation(dst: Object, src: Object) -> None:
     dst.rotation_euler = src.rotation_euler
 
 
-def get_real_vertices(context: Context, obj: Object) -> tuple[Vector]:
+def get_real_vertices(
+    context: Context, obj: Object, mat: Matrix | None = None
+) -> tuple[Vector]:
+    if mat is None:
+        mat = Matrix.Identity(4)
     depsgraph = context.evaluated_depsgraph_get()
     eval_obj = obj.evaluated_get(depsgraph)
     mesh: Mesh = eval_obj.to_mesh()
-    verts: tuple[Vector] = tuple(v.co for v in cast(MeshVertex, mesh.vertices))
+    verts: tuple[Vector] = tuple(
+        (mat @ v.co).to_3d() for v in cast(MeshVertex, mesh.vertices)
+    )
     eval_obj.to_mesh_clear()
     return verts
