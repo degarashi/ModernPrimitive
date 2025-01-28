@@ -7,7 +7,7 @@ from ..aux_func import (
 from ..aux_node import set_interface_values
 from .. import primitive_prop as prop
 import bpy.ops
-from mathutils import Matrix, Vector
+from mathutils import Vector, Matrix
 
 
 class _ConvertToCylinder_Operator(ConvertTo_BaseOperator):
@@ -21,18 +21,21 @@ class ConvertToCylinder_Operator(_ConvertToCylinder_Operator):
     bl_idname = B.bl_idname
     bl_label = B.bl_label
 
-    def _handle_proc(self, context: Context, obj: Object, bbox: BBox) -> Object:
+    def _handle_proc(
+        self, context: Context, obj: Object, bbox: BBox, mat: Matrix
+    ) -> tuple[Object, Vector]:
         bpy.ops.mesh.mpr_make_cylinder()
         cy = get_object_just_added(context)
+
+        radius = (bbox.size.x + bbox.size.y) / 4
+        height = bbox.size.z
+
         set_interface_values(
             cy.modifiers[0],
             context,
             (
-                (prop.Radius.name, (bbox.size.x + bbox.size.y) / 4),
-                (prop.Height.name, (bbox.size.z)),
+                (prop.Radius.name, radius),
+                (prop.Height.name, height),
             ),
         )
-        cy.matrix_world = obj.matrix_world @ Matrix.Translation(
-            bbox.center + Vector((0, 0, -bbox.size.z / 2))
-        )
-        return cy
+        return cy, Vector((0, 0, -height / 2))

@@ -11,6 +11,7 @@ from bpy.props import EnumProperty
 from ..aux_node import set_interface_values
 from .. import primitive_prop as prop
 from ..constants import Type
+from mathutils import Vector, Matrix
 
 
 class _ConvertToCube_Operator(ConvertTo_BaseOperator):
@@ -33,7 +34,13 @@ class ConvertToCube_Operator(_ConvertToCube_Operator):
         ],
     )
 
-    def _handle_proc(self, context: Context, obj: Object, bbox: BBox) -> Object:
+    def _handle_proc(
+        self,
+        context: Context,
+        obj: Object,
+        bbox: BBox,
+        mat: Matrix,
+    ) -> tuple[Object, Vector]:
         if self.cube_type == "Cube":
             bpy.ops.mesh.mpr_make_cube()
         else:
@@ -58,15 +65,15 @@ class ConvertToCube_Operator(_ConvertToCube_Operator):
                 cube.modifiers[0],
                 context,
                 (
-                    (prop.MinX.name, -bbox.min.x),
-                    (prop.MaxX.name, bbox.max.x),
-                    (prop.MinY.name, -bbox.min.y),
-                    (prop.MaxY.name, bbox.max.y),
-                    (prop.MinZ.name, -bbox.min.z),
-                    (prop.MaxZ.name, bbox.max.z),
+                    (prop.MinX.name, bbox.size.x / 2),
+                    (prop.MaxX.name, bbox.size.x / 2),
+                    (prop.MinY.name, bbox.size.y / 2),
+                    (prop.MaxY.name, bbox.size.y / 2),
+                    (prop.MinZ.name, bbox.size.z / 2),
+                    (prop.MaxZ.name, bbox.size.z / 2),
                 ),
             )
-        return cube
+        return cube, Vector()
 
 
 MENU_TARGET = bpy.types.VIEW3D_MT_object_convert

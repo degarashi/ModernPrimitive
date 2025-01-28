@@ -10,7 +10,7 @@ from ..aux_func import (
 from ..aux_node import set_interface_values
 from .. import primitive_prop as prop
 from ..constants import Type
-from mathutils import Matrix
+from mathutils import Vector, Matrix
 
 
 class _ConvertToGrid_Operator(ConvertTo_BaseOperator):
@@ -24,7 +24,9 @@ class ConvertToGrid_Operator(_ConvertToGrid_Operator):
     bl_idname = B.bl_idname
     bl_label = B.bl_label
 
-    def _handle_proc(self, context: Context, obj: Object, bbox: BBox) -> Object:
+    def _handle_proc(
+        self, context: Context, obj: Object, bbox: BBox, mat: Matrix
+    ) -> tuple[Object, Vector]:
         # I just want the size on the XY plane, so I can use a bounding box
 
         bpy.ops.mesh.mpr_make_grid()
@@ -38,9 +40,4 @@ class ConvertToGrid_Operator(_ConvertToGrid_Operator):
                 (prop.SizeY.name, bbox.size.y / 2),
             ),
         )
-
-        t, r, s = obj.matrix_world.decompose()
-        t = obj.matrix_world @ bbox.center
-        grid.matrix_world = Matrix.LocRotScale(t, r, s)
-
-        return grid
+        return grid, Vector()

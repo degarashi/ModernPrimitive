@@ -9,7 +9,7 @@ from ..aux_func import get_object_just_added
 from .. import primitive_prop as prop
 from ..aux_node import set_interface_values
 from bpy.props import EnumProperty
-from mathutils import Matrix
+from mathutils import Vector, Matrix
 
 
 class _ConvertToSphere_Operator(ConvertTo_BaseOperator):
@@ -41,7 +41,9 @@ class ConvertToSphere_Operator(_ConvertToSphere_Operator):
         ),
     )
 
-    def _handle_proc(self, context: Context, obj: Object, bbox: BBox) -> Object:
+    def _handle_proc(
+        self, context: Context, obj: Object, bbox: BBox, mat: Matrix
+    ) -> tuple[Object, Vector]:
         match self.sphere_type:
             case "UVSphere":
                 bpy.ops.mesh.mpr_make_uvsphere()
@@ -60,9 +62,4 @@ class ConvertToSphere_Operator(_ConvertToSphere_Operator):
             context,
             ((prop.Radius.name, max(bbox.size.x, bbox.size.y, bbox.size.z) / 2),),
         )
-
-        t, r, s = obj.matrix_world.decompose()
-        t = obj.matrix_world @ bbox.center
-        sphere.matrix_world = Matrix.LocRotScale(t, r, s)
-
-        return sphere
+        return sphere, Vector()

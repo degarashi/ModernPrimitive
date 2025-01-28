@@ -7,7 +7,7 @@ from ..aux_func import (
 from ..aux_node import set_interface_values
 from .. import primitive_prop as prop
 import bpy.ops
-from mathutils import Matrix, Vector
+from mathutils import Vector, Matrix
 
 
 class _ConvertToTube_Operator(ConvertTo_BaseOperator):
@@ -21,7 +21,9 @@ class ConvertToTube_Operator(_ConvertToTube_Operator):
     bl_idname = B.bl_idname
     bl_label = B.bl_label
 
-    def _handle_proc(self, context: Context, obj: Object, bbox: BBox) -> Object:
+    def _handle_proc(
+        self, context: Context, obj: Object, bbox: BBox, mat: Matrix
+    ) -> tuple[Object, Vector]:
         bpy.ops.mesh.mpr_make_tube()
         tube = get_object_just_added(context)
 
@@ -37,7 +39,4 @@ class ConvertToTube_Operator(_ConvertToTube_Operator):
                 (prop.InnerRadius.name, inner_radius),
             ),
         )
-        tube.matrix_world = obj.matrix_world @ Matrix.Translation(
-            bbox.center + Vector((0, 0, -height / 2))
-        )
-        return tube
+        return tube, Vector((0, 0, -height / 2))
