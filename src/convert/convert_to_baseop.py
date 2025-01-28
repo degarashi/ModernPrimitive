@@ -82,16 +82,17 @@ class ConvertTo_BaseOperator(Operator):
             obj.data.update()
 
             pre_rot: Quaternion
-            # _handle_procメソッドではZ軸を高さとして扱うのでそれに合わせて適時変換する
+            # _handle Proc method handles the Z axis as height,
+            #   so convert it in a timely manner.
             match self.main_axis:
                 case "X":
-                    # Y軸周りに90度回転
+                    # 90 degrees rotation around the Y axis
                     pre_rot = Quaternion(((0, 1, 0)), math.radians(90))
                 case "Y":
-                    # X軸周りに-90度回転
+                    # X-90 degrees around the X-axis
                     pre_rot = Quaternion((1, 0, 0), math.radians(-90))
                 case "Z":
-                    # 何もしない
+                    # Do nothing
                     pre_rot = Quaternion()
             mat = pre_rot.to_matrix()
 
