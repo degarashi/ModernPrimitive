@@ -26,7 +26,7 @@ from .constants import (
     get_addon_dir,
     get_addon_name,
 )
-from mathutils import Vector
+from mathutils import Vector, Matrix
 from collections.abc import Iterable
 from .version import VersionInt, get_primitive_version
 
@@ -139,11 +139,16 @@ def load_primitive_from_asset(type: Type, context: Context, set_rot: bool) -> Ob
     return obj
 
 
-def get_bound_box(vecs: Iterable[Vector]) -> tuple[Vector, Vector]:
+def get_bound_box(
+    vecs: Iterable[Vector], mat: Matrix | None = None
+) -> tuple[Vector, Vector]:
     L = sys.float_info.max
     min_v = Vector((L, L, L))
     max_v = Vector((-L, -L, -L))
     for pt in vecs:
+        pt = Vector(pt)
+        if mat is not None:
+            pt = mat @ pt
         for i in range(3):
             min_v[i] = min(min_v[i], pt[i])
             max_v[i] = max(max_v[i], pt[i])
