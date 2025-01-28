@@ -1,4 +1,9 @@
 # Changelog
+## v0.0.22
+- added Convert to (Grid, Sphere, Cylinder, Cone, Torus, Tube, Capsule) operators
+<img src="./doc_images/convert_others_0.jpg" alt="" width="40%" />
+Note: In the current implementation, the Z axis is Height and the XY axis is considered Width. In addition, the number of polygon splits remains in the initial setting.
+
 ## v0.0.21
 - added Restore Default Parameters operator
 <img src="./doc_images/restore_default_0.jpg" alt="" width="35%" />
