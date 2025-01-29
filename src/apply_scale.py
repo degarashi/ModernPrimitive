@@ -10,6 +10,7 @@ from .version import TypeAndVersion, get_primitive_version
 from .exception import DGInvalidInput
 import math
 from . import primitive_prop as prop
+from .aux_math import is_uniform, is_close
 
 
 WarnProc = Callable[[str], None]
@@ -21,18 +22,6 @@ def _xyz_scale(obj: Object, mod: NodesModifier, max_index: int) -> None:
     for i in range(max_index):
         scale_val = abs(obj.scale[i])
         modify_interface_value(mod, SIZE_ENT[i], lambda val, s=scale_val: val * s)
-
-
-def _isclose(*args) -> bool:
-    base = args[0]
-    for a in args[1:]:
-        if not math.isclose(base, a, rel_tol=1e-6):
-            return False
-    return True
-
-
-def _is_uniform(vec: Vector) -> bool:
-    return _isclose(*vec)
 
 
 def _abs_sum(*args) -> Any:
@@ -55,7 +44,7 @@ def _abs_average_vec(vec: Vector) -> float:
 
 
 def _is_xy_same(vec: Vector) -> bool:
-    return _isclose(vec.x, vec.y)
+    return is_close(vec.x, vec.y)
 
 
 def _rotate_x180(obj: Object) -> None:
@@ -98,7 +87,7 @@ def proc_grid(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
 
 
 def proc_torus(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
-    if not _is_uniform(obj.scale):
+    if not is_uniform(obj.scale):
         warn("Object is not uniformly scaled")
 
     scale_val = _abs_average_vec(obj.scale)
@@ -126,7 +115,7 @@ def proc_uvsphere(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
 
 def proc_icosphere(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
     # Generate an error if scaling is not uniform
-    if not _is_uniform(obj.scale):
+    if not is_uniform(obj.scale):
         warn("Object is not uniformly scaled")
 
     scale_val = _abs_average_vec(obj.scale)
@@ -168,7 +157,7 @@ def proc_gear(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
 def proc_spring(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
     if obj.scale.x < 0 or obj.scale.y < 0 or obj.scale.z < 0:
         raise DGInvalidInput("Negative scaling is not supported")
-    if not _is_uniform(obj.scale):
+    if not is_uniform(obj.scale):
         warn("Object is not uniformly scaled")
 
     scale_val = _abs_average_vec(obj.scale)
@@ -196,7 +185,7 @@ def proc_dcube(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
 
 
 def proc_capsule(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
-    if not _is_uniform(obj.scale):
+    if not is_uniform(obj.scale):
         warn("Object is not uniformly scaled")
 
     # -- xy scaling --
