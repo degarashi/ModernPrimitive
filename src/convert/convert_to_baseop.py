@@ -75,7 +75,8 @@ class ConvertTo_BaseOperator(Operator):
 
     def execute(self, context: Context | None) -> set[str]:
         sel = context.selected_objects.copy()
-        for obj in sel:
+        # Copy the list because the object may be deleted in the loop
+        for obj in sel.copy():
             # bound_box update
             if is_modern_primitive(obj):
                 bpy.ops.object.mode_set(mode="OBJECT")
@@ -112,7 +113,7 @@ class ConvertTo_BaseOperator(Operator):
             if self.apply_scale:
                 bpy.ops.object.mpr_apply_scale(strict=False)
 
-        if not self.keep_original:
-            for obj in sel:
+            if not self.keep_original:
                 bpy.data.objects.remove(obj)
+
         return {"FINISHED"}
