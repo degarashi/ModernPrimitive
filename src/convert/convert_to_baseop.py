@@ -1,22 +1,46 @@
 from bpy.types import Operator, Context, Object
 from ..constants import MODERN_PRIMITIVE_PREFIX
-from typing import cast
+from typing import cast, Iterable
 from bpy.props import BoolProperty, EnumProperty
 import bpy
-from ..aux_func import is_modern_primitive, get_bound_box
+from ..aux_func import is_modern_primitive, get_bound_box, get_real_vertices
 from mathutils import Matrix, Vector, Quaternion
 import math
+import numpy as np
+from ..aux_math import is_uniform
 
 
 class BBox:
     def __init__(self, obj: Object, context: Context, mat: Matrix | None = None):
-        (self.min, self.max) = get_bound_box(obj.bound_box, mat)
+        (self.min, self.max) = get_bound_box(get_real_vertices(context, obj, mat))
         self.size = self.max - self.min
         self.center = (self.min + self.max) / 2
 
     def __str__(self) -> str:
         return f"BBox(min={self.min}, max={self.max},\
 size={self.size}, center={self.center})"
+
+
+def _auto_axis(data: Iterable[Iterable[float]]) -> Quaternion:
+    verts = np.array(data)
+    # Data standardization
+    verts2 = verts - verts.mean(axis=0) / np.std(verts, axis=0)
+    # calc Convariance matrix
+    cov = np.cov(verts2, rowvar=False)
+    # Eigen values and Eigen vectors
+    eigval, eigvec = np.linalg.eig(cov)
+    # Sorting the unique value in descending order
+    sort_idx = np.argsort(eigval)[::-1]
+    eigval = eigval[sort_idx]
+    eigvec = eigvec[:, sort_idx]
+
+    a0 = np.append(eigvec[:, :1].reshape(1, 3), 0)
+    a1 = np.append(eigvec[:, 1:2].reshape(1, 3), 0)
+    a2 = np.append(eigvec[:, 2:3].reshape(1, 3), 0)
+    m = Matrix((a2, a1, a0, (0, 0, 0, 1)))
+    # return the rotating ingredients only
+    _, rot, _ = m.decompose()
+    return rot
 
 
 class ConvertTo_BaseOperator(Operator):
@@ -42,8 +66,9 @@ class ConvertTo_BaseOperator(Operator):
     # The main axis of Height (the Width axis is the other)
     main_axis: EnumProperty(
         name="Base Axis",
-        default="Z",
+        default="Auto",
         items=(
+            ("Auto", "Auto", ""),
             ("X", "X", ""),
             ("Y", "Y", ""),
             ("Z", "Z", ""),
@@ -82,16 +107,29 @@ class ConvertTo_BaseOperator(Operator):
                 bpy.ops.object.mode_set(mode="OBJECT")
             obj.data.update()
 
+            # 主軸をZ軸へと回転させる為のクォータニオン
             pre_rot: Quaternion
             # _handle Proc method handles the Z axis as height,
             #   so convert it in a timely manner.
             match self.main_axis:
+                case "Auto":
+                    pre_rot = _auto_axis(get_real_vertices(context, obj))
+                    # If the axis mode is Auto,
+                    #   an error will be made if the scale value is not uniform
+                    #        at this time.
+                    if not is_uniform(obj.scale):
+                        self.report(
+                            {"WARNING"},
+                            f"Couldn't convert \"{obj.name}\" because It didn't have a uniform scaling value", # noqa: E501
+                        )
+                        continue
+
                 case "X":
-                    # 90 degrees rotation around the Y axis
-                    pre_rot = Quaternion(((0, 1, 0)), math.radians(90))
+                    # -90 degrees rotation around the Y axis
+                    pre_rot = Quaternion(((0, 1, 0)), math.radians(-90))
                 case "Y":
-                    # X-90 degrees around the X-axis
-                    pre_rot = Quaternion((1, 0, 0), math.radians(-90))
+                    # 90 degrees around the X-axis
+                    pre_rot = Quaternion((1, 0, 0), math.radians(90))
                 case "Z":
                     # Do nothing
                     pre_rot = Quaternion()
@@ -102,11 +140,10 @@ class ConvertTo_BaseOperator(Operator):
             new_obj, offset = self._handle_proc(context, obj, bbox, mat)
             new_obj.name = obj.name + "_converted"
 
-            bbox0 = BBox(obj, context)
             new_obj.matrix_world = (
                 obj.matrix_world
-                @ Matrix.Translation(bbox0.center)
-                @ pre_rot.to_matrix().to_4x4()
+                @ pre_rot.inverted().to_matrix().to_4x4()
+                @ Matrix.Translation(bbox.center)
                 @ Matrix.Translation(offset)
             )
 
