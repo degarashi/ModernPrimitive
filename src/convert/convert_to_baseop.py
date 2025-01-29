@@ -118,9 +118,11 @@ class ConvertTo_BaseOperator(Operator):
                     #   an error will be made if the scale value is not uniform
                     #        at this time.
                     if not is_uniform(obj.scale):
+                        # If there is only one target object, treat it as an error
+                        typ = "WARNING" if len(sel) > 1 else "ERROR"
                         self.report(
-                            {"WARNING"},
-                            f"Couldn't convert \"{obj.name}\" because It didn't have a uniform scaling value", # noqa: E501
+                            {typ},
+                            f"Couldn't convert \"{obj.name}\" because It didn't have a uniform scaling value",  # noqa: E501
                         )
                         continue
 
