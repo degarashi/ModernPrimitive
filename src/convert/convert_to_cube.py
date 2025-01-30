@@ -47,8 +47,6 @@ class ConvertToCube_Operator(_ConvertToCube_Operator):
             bpy.ops.mesh.mpr_make_deformablecube()
 
         cube = get_object_just_added(context)
-        cube.matrix_world = obj.matrix_world
-
         if self.cube_type == "Cube":
             set_interface_values(
                 cube.modifiers[0],
@@ -59,7 +57,6 @@ class ConvertToCube_Operator(_ConvertToCube_Operator):
                     (prop.SizeZ.name, bbox.size.z / 2),
                 ),
             )
-            cube.location = obj.matrix_world @ bbox.center
         else:
             set_interface_values(
                 cube.modifiers[0],
