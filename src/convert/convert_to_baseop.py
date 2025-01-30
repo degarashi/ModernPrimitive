@@ -16,11 +16,8 @@ from ..aux_math import is_uniform
 
 
 class BBox:
-    def __init__(self, obj: Object, context: Context, mat: Matrix | None = None):
-        verts = get_real_vertices(context, obj)
-        if mat is not None:
-            verts = mul_vert_mat(verts, mat)
-        (self.min, self.max) = get_bound_box(verts)
+    def __init__(self, vert: Iterable[Vector]):
+        (self.min, self.max) = get_bound_box(vert)
         self.size = self.max - self.min
         self.center = (self.min + self.max) / 2
 
@@ -146,7 +143,9 @@ class ConvertTo_BaseOperator(Operator):
             mat = pre_rot.to_matrix()
 
             # get bound_box info (size, average)
-            bbox = BBox(obj, context, mat)
+            # Z軸を主軸にした場合のバウンディングボックス
+            verts = mul_vert_mat(get_real_vertices(context, obj), mat)
+            bbox = BBox(verts)
             new_obj, offset = self._handle_proc(context, obj, bbox, mat)
             new_obj.name = obj.name + "_converted"
 
