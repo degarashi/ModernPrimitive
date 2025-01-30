@@ -3,7 +3,12 @@ from ..constants import MODERN_PRIMITIVE_PREFIX
 from typing import cast, Iterable
 from bpy.props import BoolProperty, EnumProperty
 import bpy
-from ..aux_func import is_modern_primitive, get_bound_box, get_real_vertices
+from ..aux_func import (
+    is_modern_primitive,
+    get_bound_box,
+    get_real_vertices,
+    mul_vert_mat,
+)
 from mathutils import Matrix, Vector, Quaternion
 import math
 import numpy as np
@@ -12,7 +17,10 @@ from ..aux_math import is_uniform
 
 class BBox:
     def __init__(self, obj: Object, context: Context, mat: Matrix | None = None):
-        (self.min, self.max) = get_bound_box(get_real_vertices(context, obj, mat))
+        verts = get_real_vertices(context, obj)
+        if mat is not None:
+            verts = mul_vert_mat(verts, mat)
+        (self.min, self.max) = get_bound_box(verts)
         self.size = self.max - self.min
         self.center = (self.min + self.max) / 2
 

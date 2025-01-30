@@ -1,7 +1,7 @@
 from .convert_to_baseop import ConvertTo_BaseOperator, BBox
 from ..constants import Type, MIN_RADIUS
 from bpy.types import Object, Context
-from ..aux_func import get_object_just_added, get_real_vertices
+from ..aux_func import get_object_just_added, get_real_vertices, mul_vert_mat
 from mathutils import Vector, Matrix
 from ..aux_node import set_interface_values
 from .. import primitive_prop as prop
@@ -27,7 +27,7 @@ class ConvertToCone_Operator(_ConvertToCone_Operator):
         top_r: float = MIN_RADIUS
         bottom_r: float = MIN_RADIUS
 
-        verts = get_real_vertices(context, obj, mat)
+        verts = mul_vert_mat(get_real_vertices(context, obj), mat)
         for v in verts:
             if v.z >= bbox.center.z:
                 # Get the top half vertices
