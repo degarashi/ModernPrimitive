@@ -26,7 +26,7 @@ class BBox:
 size={self.size}, center={self.center})"
 
 
-def _auto_axis(data: Iterable[Iterable[float]]) -> Quaternion:
+def _auto_axis(data: Iterable[Iterable[float]]) -> tuple[Vector, Vector, Vector]:
     # Converts the vertex coordinates to NumPy array
     verts = np.array(data)
     # Data standardization
@@ -40,13 +40,16 @@ def _auto_axis(data: Iterable[Iterable[float]]) -> Quaternion:
     sort_idx = eigval.argsort()[::-1]
     eigvec = eigvec[:, sort_idx]
 
-    a0 = np.append(eigvec[:, :1].reshape(1, 3), 0)
-    a1 = np.append(eigvec[:, 1:2].reshape(1, 3), 0)
-    a2 = np.append(eigvec[:, 2:3].reshape(1, 3), 0)
-    m = Matrix((a2, a1, a0, (0, 0, 0, 1)))
-    # return the rotating ingredients only
-    _, rot, _ = m.decompose()
-    return rot
+    a0 = eigvec[:, :1].reshape(1, 3)
+    a1 = eigvec[:, 1:2].reshape(1, 3)
+    a2 = eigvec[:, 2:3].reshape(1, 3)
+    return Vector(a0[0]), Vector(a1[0]), Vector(a2[0])
+
+
+def to_4d_0(vec: Vector) -> Vector:
+    ret = vec.to_4d()
+    ret[3] = 0
+    return ret
 
 
 class ConvertTo_BaseOperator(Operator):
@@ -130,7 +133,16 @@ class ConvertTo_BaseOperator(Operator):
                             f"Couldn't convert \"{obj.name}\" because It didn't have a uniform scaling value",  # noqa: E501
                         )
                         continue
-                    pre_rot = _auto_axis(get_evaluated_vertices(context, obj))
+                    axis = _auto_axis(get_evaluated_vertices(context, obj))
+                    m = Matrix(
+                        (
+                            to_4d_0(axis[0]),
+                            to_4d_0(axis[1]),
+                            to_4d_0(axis[2]),
+                            (0, 0, 0, 1),
+                        )
+                    )
+                    _, pre_rot, _ = m.decompose()
 
                 case "X":
                     # -90 degrees rotation around the Y axis
