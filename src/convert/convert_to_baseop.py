@@ -27,16 +27,17 @@ size={self.size}, center={self.center})"
 
 
 def _auto_axis(data: Iterable[Iterable[float]]) -> Quaternion:
+    # Converts the vertex coordinates to NumPy array
     verts = np.array(data)
     # Data standardization
-    verts2 = verts - verts.mean(axis=0) / np.std(verts, axis=0)
+    mean_coords = verts.mean(axis=0)
+    verts = verts - mean_coords
     # calc Convariance matrix
-    cov = np.cov(verts2, rowvar=False)
+    cov = np.cov(verts, rowvar=False)
     # Eigen values and Eigen vectors
     eigval, eigvec = np.linalg.eig(cov)
-    # Sorting the unique value in descending order
-    sort_idx = np.argsort(eigval)[::-1]
-    eigval = eigval[sort_idx]
+    # Sorting the unique vec in descending order
+    sort_idx = eigval.argsort()[::-1]
     eigvec = eigvec[:, sort_idx]
 
     a0 = np.append(eigvec[:, :1].reshape(1, 3), 0)
