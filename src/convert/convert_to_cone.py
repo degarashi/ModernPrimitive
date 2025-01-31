@@ -1,10 +1,11 @@
 from .convert_to_baseop import ConvertTo_BaseOperator, BBox
 from ..constants import Type, MIN_RADIUS
 from bpy.types import Object, Context
-from ..aux_func import get_object_just_added, get_evaluated_vertices, mul_vert_mat
-from mathutils import Vector, Matrix
+from ..aux_func import get_object_just_added
+from mathutils import Vector
 from ..aux_node import set_interface_values
 from .. import primitive_prop as prop
+from typing import Sequence
 
 import bpy.ops
 
@@ -21,13 +22,12 @@ class ConvertToCone_Operator(_ConvertToCone_Operator):
     bl_label = B.bl_label
 
     def _handle_proc(
-        self, context: Context, obj: Object, bbox: BBox, mat: Matrix
+        self, context: Context, bbox: BBox, verts: Sequence[Vector]
     ) -> tuple[Object, Vector]:
         # Divide into upper half and lower half in the z-axis direction
         top_r: float = MIN_RADIUS
         bottom_r: float = MIN_RADIUS
 
-        verts = mul_vert_mat(get_evaluated_vertices(context, obj), mat)
         for v in verts:
             if v.z >= bbox.center.z:
                 # Get the top half vertices

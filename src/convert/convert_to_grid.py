@@ -10,7 +10,8 @@ from ..aux_func import (
 from ..aux_node import set_interface_values
 from .. import primitive_prop as prop
 from ..constants import Type
-from mathutils import Vector, Matrix
+from mathutils import Vector
+from typing import Sequence
 
 
 class _ConvertToGrid_Operator(ConvertTo_BaseOperator):
@@ -25,7 +26,7 @@ class ConvertToGrid_Operator(_ConvertToGrid_Operator):
     bl_label = B.bl_label
 
     def _handle_proc(
-        self, context: Context, obj: Object, bbox: BBox, mat: Matrix
+        self, context: Context, bbox: BBox, verts: Sequence[Vector]
     ) -> tuple[Object, Vector]:
         # I just want the size on the XY plane, so I can use a bounding box
 

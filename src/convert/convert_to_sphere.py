@@ -9,7 +9,8 @@ from ..aux_func import get_object_just_added
 from .. import primitive_prop as prop
 from ..aux_node import set_interface_values
 from bpy.props import EnumProperty
-from mathutils import Vector, Matrix
+from mathutils import Vector
+from typing import Sequence
 
 
 class _ConvertToSphere_Operator(ConvertTo_BaseOperator):
@@ -42,7 +43,7 @@ class ConvertToSphere_Operator(_ConvertToSphere_Operator):
     )
 
     def _handle_proc(
-        self, context: Context, obj: Object, bbox: BBox, mat: Matrix
+        self, context: Context, bbox: BBox, verts: Sequence[Vector]
     ) -> tuple[Object, Vector]:
         match self.sphere_type:
             case "UVSphere":

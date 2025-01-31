@@ -7,7 +7,8 @@ from ..aux_func import (
 from ..aux_node import set_interface_values
 from .. import primitive_prop as prop
 import bpy.ops
-from mathutils import Vector, Matrix
+from mathutils import Vector
+from typing import Sequence
 
 
 class _ConvertToCylinder_Operator(ConvertTo_BaseOperator):
@@ -22,7 +23,7 @@ class ConvertToCylinder_Operator(_ConvertToCylinder_Operator):
     bl_label = B.bl_label
 
     def _handle_proc(
-        self, context: Context, obj: Object, bbox: BBox, mat: Matrix
+        self, context: Context, bbox: BBox, verts: Sequence[Vector]
     ) -> tuple[Object, Vector]:
         bpy.ops.mesh.mpr_make_cylinder()
         cy = get_object_just_added(context)

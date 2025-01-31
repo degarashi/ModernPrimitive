@@ -12,6 +12,7 @@ from ..aux_node import set_interface_values
 from .. import primitive_prop as prop
 from ..constants import Type
 from mathutils import Vector, Matrix
+from typing import Sequence
 
 
 class _ConvertToCube_Operator(ConvertTo_BaseOperator):
@@ -35,11 +36,7 @@ class ConvertToCube_Operator(_ConvertToCube_Operator):
     )
 
     def _handle_proc(
-        self,
-        context: Context,
-        obj: Object,
-        bbox: BBox,
-        mat: Matrix,
+        self, context: Context, bbox: BBox, verts: Sequence[Vector]
     ) -> tuple[Object, Vector]:
         if self.cube_type == "Cube":
             bpy.ops.mesh.mpr_make_cube()
