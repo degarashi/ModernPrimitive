@@ -5,7 +5,7 @@ from bpy.props import BoolProperty, EnumProperty
 import bpy
 from ..aux_func import (
     is_modern_primitive,
-    get_bound_box,
+    calc_aabb,
     get_evaluated_vertices,
     mul_vert_mat,
 )
@@ -17,7 +17,7 @@ from ..aux_math import is_uniform
 
 class BBox:
     def __init__(self, vert: Iterable[Vector]):
-        (self.min, self.max) = get_bound_box(vert)
+        (self.min, self.max) = calc_aabb(vert)
         self.size = self.max - self.min
         self.center = (self.min + self.max) / 2
 
