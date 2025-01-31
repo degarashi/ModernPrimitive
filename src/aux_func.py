@@ -259,5 +259,5 @@ def get_evaluated_vertices(context: Context, obj: Object) -> list[Vector]:
     return verts
 
 
-def mul_vert_mat(verts: Iterable[Vector], mat: Matrix) -> tuple[Vector]:
-    return tuple((mat @ v).to_3d() for v in verts)
+def mul_vert_mat(verts: Iterable[Vector], mat: Matrix) -> list[Vector]:
+    return [(mat @ v).to_3d() for v in verts]
