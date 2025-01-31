@@ -119,7 +119,6 @@ class ConvertTo_BaseOperator(Operator):
             #   so convert it in a timely manner.
             match self.main_axis:
                 case "Auto":
-                    pre_rot = _auto_axis(get_evaluated_vertices(context, obj))
                     # If the axis mode is Auto,
                     #   an error will be made if the scale value is not uniform
                     #        at this time.
@@ -131,6 +130,7 @@ class ConvertTo_BaseOperator(Operator):
                             f"Couldn't convert \"{obj.name}\" because It didn't have a uniform scaling value",  # noqa: E501
                         )
                         continue
+                    pre_rot = _auto_axis(get_evaluated_vertices(context, obj))
 
                 case "X":
                     # -90 degrees rotation around the Y axis
