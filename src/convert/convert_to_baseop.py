@@ -113,7 +113,7 @@ class ConvertTo_BaseOperator(Operator):
                 bpy.ops.object.mode_set(mode="OBJECT")
             obj.data.update()
 
-            # 主軸をZ軸へと回転させる為のクォータニオン
+            # Quotanion for rotating the main axis to the Z axis
             pre_rot: Quaternion
             # _handle Proc method handles the Z axis as height,
             #   so convert it in a timely manner.
@@ -144,7 +144,7 @@ class ConvertTo_BaseOperator(Operator):
             mat = pre_rot.to_matrix()
 
             # get bound_box info (size, average)
-            # Z軸を主軸にした場合のバウンディングボックス
+            # Bounding box when the z-axis is the main axis
             verts = mul_vert_mat(get_evaluated_vertices(context, obj), mat)
             bbox = BBox(verts)
             new_obj, offset = self._handle_proc(context, obj, bbox, mat)
