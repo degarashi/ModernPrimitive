@@ -6,7 +6,7 @@ import bpy
 from ..aux_func import (
     is_modern_primitive,
     get_bound_box,
-    get_real_vertices,
+    get_evaluated_vertices,
     mul_vert_mat,
 )
 from mathutils import Matrix, Vector, Quaternion
@@ -118,7 +118,7 @@ class ConvertTo_BaseOperator(Operator):
             #   so convert it in a timely manner.
             match self.main_axis:
                 case "Auto":
-                    pre_rot = _auto_axis(get_real_vertices(context, obj))
+                    pre_rot = _auto_axis(get_evaluated_vertices(context, obj))
                     # If the axis mode is Auto,
                     #   an error will be made if the scale value is not uniform
                     #        at this time.
@@ -144,7 +144,7 @@ class ConvertTo_BaseOperator(Operator):
 
             # get bound_box info (size, average)
             # Z軸を主軸にした場合のバウンディングボックス
-            verts = mul_vert_mat(get_real_vertices(context, obj), mat)
+            verts = mul_vert_mat(get_evaluated_vertices(context, obj), mat)
             bbox = BBox(verts)
             new_obj, offset = self._handle_proc(context, obj, bbox, mat)
             new_obj.name = obj.name + "_converted"

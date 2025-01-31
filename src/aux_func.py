@@ -240,7 +240,8 @@ def copy_rotation(dst: Object, src: Object) -> None:
     dst.rotation_euler = src.rotation_euler
 
 
-def get_real_vertices(context: Context, obj: Object) -> tuple[Vector]:
+# Acquire vertices of the applied modifier, etc.
+def get_evaluated_vertices(context: Context, obj: Object) -> tuple[Vector]:
     depsgraph = context.evaluated_depsgraph_get()
     eval_obj = obj.evaluated_get(depsgraph)
     mesh: Mesh = eval_obj.to_mesh()
