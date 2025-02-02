@@ -109,7 +109,13 @@ class ConvertTo_BaseOperator(Operator):
 
     def execute(self, context: Context | None) -> set[str]:
         sel = context.selected_objects.copy()
+
+        # If there is only one target object, treat it as an error
         err_typ = "WARNING" if len(sel) > 1 else "ERROR"
+
+        def report_error(obj: Object, msg: str) -> None:
+            self.report({err_typ}, f'Couldn\'t convert "{obj.name}" because {msg}')
+
         # Copy the list because the object may be deleted in the loop
         for obj in sel.copy():
             # bound_box update
@@ -119,10 +125,7 @@ class ConvertTo_BaseOperator(Operator):
 
             # If the number of vertices is less than 2, conversion is not possible.
             if len(obj.data.vertices) < 2:
-                self.report(
-                    {err_typ},
-                    f"Couldn't convert \"{obj.name}\" because it's number of vertices is less than 2",  # noqa: E501
-                )
+                report_error(obj, "it's number of vertices is less than 2")
                 continue
 
             # Quotanion for rotating the main axis to the Z axis
@@ -135,12 +138,9 @@ class ConvertTo_BaseOperator(Operator):
                     #   an error will be made if the scale value is not uniform
                     #        at this time.
                     if not is_uniform(obj.scale):
-                        # If there is only one target object, treat it as an error
-                        self.report(
-                            {err_typ},
-                            f"Couldn't convert \"{obj.name}\" because It didn't have a uniform scaling value",  # noqa: E501
-                        )
+                        report_error(obj, "it didn't have a uniform scaling value")
                         continue
+
                     axis = _auto_axis(get_evaluated_vertices(context, obj))
                     m = Matrix(
                         (
