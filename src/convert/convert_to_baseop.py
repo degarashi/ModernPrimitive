@@ -109,12 +109,21 @@ class ConvertTo_BaseOperator(Operator):
 
     def execute(self, context: Context | None) -> set[str]:
         sel = context.selected_objects.copy()
+        err_typ = "WARNING" if len(sel) > 1 else "ERROR"
         # Copy the list because the object may be deleted in the loop
         for obj in sel.copy():
             # bound_box update
             if is_modern_primitive(obj):
                 bpy.ops.object.mode_set(mode="OBJECT")
             obj.data.update()
+
+            # If the number of vertices is less than 2, conversion is not possible.
+            if len(obj.data.vertices) < 2:
+                self.report(
+                    {err_typ},
+                    f"Couldn't convert \"{obj.name}\" because it's number of vertices is less than 2",  # noqa: E501
+                )
+                continue
 
             # Quotanion for rotating the main axis to the Z axis
             pre_rot: Quaternion
@@ -127,9 +136,8 @@ class ConvertTo_BaseOperator(Operator):
                     #        at this time.
                     if not is_uniform(obj.scale):
                         # If there is only one target object, treat it as an error
-                        typ = "WARNING" if len(sel) > 1 else "ERROR"
                         self.report(
-                            {typ},
+                            {err_typ},
                             f"Couldn't convert \"{obj.name}\" because It didn't have a uniform scaling value",  # noqa: E501
                         )
                         continue
