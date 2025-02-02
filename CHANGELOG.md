@@ -1,4 +1,8 @@
 # Changelog
+## v0.0.23
+- added "Select Base Axis" option to  ConvertTo(Primitive) Operator
+<img src="./doc_images/convert_axis_0.jpg" alt="" width="75%" />
+
 ## v0.0.22
 - added Convert to (Grid, Sphere, Cylinder, Cone, Torus, Tube, Capsule) operators
 <img src="./doc_images/convert_others_0.jpg" alt="" width="40%" />

@@ -35,9 +35,8 @@ DeformableCube's "set origin to center" operator <br>
 <img src="./doc_images/usage_deformable_cube_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_capsule_0.jpg" alt="" width="25%" />
 
 # Changelog
-## v0.0.23
-- added "Select Base Axis" option to  ConvertTo(Primitive) Operator
-<img src="./doc_images/convert_axis_0.jpg" alt="" width="75%" />
+## v0.0.24
+- fixed texture stretching in UV-Evenly mode when objects are scaled
 
 ## Other
 [<ins>View all log</ins>](CHANGELOG.md)
