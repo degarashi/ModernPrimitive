@@ -37,13 +37,12 @@ def _auto_axis(pts: Iterable[Iterable[float]]) -> tuple[Vector, Vector, Vector]:
     # Eigen values and Eigen vectors
     eigval, eigvec = np.linalg.eigh(cov)
     # Sorting the unique vec in descending order
-    sort_idx = eigval.argsort()[::-1]
-    eigvec = eigvec[:, sort_idx]
+    eigvec = eigvec[:, eigval.argsort()[::-1]]
 
-    a0 = eigvec[:, :1].reshape(1, 3)
-    a1 = eigvec[:, 1:2].reshape(1, 3)
-    a2 = eigvec[:, 2:3].reshape(1, 3)
-    return Vector(a0[0]), Vector(a1[0]), Vector(a2[0])
+    a0 = Vector(eigvec[:, 0])
+    a1 = Vector(eigvec[:, 1])
+    a2 = Vector(eigvec[:, 2])
+    return a0, a1, a2
 
 
 def to_4d_0(vec: Vector) -> Vector:
