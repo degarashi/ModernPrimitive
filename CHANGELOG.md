@@ -1,4 +1,7 @@
 # Changelog
+## v0.0.24
+- fixed texture stretching in UV-Evenly mode when objects are scaled
+
 ## v0.0.23
 - added "Select Base Axis" option to  ConvertTo(Primitive) Operator
 <img src="./doc_images/convert_axis_0.jpg" alt="" width="75%" />
