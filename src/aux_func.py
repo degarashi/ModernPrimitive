@@ -255,7 +255,6 @@ def get_evaluated_vertices(context: Context, obj: Object) -> list[Vector]:
     eval_obj = obj.evaluated_get(depsgraph)
     mesh: Mesh = eval_obj.to_mesh()
     verts: list[Vector] = [v.co for v in cast(MeshVertex, mesh.vertices)]
-    eval_obj.to_mesh_clear()
     return verts
 
 
