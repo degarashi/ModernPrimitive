@@ -82,6 +82,16 @@ class ConvertTo_BaseOperator(Operator):
             ("Z", "Z", ""),
         ),
     )
+    invert_main_axis: BoolProperty(name="Invert", default=False)
+
+    def draw(self, context: Context) -> None:
+        layout = self.layout
+
+        layout.prop(self, "keep_original")
+        layout.prop(self, "apply_scale")
+        box = layout.box()
+        box.prop(self, "main_axis")
+        box.prop(self, "invert_main_axis")
 
     @classmethod
     def poll(cls, context: Context | None) -> bool:
@@ -214,6 +224,9 @@ class ConvertTo_BaseOperator(Operator):
                 case "Z":
                     # Do nothing
                     pre_rot = Quaternion()
+            # invert axis if flag set
+            if self.invert_main_axis:
+                pre_rot.rotate(Quaternion((0, 1, 0), math.radians(180)))
             mat_rot90 = pre_rot.to_matrix()
 
             # get bound_box info (size, average)
