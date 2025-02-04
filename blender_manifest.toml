@@ -80,5 +80,6 @@ paths_exclude_pattern = [
   "pyproject.toml",
   "LICENSE.txt",
   "README.md",
+  "CHANGELOG.md",
   "activate_env.bat",
 ]
