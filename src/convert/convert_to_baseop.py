@@ -134,6 +134,7 @@ class ConvertTo_BaseOperator(Operator):
 
             # Quotanion for rotating the main axis to the Z axis
             pre_rot: Quaternion
+            should_flip: bool = False
             # _handle Proc method handles the Z axis as height,
             #   so convert it in a timely manner.
             match self.main_axis:
@@ -214,6 +215,10 @@ class ConvertTo_BaseOperator(Operator):
                         )
                     )
                     pre_rot = m.to_quaternion()
+                    # If the Z axis is facing down in the object coordinate system,
+                    #   flip automatically
+                    if (pre_rot @ Vector((0, 0, 1))).z < 0:
+                        should_flip = True
 
                 case "X":
                     # -90 degrees rotation around the Y axis
@@ -226,6 +231,9 @@ class ConvertTo_BaseOperator(Operator):
                     pre_rot = Quaternion()
             # invert axis if flag set
             if self.invert_main_axis:
+                should_flip = not should_flip
+
+            if should_flip:
                 pre_rot.rotate(Quaternion((0, 1, 0), math.radians(180)))
             mat_rot90 = pre_rot.to_matrix()
 
