@@ -80,6 +80,8 @@ class ConvertTo_BaseOperator(Operator):
     )
     invert_main_axis: BoolProperty(name="Invert", default=False)
     postfix: StringProperty(name="postfix", default="_converted")
+    copy_modifier: BoolProperty(name="Copy Modifiers", default=True)
+    copy_material: BoolProperty(name="Copy Material", default=True)
 
     def draw(self, context: Context) -> None:
         layout = self.layout
@@ -90,6 +92,10 @@ class ConvertTo_BaseOperator(Operator):
         box.prop(self, "main_axis")
         box.prop(self, "invert_main_axis")
         layout.prop(self, "postfix")
+
+        box = layout.box()
+        box.prop(self, "copy_modifier")
+        box.prop(self, "copy_material")
 
     @classmethod
     def poll(cls, context: Context | None) -> bool:
@@ -246,24 +252,28 @@ class ConvertTo_BaseOperator(Operator):
         )
 
         # copy materials
-        if obj.data.materials:
-            new_obj.data.materials.clear()
-            for m in obj.data.materials:
-                new_obj.data.materials.append(m)
+        if self.copy_material:
+            if obj.data.materials:
+                new_obj.data.materials.clear()
+                for m in obj.data.materials:
+                    new_obj.data.materials.append(m)
 
         # copy modifiers
-        for m_src in obj.modifiers:
-            if is_primitive_mod(m_src):
-                continue
+        if self.copy_modifier:
+            for m_src in obj.modifiers:
+                if is_primitive_mod(m_src):
+                    continue
 
-            m_dst = new_obj.modifiers.new(m_src.name, m_src.type)
+                m_dst = new_obj.modifiers.new(m_src.name, m_src.type)
 
-            # collect names of writable properties
-            props = [p.identifier for p in m_src.bl_rna.properties if not p.is_readonly]
+                # collect names of writable properties
+                props = [
+                    p.identifier for p in m_src.bl_rna.properties if not p.is_readonly
+                ]
 
-            # copy properties
-            for prop in props:
-                setattr(m_dst, prop, getattr(m_src, prop))
+                # copy properties
+                for prop in props:
+                    setattr(m_dst, prop, getattr(m_src, prop))
 
         if self.apply_scale:
             bpy.ops.object.mpr_apply_scale(strict=False)
