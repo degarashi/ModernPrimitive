@@ -56,7 +56,8 @@ class MPR_PT_Main(Panel):
         layout.operator(FocusModifier_Operator.bl_idname, text="Focus/Unfocus Modifier")
 
         box = layout.box()
-        box.label(text="Convert to")
+        box.label(text="Convert to:")
+        box.label(text="(SHIFT: Keep Original Object)")
         grid = box.grid_flow(columns=3, row_major=True)
         c = grid.operator(ConvertToCube_Operator.bl_idname, text="Cube")
         c.cube_type = "Cube"
