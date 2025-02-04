@@ -1,7 +1,7 @@
 from bpy.types import Operator, Context, Object
 from ..constants import MODERN_PRIMITIVE_PREFIX
 from typing import cast, Iterable, Sequence
-from bpy.props import BoolProperty, EnumProperty
+from bpy.props import BoolProperty, EnumProperty, StringProperty
 import bpy
 from ..aux_func import calc_aabb, get_evaluated_vertices, mul_vert_mat, is_primitive_mod
 from mathutils import Matrix, Vector, Quaternion, geometry
@@ -79,6 +79,7 @@ class ConvertTo_BaseOperator(Operator):
         ),
     )
     invert_main_axis: BoolProperty(name="Invert", default=False)
+    postfix: StringProperty(name="postfix", default="_converted")
 
     def draw(self, context: Context) -> None:
         layout = self.layout
@@ -88,6 +89,7 @@ class ConvertTo_BaseOperator(Operator):
         box = layout.box()
         box.prop(self, "main_axis")
         box.prop(self, "invert_main_axis")
+        layout.prop(self, "postfix")
 
     @classmethod
     def poll(cls, context: Context | None) -> bool:
@@ -234,7 +236,7 @@ class ConvertTo_BaseOperator(Operator):
         verts = mul_vert_mat(verts, mat_rot90)
         bbox = BBox(verts)
         new_obj, offset = self._handle_proc(context, bbox, verts)
-        new_obj.name = obj.name + "_converted"
+        new_obj.name = obj.name + self.postfix
 
         new_obj.matrix_world = (
             obj.matrix_world
