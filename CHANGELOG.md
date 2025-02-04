@@ -1,4 +1,7 @@
 # Changelog
+## v0.0.25
+- fixed an issue where the coordinates were not calculated correctly due to a memory release error in the ConvertTo(Primitive) operator
+
 ## v0.0.24
 - fixed texture stretching in UV-Evenly mode when objects are scaled
 

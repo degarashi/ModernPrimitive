@@ -35,8 +35,8 @@ DeformableCube's "set origin to center" operator <br>
 <img src="./doc_images/usage_deformable_cube_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_capsule_0.jpg" alt="" width="25%" />
 
 # Changelog
-## v0.0.25
-- fixed an issue where the coordinates were not calculated correctly due to a memory release error in the ConvertTo(Primitive) operator
+## v0.0.26
+- ConvertTo(Primitive) operator: copy materials and modifiers from original object
 
 ## Other
 [<ins>View all log</ins>](CHANGELOG.md)
