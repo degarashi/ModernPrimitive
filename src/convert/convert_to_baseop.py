@@ -1,4 +1,4 @@
-from bpy.types import Operator, Context, Object
+from bpy.types import Operator, Context, Object, Event
 from ..constants import MODERN_PRIMITIVE_PREFIX
 from typing import cast, Iterable, Sequence
 from bpy.props import BoolProperty, EnumProperty, StringProperty
@@ -273,6 +273,10 @@ class ConvertTo_BaseOperator(Operator):
 
     def _report_error(self, err_typ: str, obj: Object, msg: str) -> None:
         self.report({err_typ}, f'Couldn\'t convert "{obj.name}" because {msg}')
+
+    def invoke(self, context: Context, event: Event) -> set[str]:
+        self.keep_original = event.shift
+        return self.execute(context)
 
     def execute(self, context: Context | None) -> set[str]:
         sel = context.selected_objects.copy()
