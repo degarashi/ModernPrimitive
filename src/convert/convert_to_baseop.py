@@ -3,11 +3,7 @@ from ..constants import MODERN_PRIMITIVE_PREFIX
 from typing import cast, Iterable, Sequence
 from bpy.props import BoolProperty, EnumProperty
 import bpy
-from ..aux_func import (
-    calc_aabb,
-    get_evaluated_vertices,
-    mul_vert_mat,
-)
+from ..aux_func import calc_aabb, get_evaluated_vertices, mul_vert_mat, is_primitive_mod
 from mathutils import Matrix, Vector, Quaternion, geometry
 import math
 import numpy as np
@@ -246,6 +242,26 @@ class ConvertTo_BaseOperator(Operator):
             @ Matrix.Translation(bbox.center)
             @ Matrix.Translation(offset)
         )
+
+        # copy materials
+        if obj.data.materials:
+            new_obj.data.materials.clear()
+            for m in obj.data.materials:
+                new_obj.data.materials.append(m)
+
+        # copy modifiers
+        for m_src in obj.modifiers:
+            if is_primitive_mod(m_src):
+                continue
+
+            m_dst = new_obj.modifiers.new(m_src.name, m_src.type)
+
+            # collect names of writable properties
+            props = [p.identifier for p in m_src.bl_rna.properties if not p.is_readonly]
+
+            # copy properties
+            for prop in props:
+                setattr(m_dst, prop, getattr(m_src, prop))
 
         if self.apply_scale:
             bpy.ops.object.mpr_apply_scale(strict=False)
