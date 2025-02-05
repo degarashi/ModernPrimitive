@@ -79,6 +79,7 @@ class ConvertTo_BaseOperator(Operator):
         ),
     )
     invert_main_axis: BoolProperty(name="Invert", default=False)
+    treat_as_short: BoolProperty(name="Treat As Short", default=False)
     postfix: StringProperty(name="postfix", default="_converted")
     copy_modifier: BoolProperty(name="Copy Modifiers", default=True)
     copy_material: BoolProperty(name="Copy Material", default=True)
@@ -90,6 +91,8 @@ class ConvertTo_BaseOperator(Operator):
         layout.prop(self, "apply_scale")
         box = layout.box()
         box.prop(self, "main_axis")
+        if self.main_axis == "Auto":
+            box.prop(self, "treat_as_short")
         box.prop(self, "invert_main_axis")
         layout.prop(self, "postfix")
 
@@ -205,6 +208,13 @@ class ConvertTo_BaseOperator(Operator):
                 y_axis = best_normal
                 # X-axis is found by taking the cross product of y_axis and z_axis
                 x_axis = y_axis.cross(z_axis)
+
+                # If there is a flag to handle the short side as an Z axis
+                #   replace the axis here.
+                if self.treat_as_short:
+                    z_axis, y_axis = y_axis, z_axis
+                    # flip X-axis
+                    x_axis *= -1
 
                 m = Matrix(
                     (
