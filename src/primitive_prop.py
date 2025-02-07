@@ -1,6 +1,7 @@
 from enum import Enum, auto
 from typing import NamedTuple
 from .exception import DGPropertyNotFound
+from mathutils import Vector
 
 
 class PropType(Enum):
@@ -43,6 +44,7 @@ def get_max(index: int) -> Prop:
     return (MaxX, MaxY, MaxZ)[index]
 
 
+Size = Prop("Size", Vector, {PT.Size})
 SizeX = Prop("Size X", float, {PT.Size, PT.Width})
 SizeY = Prop("Size Y", float, {PT.Size, PT.Width})
 SizeZ = Prop("Size Z", float, {PT.Size, PT.Height})
@@ -96,6 +98,7 @@ InnerCircleDivision = Prop("InnerCircle Division", int, {PT.Division})
 Rotations = Prop("Rotations", float, {PT.Other})
 
 PROP_LIST: list[Prop] = [
+    Size,
     SizeX,
     SizeY,
     SizeZ,
