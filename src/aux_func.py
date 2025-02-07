@@ -249,11 +249,16 @@ def copy_rotation(dst: Object, src: Object) -> None:
     dst.rotation_euler = src.rotation_euler
 
 
-# Acquire vertices of the applied modifier, etc.
-def get_evaluated_vertices(context: Context, obj: Object) -> list[Vector]:
+def get_evaluated_mesh(context: Context, obj: Object) -> Mesh:
     depsgraph = context.evaluated_depsgraph_get()
     eval_obj = obj.evaluated_get(depsgraph)
     mesh: Mesh = eval_obj.to_mesh()
+    return mesh
+
+
+# Acquire vertices of the applied modifier, etc.
+def get_evaluated_vertices(context: Context, obj: Object) -> list[Vector]:
+    mesh = get_evaluated_mesh(context, obj)
     verts: list[Vector] = [v.co for v in cast(MeshVertex, mesh.vertices)]
     return verts
 
