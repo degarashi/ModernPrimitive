@@ -1,4 +1,7 @@
 # Changelog
+## v0.0.26
+- ConvertTo(Primitive) operator: copy materials and modifiers from original object
+
 ## v0.0.25
 - fixed an issue where the coordinates were not calculated correctly due to a memory release error in the ConvertTo(Primitive) operator
 

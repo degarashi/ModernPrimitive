@@ -35,8 +35,13 @@ DeformableCube's "set origin to center" operator <br>
 <img src="./doc_images/usage_deformable_cube_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_capsule_0.jpg" alt="" width="25%" />
 
 # Changelog
-## v0.0.26
-- ConvertTo(Primitive) operator: copy materials and modifiers from original object
+## v0.0.27
+- added Pivot adjustment option
+<img src="./doc_images/pivot_adjust.jpg" alt="" width="50%" />
+
+- added "Treat As Short" option to ConvertTo operator<br>
+This is useful when switching flat cubes to torus
+<img src="./doc_images/treat_as_short.jpg" alt="" width="50%" />
 
 ## Other
 [<ins>View all log</ins>](CHANGELOG.md)
