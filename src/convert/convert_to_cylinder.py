@@ -39,4 +39,4 @@ class ConvertToCylinder_Operator(_ConvertToCylinder_Operator):
                 (prop.Height.name, height),
             ),
         )
-        return cy, Vector((0, 0, -height / 2))
+        return cy, Vector()

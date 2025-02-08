@@ -49,9 +49,7 @@ class ConvertToCube_Operator(_ConvertToCube_Operator):
                 cube.modifiers[0],
                 context,
                 (
-                    (prop.SizeX.name, bbox.size.x / 2),
-                    (prop.SizeY.name, bbox.size.y / 2),
-                    (prop.SizeZ.name, bbox.size.z / 2),
+                    (prop.Size.name, bbox.size),
                 ),
             )
         else:

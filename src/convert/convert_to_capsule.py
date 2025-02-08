@@ -29,7 +29,7 @@ class ConvertToCapsule_Operator(_ConvertToCapsule_Operator):
         capsule = get_object_just_added(context)
 
         radius = max(MIN_RADIUS, (bbox.size.x + bbox.size.y) / 4)
-        height = max(MIN_SIZE, bbox.size.z / 2 - radius)
+        height = max(MIN_SIZE, bbox.size.z - radius*2)
         set_interface_values(
             capsule.modifiers[0],
             context,

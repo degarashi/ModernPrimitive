@@ -49,4 +49,4 @@ class ConvertToCone_Operator(_ConvertToCone_Operator):
                 (prop.Height.name, bbox.size.z),
             ),
         )
-        return cone, Vector((0, 0, -bbox.size.z / 2))
+        return cone, Vector()

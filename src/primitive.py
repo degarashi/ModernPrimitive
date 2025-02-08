@@ -54,9 +54,7 @@ class Primitive:
 class Primitive_Cube(Primitive):
     type = Type.Cube
     param: tuple[P.Prop] = (
-        P.SizeX,
-        P.SizeY,
-        P.SizeZ,
+        P.Size,
         P.DivisionX,
         P.DivisionY,
         P.DivisionZ,
@@ -105,7 +103,6 @@ class Primitive_Cylinder(Primitive):
         P.DivisionCircle,
         P.DivisionSide,
         P.DivisionFill,
-        P.Centered,
     )
 
 
@@ -130,7 +127,6 @@ class Primitive_Tube(Primitive):
         P.DivisionSide,
         P.OuterRadius,
         P.InnerRadius,
-        P.Centered,
     )
 
 

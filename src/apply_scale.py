@@ -5,7 +5,12 @@ from typing import Callable, cast, Any
 from mathutils import Vector, Quaternion
 from .constants import MODERN_PRIMITIVE_PREFIX, Type
 from .aux_func import get_selected_primitive
-from .aux_node import swap_interface_value, modify_interface_value
+from .aux_node import (
+    swap_interface_value,
+    modify_interface_value,
+    get_interface_value,
+    set_interface_value,
+)
 from .version import TypeAndVersion, get_primitive_version
 from .exception import DGInvalidInput
 import math
@@ -65,7 +70,17 @@ def _check_xy_same(vec: Vector, warn: WarnProc) -> None:
 
 
 def proc_cube(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
-    _xyz_scale(obj, mod, 3)
+    sc = Vector(
+        (
+            abs(obj.scale[0]),
+            abs(obj.scale[1]),
+            abs(obj.scale[2]),
+        )
+    )
+    vec = get_interface_value(mod, prop.Size.name)
+    for i in range(3):
+        vec[i] *= sc[i]
+    set_interface_value(mod, (prop.Size.name, vec))
 
 
 def proc_cone(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:

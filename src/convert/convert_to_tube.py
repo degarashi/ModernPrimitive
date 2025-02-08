@@ -40,4 +40,4 @@ class ConvertToTube_Operator(_ConvertToTube_Operator):
                 (prop.InnerRadius.name, inner_radius),
             ),
         )
-        return tube, Vector((0, 0, -height / 2))
+        return tube, Vector()

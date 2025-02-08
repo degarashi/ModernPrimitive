@@ -37,8 +37,8 @@ class ConvertToGrid_Operator(_ConvertToGrid_Operator):
             mod,
             context,
             (
-                (prop.SizeX.name, bbox.size.x / 2),
-                (prop.SizeY.name, bbox.size.y / 2),
+                (prop.SizeX.name, bbox.size.x),
+                (prop.SizeY.name, bbox.size.y),
             ),
         )
         return grid, Vector()
