@@ -79,7 +79,7 @@ class ConvertTo_BaseOperator(Operator):
         ),
     )
     invert_main_axis: BoolProperty(name="Invert", default=False)
-    treat_as_short: BoolProperty(name="Treat As Short", default=False)
+    treat_as_short: BoolProperty(name="Treat As Short", default=True)
     postfix: StringProperty(name="postfix", default="_converted")
     copy_modifier: BoolProperty(name="Copy Modifiers", default=True)
     copy_material: BoolProperty(name="Copy Material", default=True)
