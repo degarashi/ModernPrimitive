@@ -59,3 +59,7 @@ def swap_interface_value(mod: NodesModifier, ent0: str, ent1: str) -> None:
     val1 = get_interface_value(mod, ent1)
     set_interface_value(mod, (ent1, val0))
     set_interface_value(mod, (ent0, val1))
+
+
+def update_node_interface(mod: NodesModifier, context: Context) -> bool:
+    mod.node_group.interface_update(context)

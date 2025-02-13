@@ -175,10 +175,6 @@ def is_modern_primitive_specific(obj: Object, type: Type) -> bool:
     return obj.modifiers[0].name == modifier_name(type)
 
 
-def update_node_interface(mod: NodesModifier, context: Context) -> bool:
-    mod.node_group.interface_update(context)
-
-
 def get_blend_file_path(type: Type, is_relative: bool) -> str:
     rel_path = f"{ASSET_DIR_NAME}/{type.name.lower()}.blend"
     if is_relative:
