@@ -15,7 +15,7 @@ from .cube import DCube_CenterOrigin_Operator
 from .constants import MODERN_PRIMITIVE_CATEGORY
 from .make_primitive import OPS_GROUPS, make_operator_to_layout
 from .switch_wireframe import SwitchWireframe
-from .aux_func import get_target_object
+from .aux_func import get_active_and_selected_primitive
 from .wireframe import ENTRY_NAME
 from .apply_scale import ApplyScale_Operator
 from .restore_default import RestoreDefault_Operator
@@ -86,7 +86,7 @@ class MPR_PT_Main(Panel):
         sp = box.split(factor=0.3)
         sp.label(text="Wireframe:")
 
-        obj = get_target_object(ctx)
+        obj = get_active_and_selected_primitive(ctx)
         view_text = f"{obj[ENTRY_NAME]}" if obj is not None else ""
         sp.label(text=view_text)
 

@@ -1,7 +1,7 @@
 from bpy.types import Operator, Context
 from bpy.utils import register_class, unregister_class
 from .constants import MODERN_PRIMITIVE_PREFIX
-from .aux_func import get_target_object
+from .aux_func import get_active_and_selected_primitive
 from .wireframe import ENTRY_NAME
 
 
@@ -13,7 +13,7 @@ class SwitchWireframe(Operator):
 
     @classmethod
     def poll(cls, context: Context | None) -> bool:
-        return get_target_object(context) is not None
+        return get_active_and_selected_primitive(context) is not None
 
     def execute(self, context: Context | None) -> set[str]:
         obj = context.view_layer.objects.active
