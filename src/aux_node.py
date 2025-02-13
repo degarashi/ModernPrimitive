@@ -32,7 +32,7 @@ def set_interface_values(
 ) -> None:
     for d in data:
         set_interface_value(mod, d)
-    mod.node_group.interface_update(context)
+    update_node_interface(mod, context)
 
 
 def get_interface_value(mod: NodesModifier, name: str) -> Any:
