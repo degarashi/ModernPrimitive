@@ -260,3 +260,26 @@ def get_evaluated_vertices(context: Context, obj: Object) -> list[Vector]:
 
 def mul_vert_mat(verts: Iterable[Vector], mat: Matrix) -> list[Vector]:
     return [(mat @ v).to_3d() for v in verts]
+
+
+def get_category_name_from_operator(typ: Type) -> tuple[str, str]:
+    if not hasattr(typ, "bl_idname") or not isinstance(typ.bl_idname, str):
+        raise TypeError(f"Expected an Operator type with a string bl_idname, got {typ}")
+
+    parts = typ.bl_idname.split(".")
+    if len(parts) == 2:
+        return tuple(parts)
+    else:
+        raise ValueError(f"Invalid bl_idname format: {typ.bl_idname}")
+
+
+def exec_operator_from_type(typ: Type, *args, **kwargs) -> None:
+    category, name = get_category_name_from_operator(typ)
+    try:
+        operator = getattr(bpy.ops, category)
+        op = getattr(operator, name)
+        op(*args, **kwargs)
+    except AttributeError as e:
+        raise ValueError(f"Operator bpy.ops.{category}.{name} not found: {e}") from e
+    except Exception as e:  # Catch other potential errors
+        raise RuntimeError(f"Error executing operator: {e}") from e
