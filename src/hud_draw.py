@@ -847,11 +847,11 @@ class MPR_Hud(Operator):
 
     @classmethod
     def __draw(cls, context: Context) -> None:
-        obj = context.active_object
         # Do not display in any other than object mode
         if context.mode != "OBJECT":
             return
 
+        obj = context.active_object
         if not is_primitive_selected(obj) or obj not in context.selected_objects:
             return
 
