@@ -30,14 +30,29 @@ allow-direct-references = true
 packages = ["src/modern_primitive"]
 
 [tool.ruff]
-line-length = 88
+line-length = 96
+target-version = "py311"
+exclude = [
+	".venv",
+]
+
+[tool.ruff.format]
+quote-style = "double"
 
 [tool.ruff.lint]
 select = [
+	"A",
+	"PYI",
+	"RET",
+	"SIM",
+	"PL",
+	"RUF",
+	"Q",
 	"E",
 	"W",
 	"F",
 	"B",
 	"C4",
+	"C9",
 	"UP",
 ]
