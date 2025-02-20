@@ -1,9 +1,10 @@
 from typing import NamedTuple, TypeAlias, Any, TypeVar
 from collections.abc import Callable
-from mathutils import Vector
+from mathutils import Vector, Color
 from bpy.types import Mesh
 from .exception import DGException
 from enum import Enum
+from .color import HUDColor
 
 
 class GizmoType(Enum):
@@ -24,6 +25,20 @@ class GizmoInfo(NamedTuple):
     normal: Vector
     type: GizmoType
     color_type: GizmoColor
+
+    def get_color(self, hud_color: HUDColor) -> Color:
+        match self.color_type:
+            case GizmoColor.Primary:
+                return hud_color.primary
+            case GizmoColor.Secondary:
+                return hud_color.secondary
+            case GizmoColor.X:
+                return hud_color.x
+            case GizmoColor.Y:
+                return hud_color.y
+            case GizmoColor.Z:
+                return hud_color.z
+        return hud_color.white
 
 
 T = TypeVar("T")
