@@ -3,13 +3,27 @@ from collections.abc import Callable
 from mathutils import Vector
 from bpy.types import Mesh
 from .exception import DGException
+from enum import Enum
+
+
+class GizmoType(Enum):
+    Linear = 0
+    Dial = 1
+
+
+class GizmoColor(Enum):
+    Primary = 0
+    Secondary = 1
+    X = 2
+    Y = 3
+    Z = 4
 
 
 class GizmoInfo(NamedTuple):
     position: Vector
     normal: Vector
-    type: int
-    color_type: int
+    type: GizmoType
+    color_type: GizmoColor
 
 
 T = TypeVar("T")
@@ -39,6 +53,7 @@ def get_gizmo_info(mesh: Mesh) -> GizmoInfoAr | None:
 
         def get_vec(x):
             return x.vector.copy()
+
         def get_val(x):
             return x.value
 
