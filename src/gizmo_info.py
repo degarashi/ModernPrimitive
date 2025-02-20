@@ -9,6 +9,7 @@ class GizmoInfo(NamedTuple):
     position: Vector
     normal: Vector
     type: int
+    color_type: int
 
 
 T = TypeVar("T")
@@ -36,14 +37,20 @@ def get_gizmo_info(mesh: Mesh) -> GizmoInfoAr | None:
                     break
             return ret
 
-        giz_pos = load("Gizmo Position", lambda x: x.vector.copy())
-        giz_type = load("Gizmo Type", lambda x: x.value)
-        giz_normal = load("Gizmo Normal", lambda x: x.vector.copy())
+        def get_vec(x):
+            return x.vector.copy()
+        def get_val(x):
+            return x.value
+
+        giz_pos = load("Gizmo Position", get_vec)
+        giz_type = load("Gizmo Type", get_val)
+        giz_normal = load("Gizmo Normal", get_vec)
+        giz_color = load("Gizmo Color", get_val)
 
         if len(giz_pos) == len(giz_type) == len(giz_normal):
             ret: GizmoInfoAr = []
             for i in range(len(giz_pos)):
-                ret.append(GizmoInfo(giz_pos[i], giz_normal[i], giz_type[i]))
+                ret.append(GizmoInfo(giz_pos[i], giz_normal[i], giz_type[i], giz_color[i]))
             return ret
         raise DGGizmoInfoCantLoaded("invalid length")  # noqa: TRY003
     except KeyError as e:
