@@ -7,12 +7,36 @@ def make_color256(r: int, g: int, b: int) -> Color:
 
 
 class HUDColor:
-    white: Color
-    x: Color
-    y: Color
-    z: Color
-    primary: Color
-    secondary: Color
+    __white: Color
+    __x: Color
+    __y: Color
+    __z: Color
+    __primary: Color
+    __secondary: Color
+
+    @property
+    def white(self):
+        return self.__white
+
+    @property
+    def x(self):
+        return self.__x
+
+    @property
+    def y(self):
+        return self.__y
+
+    @property
+    def z(self):
+        return self.__z
+
+    @property
+    def primary(self):
+        return self.__primary
+
+    @property
+    def secondary(self):
+        return self.__secondary
 
     # --- Default Color ---
     WHITE = make_color256(255, 255, 255)
@@ -26,19 +50,19 @@ class HUDColor:
         cls = self.__class__
 
         # Read the theme settings to reflect the color
-        self.white = cls.WHITE
-        self.x = cls.X
-        self.y = cls.Y
-        self.z = cls.Z
-        self.primary = cls.PRIMARY
-        self.secondary = cls.SECONDARY
+        self.__white = cls.WHITE
+        self.__x = cls.X
+        self.__y = cls.Y
+        self.__z = cls.Z
+        self.__primary = cls.PRIMARY
+        self.__secondary = cls.SECONDARY
 
         try:
             ui_theme = pref.themes[0].user_interface
-            self.x = ui_theme.axis_x
-            self.y = ui_theme.axis_y
-            self.z = ui_theme.axis_z
-            self.primary = ui_theme.gizmo_primary
-            self.secondary = ui_theme.gizmo_secondary
+            self.__x = ui_theme.axis_x
+            self.__y = ui_theme.axis_y
+            self.__z = ui_theme.axis_z
+            self.__primary = ui_theme.gizmo_primary
+            self.__secondary = ui_theme.gizmo_secondary
         except IndexError:
             pass
