@@ -1,8 +1,9 @@
 import bpy
 import blf
-from typing import Any, cast, Iterable
+from typing import Any, cast, TypeVar
+from collections.abc import Iterable
 from mathutils import Vector, Matrix, Color
-from bpy.types import Operator, Context, SpaceView3D, Object, Modifier, Mesh
+from bpy.types import Operator, Context, SpaceView3D, Object, Modifier
 from bpy.utils import register_class, unregister_class
 from .aux_func import (
     is_modern_primitive,
@@ -16,6 +17,7 @@ from .exception import DGUnknownType
 from . import primitive_prop as P
 from bpy.props import BoolProperty
 from . import primitive as PR
+from .gizmo_info import GizmoInfoAr, get_gizmo_info
 
 
 def make_color256(r: int, g: int, b: int) -> Color:
@@ -189,9 +191,7 @@ class Drawer:
 
     def show_hud(self, scale: Vector) -> None:
         set_position_draw(blf, (50, 30), "ModernPrimitive:")
-        set_position_draw(
-            blf, (60, 10), f"Scale: {scale.x:.2f} {scale.y:.2f} {scale.z:.2f}"
-        )
+        set_position_draw(blf, (60, 10), f"Scale: {scale.x:.2f} {scale.y:.2f} {scale.z:.2f}")
 
 
 def make_drawer(blf: Any, context: Context, m_world: Matrix) -> Drawer:
@@ -210,7 +210,7 @@ CUBE_GIZMO_POS = {
 }
 
 
-def proc_cube(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
+def proc_cube(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
     out = get_interface_values(mod, PR.Primitive_Cube.get_param_names())
     size = out[P.Size.name]
     div_x = out[P.DivisionX.name]
@@ -219,7 +219,7 @@ def proc_cube(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
     div_g = out[P.GlobalDivision.name]
 
     def gz(p: P.Prop) -> Vector:
-        return gizmo_pos[CUBE_GIZMO_POS[p]]
+        return gizmo_info[CUBE_GIZMO_POS[p]].position
 
     d.draw_text_at_2(
         d.color_x,
@@ -244,7 +244,7 @@ def proc_cube(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
     )
     d.draw_text_at(
         d.color_secondary,
-        gz(P.GlobalDivision) - Vector((size[0], size[1], 0))/4,
+        gz(P.GlobalDivision) - Vector((size[0], size[1], 0)) / 4,
         f"{div_g:.2f}",
     )
 
@@ -259,7 +259,7 @@ CONE_GIZMO_POS = {
 }
 
 
-def proc_cone(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
+def proc_cone(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
     out = get_interface_values(mod, PR.Primitive_Cone.get_param_names())
     div_side = out[P.DivisionSide.name]
     div_fill = out[P.DivisionFill.name]
@@ -269,7 +269,7 @@ def proc_cone(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
     height = out[P.Height.name]
 
     def gz(p: P.Prop) -> Vector:
-        return gizmo_pos[CONE_GIZMO_POS[p]]
+        return gizmo_info[CONE_GIZMO_POS[p]].position
 
     d.draw_text_at_2(
         d.color_z,
@@ -308,7 +308,7 @@ CYLINDER_GIZMO_POS = {
 }
 
 
-def proc_cylinder(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
+def proc_cylinder(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
     out = get_interface_values(mod, PR.Primitive_Cylinder.get_param_names())
     radius = out[P.Radius.name]
     height = out[P.Height.name]
@@ -317,7 +317,7 @@ def proc_cylinder(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
     div_fill = out[P.DivisionFill.name]
 
     def gz(p: P.Prop) -> Vector:
-        return gizmo_pos[CYLINDER_GIZMO_POS[p]]
+        return gizmo_info[CYLINDER_GIZMO_POS[p]].position
 
     d.draw_text_at(
         d.color_x,
@@ -358,7 +358,7 @@ GRID_GIZMO_POS = {
 }
 
 
-def proc_grid(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
+def proc_grid(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
     out = get_interface_values(mod, PR.Primitive_Grid.get_param_names())
     size_x = out[P.SizeX.name]
     size_y = out[P.SizeY.name]
@@ -367,7 +367,7 @@ def proc_grid(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
     div_g = out[P.GlobalDivision.name]
 
     def gz(p: str) -> Vector:
-        return gizmo_pos[GRID_GIZMO_POS[p]]
+        return gizmo_info[GRID_GIZMO_POS[p]].position
 
     d.draw_text_at_2(
         d.color_x,
@@ -392,13 +392,13 @@ SPHERE_GIZMO_POS = {
 }
 
 
-def proc_icosphere(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
+def proc_icosphere(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
     out = get_interface_values(mod, PR.Primitive_ICOSphere.get_param_names())
     radius = out[P.Radius.name]
     subd = out[P.Subdivision.name]
 
     def gz(p: P.Prop) -> Vector:
-        return gizmo_pos[SPHERE_GIZMO_POS[p]]
+        return gizmo_info[SPHERE_GIZMO_POS[p]].position
 
     d.draw_text_at_2(
         d.color_primary,
@@ -424,7 +424,7 @@ TORUS_GIZMO_POS = {
 }
 
 
-def proc_torus(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
+def proc_torus(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
     out = get_interface_values(mod, PR.Primitive_Torus.get_param_names())
     radius = out[P.Radius.name]
     ring_radius = out[P.RingRadius.name]
@@ -432,7 +432,7 @@ def proc_torus(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
     div_circle = out[P.DivisionCircle.name]
 
     def gz(p: P.Prop) -> Vector:
-        return gizmo_pos[TORUS_GIZMO_POS[p]]
+        return gizmo_info[TORUS_GIZMO_POS[p]].position
 
     d.draw_text_at(d.color_primary, gz(P.DivisionCircle), d.div_text(div_circle))
     d.draw_text_at_2(
@@ -459,14 +459,14 @@ UV_SPHERE_GIZMO_POS = {
 }
 
 
-def proc_uvsphere(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
+def proc_uvsphere(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
     out = get_interface_values(mod, PR.Primitive_UVSphere.get_param_names())
     radius = out[P.Radius.name]
     div_ring = out[P.DivisionRing.name]
     div_circle = out[P.DivisionCircle.name]
 
     def gz(p: P.Prop) -> Vector:
-        return gizmo_pos[UV_SPHERE_GIZMO_POS[p]]
+        return gizmo_info[UV_SPHERE_GIZMO_POS[p]].position
 
     d.draw_text_at_2(
         d.color_primary,
@@ -491,7 +491,7 @@ TUBE_GIZMO_POS = {
 }
 
 
-def proc_tube(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
+def proc_tube(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
     out = get_interface_values(mod, PR.Primitive_Tube.get_param_names())
     div_circle = out[P.DivisionCircle.name]
     height = out[P.Height.name]
@@ -500,7 +500,7 @@ def proc_tube(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
     inner_radius = out[P.InnerRadius.name]
 
     def gz(p: P.Prop) -> Vector:
-        return gizmo_pos[TUBE_GIZMO_POS[p]]
+        return gizmo_info[TUBE_GIZMO_POS[p]].position
 
     d.draw_text_at_2(
         d.color_primary,
@@ -539,7 +539,7 @@ GEAR_GIZMO_POS = {
 }
 
 
-def proc_gear(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
+def proc_gear(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
     out = get_interface_values(mod, PR.Primitive_Gear.get_param_names())
     num_blades = out[P.NumBlades.name]
     inner_radius = out[P.InnerRadius.name]
@@ -552,7 +552,7 @@ def proc_gear(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
     height = out[P.Height.name]
 
     def gz(p: P.Prop) -> Vector:
-        return gizmo_pos[GEAR_GIZMO_POS[p]]
+        return gizmo_info[GEAR_GIZMO_POS[p]].position
 
     d.draw_text_at_2(
         d.color_primary,
@@ -619,7 +619,7 @@ SPRING_GIZMO_POS = {
 }
 
 
-def proc_spring(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
+def proc_spring(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
     out = get_interface_values(mod, PR.Primitive_Spring.get_param_names())
     div_circle = out[P.DivisionCircle.name]
     rotations = out[P.Rotations.name]
@@ -630,7 +630,7 @@ def proc_spring(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
     ring_radius = out[P.RingRadius.name]
 
     def gz(p: P.Prop) -> Vector:
-        return gizmo_pos[SPRING_GIZMO_POS[p]]
+        return gizmo_info[SPRING_GIZMO_POS[p]].position
 
     d.draw_text_at_2(
         d.color_primary,
@@ -663,7 +663,7 @@ def proc_spring(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
     d.draw_text_at(d.color_y, gz(P.DivisionRing), d.div_text(div_ring))
 
 
-def proc_dcube(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
+def proc_dcube(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
     out = get_interface_values(mod, PR.Primitive_DeformableCube.get_param_names())
     min_x = out[P.MinX.name]
     max_x = out[P.MaxX.name]
@@ -729,7 +729,7 @@ CAPSULE_GIZMO_POS = {
 }
 
 
-def proc_capsule(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
+def proc_capsule(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
     out = get_interface_values(mod, PR.Primitive_Capsule.get_param_names())
     div_circle = out[P.DivisionCircle.name]
     div_cap = out[P.DivisionCap.name]
@@ -738,7 +738,7 @@ def proc_capsule(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
     radius = out[P.Radius.name]
 
     def gz(p: P.Prop) -> Vector:
-        return gizmo_pos[CAPSULE_GIZMO_POS[p]]
+        return gizmo_info[CAPSULE_GIZMO_POS[p]].position
 
     d.draw_text_at(
         d.color_primary,
@@ -752,9 +752,7 @@ def proc_capsule(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
         Vector((0, 0, 1)),
         d.unit_dist(height),
     )
-    d.draw_text_at_2(
-        d.color_x, gz(P.Radius), None, Vector((1, 0, 0)), d.unit_dist(radius)
-    )
+    d.draw_text_at_2(d.color_x, gz(P.Radius), None, Vector((1, 0, 0)), d.unit_dist(radius))
     d.draw_text_at(
         d.color_x,
         gz(P.DivisionSide),
@@ -767,13 +765,13 @@ def proc_capsule(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
     )
 
 
-def proc_quadsphere(mod: Modifier, d: Drawer, gizmo_pos: list[Vector]) -> None:
+def proc_quadsphere(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
     out = get_interface_values(mod, PR.Primitive_QuadSphere.get_param_names())
     subd = out[P.Subdivision.name]
     radius = out[P.Radius.name]
 
     def gz(p: P.Prop) -> Vector:
-        return gizmo_pos[SPHERE_GIZMO_POS[p]]
+        return gizmo_info[SPHERE_GIZMO_POS[p]].position
 
     d.draw_text_at_2(
         d.color_primary,
@@ -813,6 +811,9 @@ def is_primitive_selected(obj: Object | None) -> bool:
         return False
     mod = obj.modifiers[0]
     return mod.show_viewport and mod.is_active
+
+
+T = TypeVar("T")
 
 
 class MPR_Hud(Operator):
@@ -869,19 +870,8 @@ class MPR_Hud(Operator):
             show_hud = True
 
             # ------ Get Gizmo Positions ------
-            MAX_ATTRIBUTES = 20
-            gizmo_pos: list[Vector] = []
             mesh = get_evaluated_mesh(context, obj)
-
-            try:
-                attr = mesh.attributes["Gizmo Position"]
-                if attr.domain == "POINT":
-                    for i, data in enumerate(attr.data):
-                        gizmo_pos.append(data.vector)
-                        if i == MAX_ATTRIBUTES - 1:
-                            break
-            except KeyError:
-                pass
+            gizmo_info = get_gizmo_info(mesh)
 
             # In quad view mode,
             # scale values are not displayed except for the upper-right view
@@ -891,7 +881,7 @@ class MPR_Hud(Operator):
             with make_drawer(blf, context, obj.matrix_world) as drawer:
                 if show_hud:
                     drawer.show_hud(obj.scale)
-                PROCS[typ](obj.modifiers[0], drawer, gizmo_pos)
+                PROCS[typ](obj.modifiers[0], drawer, gizmo_info)
 
         except DGUnknownType:
             pass
