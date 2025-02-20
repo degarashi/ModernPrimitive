@@ -69,13 +69,10 @@ def get_gizmo_info(mesh: Mesh) -> GizmoInfoAr | None:
         def get_vec(x):
             return x.vector.copy()
 
-        def get_val(x):
-            return x.value
-
         giz_pos = load("Gizmo Position", get_vec)
-        giz_type = load("Gizmo Type", get_val)
+        giz_type = load("Gizmo Type", lambda x: GizmoType(x.value))
         giz_normal = load("Gizmo Normal", get_vec)
-        giz_color = load("Gizmo Color", get_val)
+        giz_color = load("Gizmo Color", lambda x: GizmoColor(x.value))
 
         if len(giz_pos) == len(giz_type) == len(giz_normal):
             ret: GizmoInfoAr = []
