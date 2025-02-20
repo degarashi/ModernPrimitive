@@ -3,7 +3,7 @@ import blf
 from typing import Any, cast, TypeVar
 from collections.abc import Iterable
 from mathutils import Vector, Matrix, Color
-from bpy.types import Operator, Context, SpaceView3D, Object, Modifier
+from bpy.types import Operator, Context, SpaceView3D, Object, Modifier, PreferencesView
 from bpy.utils import register_class, unregister_class
 from .aux_func import (
     is_modern_primitive,
@@ -18,10 +18,7 @@ from . import primitive_prop as P
 from bpy.props import BoolProperty
 from . import primitive as PR
 from .gizmo_info import GizmoInfoAr, get_gizmo_info
-
-
-def make_color256(r: int, g: int, b: int) -> Color:
-    return Color((r / 255.0, g / 255.0, b / 255.0))
+from .color import HUDColor
 
 
 FONT_ID: int = 0
@@ -68,38 +65,22 @@ HALF_ONE = ONE / 2
 
 
 class Drawer:
-    COLOR_WHITE = make_color256(255, 255, 255)
-    COLOR_X = make_color256(253, 54, 83)
-    COLOR_Y = make_color256(138, 219, 0)
-    COLOR_Z = make_color256(44, 143, 255)
-    COLOR_PRIMARY = make_color256(245, 241, 77)
-    COLOR_SECONDARY = make_color256(99, 255, 255)
+    color: HUDColor
+    __blf: Any
+    __pref: PreferencesView
+    __window_size: tuple[int, int]
+    __m_pers: Matrix
+    __m_window: Matrix
+    __system: str
+    __dim: Vector
 
     def __init__(self, blf: Any, context: Context, m_world: Matrix):
         reg = context.region
         reg3d = context.region_data
 
+        self.color = HUDColor(context.preferences)
         self.__blf = blf
         self.__pref = context.preferences.view
-
-        # テーマ設定を読んで色を反映
-        cls = Drawer
-        self.color_white = cls.COLOR_WHITE
-        self.color_x = cls.COLOR_X
-        self.color_y = cls.COLOR_Y
-        self.color_z = cls.COLOR_Z
-        self.color_primary = cls.COLOR_PRIMARY
-        self.color_secondary = cls.COLOR_SECONDARY
-        try:
-            ui_theme = context.preferences.themes[0].user_interface
-            self.color_x = ui_theme.axis_x
-            self.color_y = ui_theme.axis_y
-            self.color_z = ui_theme.axis_z
-            self.color_primary = ui_theme.gizmo_primary
-            self.color_secondary = ui_theme.gizmo_secondary
-        except IndexError:
-            pass
-
         self.__window_size = (reg.width, reg.height)
         self.__m_pers = reg3d.perspective_matrix @ m_world
         self.__m_window = reg3d.window_matrix
@@ -111,7 +92,7 @@ class Drawer:
         blf.enable(FONT_ID, blf.SHADOW)
         blf.shadow_offset(FONT_ID, 1, -1)
         blf.size(FONT_ID, 15 * scale)
-        set_color(blf, Drawer.COLOR_WHITE)
+        set_color(blf, HUDColor.WHITE)
         self.__dim = Vector(blf.dimensions(FONT_ID, "A"))
         self.__dim.y += 4
 
@@ -123,7 +104,7 @@ class Drawer:
     def gizmo_depend_worldpos(
         self,
         orig_pos: Vector,
-        dir: Vector,
+        dir_v: Vector,
     ) -> Vector:
         # 描画元位置
         ori_p = perspec(self.__m_pers, orig_pos.to_4d())
@@ -143,7 +124,7 @@ class Drawer:
         AXIS_LEN = 4.0
         ui_ratio = self.__pref.gizmo_size / 100.0 * self.__pref.ui_scale
         move_dist = AXIS_LEN * gizmo_dist / 6 / ratio * ui_ratio
-        return dir * move_dist + orig_pos
+        return dir_v * move_dist + orig_pos
 
     def draw_text_at(
         self,
@@ -222,28 +203,28 @@ def proc_cube(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
         return gizmo_info[CUBE_GIZMO_POS[p]].position
 
     d.draw_text_at_2(
-        d.color_x,
+        d.color.x,
         gz(P.SizeX),
         d.div_text(div_x),
         Vector((1, 0, 0)),
         d.unit_dist(size[0]),
     )
     d.draw_text_at_2(
-        d.color_y,
+        d.color.y,
         gz(P.SizeY),
         d.div_text(div_y),
         Vector((0, 1, 0)),
         d.unit_dist(size[1]),
     )
     d.draw_text_at_2(
-        d.color_z,
+        d.color.z,
         gz(P.SizeZ),
         d.div_text(div_z),
         Vector((0, 0, 1)),
         d.unit_dist(size[2]),
     )
     d.draw_text_at(
-        d.color_secondary,
+        d.color.secondary,
         gz(P.GlobalDivision) - Vector((size[0], size[1], 0)) / 4,
         f"{div_g:.2f}",
     )
@@ -272,28 +253,28 @@ def proc_cone(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
         return gizmo_info[CONE_GIZMO_POS[p]].position
 
     d.draw_text_at_2(
-        d.color_z,
+        d.color.z,
         gz(P.Height),
         d.div_text(div_fill),
         Vector((0, 0, 1)),
         d.unit_dist(height),
     )
     d.draw_text_at_2(
-        d.color_y,
+        d.color.y,
         gz(P.TopRadius),
         d.div_text(div_circle),
         Vector((1, 0, 0)),
         d.unit_dist(top_radius),
     )
     d.draw_text_at_2(
-        d.color_primary,
+        d.color.primary,
         gz(P.BottomRadius),
         None,
         Vector((1, 0, 0)),
         d.unit_dist(bottom_radius),
     )
     d.draw_text_at(
-        d.color_secondary,
+        d.color.secondary,
         gz(P.DivisionSide),
         d.div_text(div_side),
     )
@@ -320,30 +301,30 @@ def proc_cylinder(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
         return gizmo_info[CYLINDER_GIZMO_POS[p]].position
 
     d.draw_text_at(
-        d.color_x,
+        d.color.x,
         gz(P.DivisionSide),
         d.div_text(div_side),
     )
 
     d.draw_text_at(
-        d.color_y,
+        d.color.y,
         Vector((1, 1, 0)).normalized() * radius + gz(P.DivisionCircle),
         d.div_text(div_circle),
     )
     d.draw_text_at(
-        d.color_primary,
+        d.color.primary,
         Vector((1, 1, 0)).normalized() * radius * 0.7 + gz(P.DivisionFill),
         d.div_text(div_fill),
     )
     d.draw_text_at_2(
-        d.color_primary,
+        d.color.primary,
         gz(P.Radius),
         None,
         Vector((1, 0, 0)),
         d.unit_dist(radius),
     )
     d.draw_text_at_2(
-        d.color_primary,
+        d.color.primary,
         gz(P.Height),
         None,
         Vector((0, 0, 1)),
@@ -370,20 +351,20 @@ def proc_grid(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
         return gizmo_info[GRID_GIZMO_POS[p]].position
 
     d.draw_text_at_2(
-        d.color_x,
+        d.color.x,
         gz("X"),
         d.div_text(div_x),
         Vector((1, 0, 0)),
         d.unit_dist(size_x),
     )
     d.draw_text_at_2(
-        d.color_y,
+        d.color.y,
         gz("Y"),
         d.div_text(div_y),
         Vector((0, 1, 0)),
         d.unit_dist(size_y),
     )
-    d.draw_text_at(d.color_z, gz("GDiv"), d.div_text(div_g))
+    d.draw_text_at(d.color.z, gz("GDiv"), d.div_text(div_g))
 
 
 SPHERE_GIZMO_POS = {
@@ -401,14 +382,14 @@ def proc_icosphere(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
         return gizmo_info[SPHERE_GIZMO_POS[p]].position
 
     d.draw_text_at_2(
-        d.color_primary,
+        d.color.primary,
         gz(P.Radius),
         None,
         Vector((1, 0, 0)),
         d.unit_dist(radius),
     )
     d.draw_text_at_2(
-        d.color_x,
+        d.color.x,
         gz(P.Subdivision),
         None,
         Vector((1, 0, 1)).normalized() * 1.4,
@@ -434,9 +415,9 @@ def proc_torus(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
     def gz(p: P.Prop) -> Vector:
         return gizmo_info[TORUS_GIZMO_POS[p]].position
 
-    d.draw_text_at(d.color_primary, gz(P.DivisionCircle), d.div_text(div_circle))
+    d.draw_text_at(d.color.primary, gz(P.DivisionCircle), d.div_text(div_circle))
     d.draw_text_at_2(
-        d.color_secondary,
+        d.color.secondary,
         gz(P.RingRadius),
         d.div_text(div_ring),
         Vector((0, 0, 1)),
@@ -444,7 +425,7 @@ def proc_torus(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
         Vector((2, 0.5)),
     )
     d.draw_text_at_2(
-        d.color_primary,
+        d.color.primary,
         gz(P.Radius),
         None,
         Vector((1, 0, 0)),
@@ -469,14 +450,14 @@ def proc_uvsphere(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
         return gizmo_info[UV_SPHERE_GIZMO_POS[p]].position
 
     d.draw_text_at_2(
-        d.color_primary,
+        d.color.primary,
         gz(P.Radius),
         d.div_text(div_circle),
         Vector((1, 0, 0)),
         d.unit_dist(radius),
     )
     d.draw_text_at(
-        d.color_secondary,
+        d.color.secondary,
         gz(P.DivisionCircle) + Vector((0, 0, radius)),
         d.div_text(div_ring),
     )
@@ -503,27 +484,27 @@ def proc_tube(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
         return gizmo_info[TUBE_GIZMO_POS[p]].position
 
     d.draw_text_at_2(
-        d.color_primary,
+        d.color.primary,
         gz(P.Height),
         d.div_text(div_circle),
         Vector((0, 0, 1)),
         d.unit_dist(height),
     )
     d.draw_text_at_2(
-        d.color_y,
+        d.color.y,
         gz(P.InnerRadius),
         None,
         Vector((1, 1, 0)).normalized(),
         d.unit_dist(inner_radius),
     )
     d.draw_text_at_2(
-        d.color_x,
+        d.color.x,
         gz(P.OuterRadius),
         None,
         Vector((1, 0, 0)),
         d.unit_dist(outer_radius),
     )
-    d.draw_text_at(d.color_secondary, gz(P.DivisionSide), d.div_text(div_side))
+    d.draw_text_at(d.color.secondary, gz(P.DivisionSide), d.div_text(div_side))
 
 
 GEAR_GIZMO_POS = {
@@ -555,50 +536,50 @@ def proc_gear(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
         return gizmo_info[GEAR_GIZMO_POS[p]].position
 
     d.draw_text_at_2(
-        d.color_primary,
+        d.color.primary,
         gz(P.Height),
         None,
         Vector((0, 0, 1)),
         d.unit_dist(height),
     )
     d.draw_text_at_2(
-        d.color_x,
+        d.color.x,
         gz(P.InnerCircleRadius),
         d.div_text(ic_division),
         Vector((1, -1, 0)).normalized(),
         d.unit_dist(ic_radius),
     )
     d.draw_text_at_2(
-        d.color_primary,
+        d.color.primary,
         gz(P.OuterRadius),
         None,
         Vector((1, 0, 0)),
         d.unit_dist(outer_radius),
     )
     d.draw_text_at(
-        d.color_primary,
+        d.color.primary,
         Vector((0, -outer_radius, 0)) + gz(P.NumBlades),
         d.div_text(num_blades),
     )
     d.draw_text_at(
-        d.color_y,
+        d.color.y,
         gz(P.FilletRadius) + Vector((0, -outer_radius * 1.25, 0)),
         f"{fillet_radius:.2f}",
     )
     d.draw_text_at(
-        d.color_z,
+        d.color.z,
         gz(P.FilletCount) + Vector((0, -outer_radius * 1.25 * 1.3, 0)),
         d.div_text(fillet_count),
     )
     d.draw_text_at_2(
-        d.color_secondary,
+        d.color.secondary,
         gz(P.InnerRadius),
         None,
         Vector((1, 1, 0)).normalized(),
         d.unit_dist(inner_radius),
     )
     d.draw_text_at_2(
-        d.color_z,
+        d.color.z,
         gz(P.Twist),
         None,
         Vector((0, 1, 0)),
@@ -633,34 +614,34 @@ def proc_spring(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
         return gizmo_info[SPRING_GIZMO_POS[p]].position
 
     d.draw_text_at_2(
-        d.color_primary,
+        d.color.primary,
         gz(P.BottomRadius),
         d.div_text(div_circle),
         Vector((0, 1, 0)),
         d.unit_dist(bottom_radius),
     )
     d.draw_text_at_2(
-        d.color_x,
+        d.color.x,
         gz(P.RingRadius),
         None,
         Vector((1, 0, 0)),
         d.unit_dist(ring_radius),
     )
     d.draw_text_at_2(
-        d.color_secondary,
+        d.color.secondary,
         gz(P.TopRadius),
         f"{rotations:.2f}",
         Vector((0, 1, 0)),
         d.unit_dist(top_radius),
     )
     d.draw_text_at_2(
-        d.color_primary,
+        d.color.primary,
         gz(P.Height),
         None,
         Vector((0, 0, 1)),
         d.unit_dist(height),
     )
-    d.draw_text_at(d.color_y, gz(P.DivisionRing), d.div_text(div_ring))
+    d.draw_text_at(d.color.y, gz(P.DivisionRing), d.div_text(div_ring))
 
 
 def proc_dcube(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
@@ -677,42 +658,42 @@ def proc_dcube(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
     center_z = (max_z - min_z) / 2
 
     d.draw_text_at_2(
-        d.color_x,
+        d.color.x,
         Vector((-min_x, center_y, center_z)),
         None,
         Vector((-1, 0, 0)),
         d.unit_dist(min_x),
     )
     d.draw_text_at_2(
-        d.color_x,
+        d.color.x,
         Vector((max_x, center_y, center_z)),
         None,
         Vector((1, 0, 0)),
         d.unit_dist(max_x),
     )
     d.draw_text_at_2(
-        d.color_y,
+        d.color.y,
         Vector((center_x, -min_y, center_z)),
         None,
         Vector((0, -1, 0)),
         d.unit_dist(min_y),
     )
     d.draw_text_at_2(
-        d.color_y,
+        d.color.y,
         Vector((center_x, max_y, center_z)),
         None,
         Vector((0, 1, 0)),
         d.unit_dist(max_y),
     )
     d.draw_text_at_2(
-        d.color_z,
+        d.color.z,
         Vector((center_x, center_y, -min_z)),
         None,
         Vector((0, 0, -1)),
         d.unit_dist(min_z),
     )
     d.draw_text_at_2(
-        d.color_z,
+        d.color.z,
         Vector((center_x, center_y, max_z)),
         None,
         Vector((0, 0, 1)),
@@ -741,25 +722,25 @@ def proc_capsule(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
         return gizmo_info[CAPSULE_GIZMO_POS[p]].position
 
     d.draw_text_at(
-        d.color_primary,
+        d.color.primary,
         gz(P.DivisionCircle),
         d.div_text(div_circle),
     )
     d.draw_text_at_2(
-        d.color_primary,
+        d.color.primary,
         gz(P.Height),
         None,
         Vector((0, 0, 1)),
         d.unit_dist(height),
     )
-    d.draw_text_at_2(d.color_x, gz(P.Radius), None, Vector((1, 0, 0)), d.unit_dist(radius))
+    d.draw_text_at_2(d.color.x, gz(P.Radius), None, Vector((1, 0, 0)), d.unit_dist(radius))
     d.draw_text_at(
-        d.color_x,
+        d.color.x,
         gz(P.DivisionSide),
         d.div_text(div_side),
     )
     d.draw_text_at(
-        d.color_y,
+        d.color.y,
         gz(P.DivisionCap) + Vector((1, 0, 1)).normalized() * radius,
         d.div_text(div_cap),
     )
@@ -774,14 +755,14 @@ def proc_quadsphere(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
         return gizmo_info[SPHERE_GIZMO_POS[p]].position
 
     d.draw_text_at_2(
-        d.color_primary,
+        d.color.primary,
         gz(P.Radius),
         None,
         Vector((1, 0, 0)),
         d.unit_dist(radius),
     )
     d.draw_text_at_2(
-        d.color_secondary,
+        d.color.secondary,
         gz(P.Subdivision),
         None,
         Vector((1, 0, 1)),
