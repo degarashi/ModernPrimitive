@@ -1,8 +1,8 @@
 import bpy
-from bpy.types import Scene, Object, Context
 from bpy.app.handlers import persistent
-from .aux_func import make_primitive_property_name, is_primitive_mod, obj_is_alive
+from bpy.types import Context, Object, Scene
 
+from .aux_func import is_primitive_mod, make_primitive_property_name, obj_is_alive
 
 # Entry name to save the original wireframe state
 # (before the wireframe is forcibly displayed by the add-on)
@@ -21,15 +21,14 @@ class ObjectHold:
         ent_name = ENTRY_NAME
 
         # Restore wireframe drawing state
-        if self._obj is not None:
-            if obj_is_alive(self._obj):
-                try:
-                    # Restore previously selected objects from propertry
-                    self._obj.show_wire = self._obj[ent_name]
-                    # Delete it as it is no longer used
-                    del self._obj[ent_name]
-                except KeyError:
-                    self._obj.show_wire = False
+        if self._obj is not None and obj_is_alive(self._obj):
+            try:
+                # Restore previously selected objects from propertry
+                self._obj.show_wire = self._obj[ent_name]
+                # Delete it as it is no longer used
+                del self._obj[ent_name]
+            except KeyError:
+                self._obj.show_wire = False
 
         self._obj = obj
 
@@ -56,10 +55,7 @@ class ObjectHold:
     # Determine whether the object should show wireframe
     def _obj_is_still_eligible(self, act: Object | None, sel: list[Object]) -> bool:
         assert self._obj is not None
-        return (
-            self.__class__._obj_is_eligible(self._obj, act, sel)
-            and obj_is_alive(self._obj)
-        )
+        return self.__class__._obj_is_eligible(self._obj, act, sel) and obj_is_alive(self._obj)
 
     def check_state(self, act: Object | None, sel: list[Object]) -> None:
         # Determine whether the currently selected object is still valid
@@ -75,10 +71,9 @@ class ObjectHold:
         assert self._obj is None
 
         # If there is a new target(eligible) object, set it here
-        if act is not None:
-            if self.__class__._obj_is_eligible(act, act, sel):
-                self._set_target(act)
-                return
+        if act is not None and self.__class__._obj_is_eligible(act, act, sel):
+            self._set_target(act)
+            return
 
     def _on_draw_hook_async(self) -> None:
         self._draw_hook_called = False
