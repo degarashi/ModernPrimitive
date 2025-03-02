@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 import bpy
 from bpy.app.handlers import persistent
 from bpy.types import Context, Object, Scene
@@ -91,27 +93,26 @@ class ObjectHold:
             bpy.app.timers.register(self._on_draw_hook_async, first_interval=0.1)
 
 
-target_obj = ObjectHold()
 handler_deps_update = bpy.app.handlers.depsgraph_update_post
 handler_loadpost = bpy.app.handlers.load_post
 
 
+class LocalValue:
+    target_obj: ClassVar[ObjectHold] = ObjectHold()
+
+
 @persistent
 def on_deps(scene: Scene) -> None:
-    global target_obj
-
     context: Context = bpy.context
     if context.mode != "OBJECT":
         return
-    target_obj.check_state(context.active_object, context.selected_objects)
+    LocalValue.target_obj.check_state(context.active_object, context.selected_objects)
 
 
 def on_draw_hook(self, context: Context):
-    global target_obj
-
     if context.mode != "OBJECT":
         return
-    target_obj.on_draw_hook(context)
+    LocalValue.target_obj.on_draw_hook(context)
 
 
 @persistent
