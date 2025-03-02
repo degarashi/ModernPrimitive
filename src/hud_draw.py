@@ -19,28 +19,12 @@ from .aux_func import (
 from .aux_node import get_interface_values
 from .color import HUDColor
 from .constants import MODERN_PRIMITIVE_PREFIX, Type
+from .draw_aux import DEFAULT_FONT_ID as FONT_ID
+from .draw_aux import set_color, set_position_draw
 from .exception import DGUnknownType
 from .gizmo_info import GizmoInfoAr, get_gizmo_info
 
-FONT_ID: int = 0
 units = bpy.utils.units
-
-
-def set_color(blf, color: Color) -> None:
-    blf.color(FONT_ID, color.r, color.g, color.b, 1.0)
-
-
-def set_position(blf, vec: Iterable[float]) -> None:
-    blf.position(FONT_ID, vec[0], vec[1], 0)
-
-
-def draw(blf, txt: str) -> None:
-    blf.draw(FONT_ID, txt)
-
-
-def set_position_draw(blf, vec: Iterable[float], txt: str) -> None:
-    set_position(blf, vec)
-    draw(blf, txt)
 
 
 def perspec(mat: Matrix, pos: Vector) -> Vector:
