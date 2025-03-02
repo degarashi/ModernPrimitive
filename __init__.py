@@ -18,7 +18,7 @@ def reload_modules(mod_name: list[str]):
 
 MODULE_NAMES: list[str] = [
     "modern_primitive",
-    "modifier_select",
+    "focus_modifier",
     "cube",
     "version",
     "panel",

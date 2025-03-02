@@ -17,7 +17,7 @@ from .convert import (
 )
 from .cube import DCube_CenterOrigin_Operator
 from .make_primitive import OPS_GROUPS, make_operator_to_layout
-from .modifier_select import FocusModifier_Operator
+from .focus_modifier import FocusModifier_Operator
 from .restore_default import RestoreDefault_Operator
 from .switch_wireframe import SwitchWireframe
 from .wireframe import ENTRY_NAME
