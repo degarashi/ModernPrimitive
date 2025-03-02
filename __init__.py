@@ -30,6 +30,7 @@ MODULE_NAMES: list[str] = [
     "hud_draw",
     "restore_default",
     "convert",
+    "apply_mesh",
 ]
 
 modules = (
