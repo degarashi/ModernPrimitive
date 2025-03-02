@@ -1,6 +1,7 @@
 from bpy.types import Context, Panel
 from bpy.utils import register_class, unregister_class
 
+from .apply_mesh import ApplyMesh_Operator
 from .apply_scale import ApplyScale_Operator
 from .aux_func import get_active_and_selected_primitive
 from .constants import MODERN_PRIMITIVE_CATEGORY
@@ -81,6 +82,10 @@ class MPR_PT_Main(Panel):
         box = layout.box()
         box.label(text="D-Cube:")
         box.operator(DCube_CenterOrigin_Operator.bl_idname, text="Set origin to Center")
+
+        box = layout.box()
+        box.label(text="Apply Mesh")
+        box.operator(ApplyMesh_Operator.bl_idname, text="Apply MPR-Modifier to Mesh")
 
         box = layout.box()
         box.column().label(text="Viewport Display")
