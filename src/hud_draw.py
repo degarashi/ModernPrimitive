@@ -1,25 +1,26 @@
-import bpy
-import blf
-from typing import Any, cast, TypeVar
 from collections.abc import Iterable
-from mathutils import Vector, Matrix, Color
-from bpy.types import Operator, Context, SpaceView3D, Object, Modifier, PreferencesView
+from typing import Any, TypeVar, cast
+
+import blf
+import bpy
+from bpy.props import BoolProperty
+from bpy.types import Context, Modifier, Object, Operator, PreferencesView, SpaceView3D
 from bpy.utils import register_class, unregister_class
+from mathutils import Color, Matrix, Vector
+
+from . import primitive as PR
+from . import primitive_prop as P
 from .aux_func import (
-    is_modern_primitive,
-    type_from_modifier_name,
     get_addon_preferences,
     get_evaluated_mesh,
+    is_modern_primitive,
+    type_from_modifier_name,
 )
-from .constants import Type, MODERN_PRIMITIVE_PREFIX
 from .aux_node import get_interface_values
-from .exception import DGUnknownType
-from . import primitive_prop as P
-from bpy.props import BoolProperty
-from . import primitive as PR
-from .gizmo_info import GizmoInfoAr, get_gizmo_info
 from .color import HUDColor
-
+from .constants import MODERN_PRIMITIVE_PREFIX, Type
+from .exception import DGUnknownType
+from .gizmo_info import GizmoInfoAr, get_gizmo_info
 
 FONT_ID: int = 0
 units = bpy.utils.units
