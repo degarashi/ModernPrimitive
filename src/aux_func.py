@@ -1,5 +1,6 @@
 import sys
 from collections.abc import Iterable
+from contextlib import suppress
 from typing import cast
 
 import bpy
@@ -11,6 +12,7 @@ from bpy.types import (
     Modifier,
     NodeGroup,
     Object,
+    ObjectModifiers,
     bpy_struct,
 )
 from mathutils import Matrix, Vector
@@ -284,3 +286,18 @@ def exec_operator_from_type(typ: Type, *args, **kwargs) -> None:
         raise ValueError(f"Operator bpy.ops.{category}.{name} not found: {e}") from e
     except Exception as e:  # Catch other potential errors
         raise RuntimeError(f"Error executing operator: {e}") from e
+
+
+def copy_modifier(from_mod: Modifier, to_mod: ObjectModifiers) -> None:
+    new_mod = to_mod.new(name=from_mod.name, type=from_mod.type)
+    for attr in dir(from_mod):
+        if attr.startswith("__") or attr in {"name", "type"}:
+            continue
+        # Ignore some properties as they may not be able to be copied
+        with suppress(AttributeError):
+            setattr(new_mod, attr, getattr(from_mod, attr))
+
+
+def disable_modifier(mod: Modifier) -> None:
+    mod.show_viewport = False
+    mod.show_render = False
