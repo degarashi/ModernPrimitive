@@ -16,6 +16,7 @@ from .aux_func import (
     is_modern_primitive,
     is_primitive_mod,
     make_primitive_property_name,
+    is_mpr_enabled,
 )
 from .constants import MODERN_PRIMITIVE_PREFIX
 from .key import KeyAssign
@@ -63,10 +64,14 @@ class FocusModifier_Operator(Operator):
 
     disable_others: BoolProperty(name="Disable Others", default=True)
 
+    @staticmethod
+    def _can_process(obj: Object) -> bool:
+        return is_mpr_enabled(obj.modifiers)
+
     @classmethod
     def poll(cls, context: Context | None) -> bool:
         obj = context.view_layer.objects.active
-        return obj is not None and is_modern_primitive(obj)
+        return obj is not None and is_modern_primitive(obj) and cls._can_process(obj)
 
     def _is_already_focused(self, obj: Object) -> bool:
         for mod in obj.modifiers:
