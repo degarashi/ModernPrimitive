@@ -1,24 +1,25 @@
+from bpy.types import Context, Panel
 from bpy.utils import register_class, unregister_class
-from bpy.types import Panel, Context
-from .modifier_select import FocusModifier_Operator
+
+from .apply_scale import ApplyScale_Operator
+from .aux_func import get_active_and_selected_primitive
+from .constants import MODERN_PRIMITIVE_CATEGORY
 from .convert import (
+    ConvertToCapsule_Operator,
+    ConvertToCone_Operator,
     ConvertToCube_Operator,
+    ConvertToCylinder_Operator,
     ConvertToGrid_Operator,
     ConvertToSphere_Operator,
-    ConvertToCylinder_Operator,
-    ConvertToCone_Operator,
     ConvertToTorus_Operator,
     ConvertToTube_Operator,
-    ConvertToCapsule_Operator,
 )
 from .cube import DCube_CenterOrigin_Operator
-from .constants import MODERN_PRIMITIVE_CATEGORY
 from .make_primitive import OPS_GROUPS, make_operator_to_layout
-from .switch_wireframe import SwitchWireframe
-from .aux_func import get_active_and_selected_primitive
-from .wireframe import ENTRY_NAME
-from .apply_scale import ApplyScale_Operator
+from .modifier_select import FocusModifier_Operator
 from .restore_default import RestoreDefault_Operator
+from .switch_wireframe import SwitchWireframe
+from .wireframe import ENTRY_NAME
 
 
 class MPR_PT_Create(Panel):
