@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from bpy.types import Context, Panel
 from bpy.utils import register_class, unregister_class
 
@@ -16,8 +18,8 @@ from .convert import (
     ConvertToTube_Operator,
 )
 from .cube import DCube_CenterOrigin_Operator
-from .make_primitive import OPS_GROUPS, make_operator_to_layout
 from .focus_modifier import FocusModifier_Operator
+from .make_primitive import OPS_GROUPS, make_operator_to_layout
 from .restore_default import RestoreDefault_Operator
 from .switch_wireframe import SwitchWireframe
 from .wireframe import ENTRY_NAME
@@ -29,7 +31,7 @@ class MPR_PT_Create(Panel):
     bl_label = "Create"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_options = {"DEFAULT_CLOSED"}
+    bl_options: ClassVar[set[str]] = {"DEFAULT_CLOSED"}
 
     def draw(self, context) -> None:
         layout = self.layout
@@ -53,11 +55,12 @@ class MPR_PT_Main(Panel):
     bl_category = MODERN_PRIMITIVE_CATEGORY
     bl_context = ".objectmode"
 
-    def draw(self, ctx: Context) -> None:
+    def __focus_panel(self) -> None:
         layout = self.layout
         layout.operator(FocusModifier_Operator.bl_idname, text="Focus/Unfocus Modifier")
 
-        box = layout.box()
+    def __convert_to_panel(self) -> None:
+        box = self.layout.box()
         box.label(text="Convert to:")
         box.label(text="(SHIFT: Keep Original Object)")
         grid = box.grid_flow(columns=3, row_major=True)
@@ -79,15 +82,18 @@ class MPR_PT_Main(Panel):
         grid.operator(ConvertToTube_Operator.bl_idname, text="Tube")
         grid.operator(ConvertToCapsule_Operator.bl_idname, text="Capsule")
 
-        box = layout.box()
+    def __dcube_panel(self) -> None:
+        box = self.layout.box()
         box.label(text="D-Cube:")
         box.operator(DCube_CenterOrigin_Operator.bl_idname, text="Set origin to Center")
 
-        box = layout.box()
+    def __apply_mesh_panel(self) -> None:
+        box = self.layout.box()
         box.label(text="Apply Mesh")
         box.operator(ApplyMesh_Operator.bl_idname, text="Apply MPR-Modifier to Mesh")
 
-        box = layout.box()
+    def __viewport_display_panel(self, ctx: Context) -> None:
+        box = self.layout.box()
         box.column().label(text="Viewport Display")
         sp = box.split(factor=0.3)
         sp.label(text="Wireframe:")
@@ -98,7 +104,8 @@ class MPR_PT_Main(Panel):
 
         sp.operator(SwitchWireframe.bl_idname, text="Switch")
 
-        box = layout.box()
+    def __apply_panel(self) -> None:
+        box = self.layout.box()
         box.label(text="Apply")
         row = box.row()
         btn = row.operator(ApplyScale_Operator.bl_idname, text="Scale")
@@ -106,7 +113,8 @@ class MPR_PT_Main(Panel):
         btn = row.operator(ApplyScale_Operator.bl_idname, text="Scale (Strict Mode)")
         btn.strict = True
 
-        box = layout.box()
+    def __restore_panel(self) -> None:
+        box = self.layout.box()
         box.label(text="Restore Default")
         row = box.row()
         btn = row.operator(RestoreDefault_Operator.bl_idname, text="All")
@@ -127,6 +135,15 @@ class MPR_PT_Main(Panel):
         btn.reset_division = True
         btn.reset_division_mode = "All"
         btn.reset_other = False
+
+    def draw(self, ctx: Context) -> None:
+        self.__focus_panel()
+        self.__convert_to_panel()
+        self.__dcube_panel()
+        self.__apply_mesh_panel()
+        self.__viewport_display_panel(ctx)
+        self.__apply_panel()
+        self.__restore_panel()
 
 
 def register() -> None:
