@@ -1,51 +1,51 @@
+from typing import ClassVar, NamedTuple, cast
+
 import bpy
-from typing import cast, Dict, NamedTuple
+from bpy.props import BoolProperty
 from bpy.types import (
     Context,
-    Object,
-    Operator,
-    Modifier,
-    ObjectModifiers,
     KeyMap,
     KeyMapItem,
+    Modifier,
+    Object,
+    ObjectModifiers,
+    Operator,
 )
-from bpy.props import BoolProperty
+
 from .aux_func import (
     is_modern_primitive,
     is_primitive_mod,
     make_primitive_property_name,
 )
 from .constants import MODERN_PRIMITIVE_PREFIX
-from .modern_primitive import VIEW3D_MT_mesh_modern_prim
 from .key import KeyAssign
+from .modern_primitive import VIEW3D_MT_mesh_modern_prim
 
 
-def save_other_modifier_state(mods: ObjectModifiers) -> Dict[str, bool]:
+def save_other_modifier_state(mods: ObjectModifiers) -> dict[str, bool]:
     # {"modifier-name": viewstate(bool), ...}
-    ret: Dict[str, bool] = {}
+    ret: dict[str, bool] = {}
     for mod in mods:
         if not is_primitive_mod(mod):
             ret[mod.name] = mod.show_viewport
     return ret
 
 
-def restore_other_modifier_state(mods: ObjectModifiers, data: Dict[str, bool]) -> None:
+def restore_other_modifier_state(mods: ObjectModifiers, data: dict[str, bool]) -> None:
     for mod in mods:
-        if not is_primitive_mod(mod):
-            if mod.name in data:
-                mod.show_viewport = data[mod.name]
+        if not is_primitive_mod(mod) and mod.name in data:
+            mod.show_viewport = data[mod.name]
 
 
-def is_other_modifier_state_valid(mods: ObjectModifiers, data: Dict[str, bool]) -> bool:
+def is_other_modifier_state_valid(mods: ObjectModifiers, data: dict[str, bool]) -> bool:
     if len(mods) != (len(data) + 1):
         return False
     found_pmod: bool = False
     for mod in mods:
         if is_primitive_mod(mod):
             found_pmod = True
-        else:
-            if mod.name not in data:
-                return False
+        elif mod.name not in data:
+            return False
     return found_pmod
 
 
@@ -59,7 +59,7 @@ class FocusModifier_Operator(Operator):
 
     bl_idname = f"object.{MODERN_PRIMITIVE_PREFIX}_focus_modifier"
     bl_label = "Focus/Unfocus ModernPrimitive Modifier"
-    bl_options = {"REGISTER", "UNDO"}
+    bl_options: ClassVar[set[str]] = {"REGISTER", "UNDO"}
 
     disable_others: BoolProperty(name="Disable Others", default=True)
 
@@ -73,9 +73,8 @@ class FocusModifier_Operator(Operator):
             if is_primitive_mod(mod):
                 if not mod.show_viewport or not mod.is_active:
                     return False
-            else:
-                if mod.show_viewport:
-                    return False
+            elif mod.show_viewport:
+                return False
         return True
 
     def _focus_modifier(self, obj: Object) -> None:
@@ -141,7 +140,7 @@ class KeymapAt(NamedTuple):
     space_type: str
 
 
-KEY_ASSIGN_MAP: Dict[KeymapAt, list[KeyAssign]] = {
+KEY_ASSIGN_MAP: dict[KeymapAt, list[KeyAssign]] = {
     KeymapAt("3D View", "VIEW_3D"): [
         KeyAssign(
             FocusModifier_Operator.bl_idname,
