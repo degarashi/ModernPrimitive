@@ -2,7 +2,7 @@ from bpy.types import Operator, Context
 from bpy.utils import register_class, unregister_class
 from .constants import MODERN_PRIMITIVE_PREFIX
 from .aux_func import get_active_and_selected_primitive
-from .wireframe import ENTRY_NAME
+from .wireframe import ENTRY_NAME as Wireframe_EntryName
 
 
 class SwitchWireframe(Operator):
@@ -20,7 +20,7 @@ class SwitchWireframe(Operator):
         # object's wireframe is automatically displayed by the add-on function,
         # so it is not correct to simply invert the "show_wire" flag.
 
-        ent_name = ENTRY_NAME
+        ent_name = Wireframe_EntryName
         try:
             # The original state value is stored in the property object hold.entry name
             original_state: bool = obj[ent_name]
