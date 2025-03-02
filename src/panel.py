@@ -5,7 +5,7 @@ from bpy.utils import register_class, unregister_class
 
 from .apply_mesh import ApplyMesh_Operator
 from .apply_scale import ApplyScale_Operator
-from .aux_func import get_active_and_selected_primitive
+from .aux_func import get_active_and_selected_primitive, is_mpr_enabled
 from .constants import MODERN_PRIMITIVE_CATEGORY
 from .convert import (
     ConvertToCapsule_Operator,
@@ -22,7 +22,7 @@ from .focus_modifier import FocusModifier_Operator
 from .make_primitive import OPS_GROUPS, make_operator_to_layout
 from .restore_default import RestoreDefault_Operator
 from .switch_wireframe import SwitchWireframe
-from .wireframe import ENTRY_NAME
+from .wireframe import ENTRY_NAME as Wireframe_EntryName
 
 
 class MPR_PT_Create(Panel):
@@ -96,13 +96,13 @@ class MPR_PT_Main(Panel):
         box = self.layout.box()
         box.column().label(text="Viewport Display")
         sp = box.split(factor=0.3)
-        sp.label(text="Wireframe:")
 
         obj = get_active_and_selected_primitive(ctx)
-        view_text = f"{obj[ENTRY_NAME]}" if obj is not None else ""
-        sp.label(text=view_text)
-
-        sp.operator(SwitchWireframe.bl_idname, text="Switch")
+        if obj is not None and is_mpr_enabled(obj.modifiers):
+            sp.label(text="Wireframe:")
+            view_text = f"{obj[Wireframe_EntryName]}" if obj is not None else ""
+            sp.label(text=view_text)
+            sp.operator(SwitchWireframe.bl_idname, text="Switch")
 
     def __apply_panel(self) -> None:
         box = self.layout.box()
