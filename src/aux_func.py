@@ -72,9 +72,9 @@ def get_object_just_added(context: Context) -> Object:
     return context.view_layer.objects.selected[0]
 
 
-def append_object_from_asset(type: Type, context: Context) -> Object:
-    obj_name = type.name
-    file_path = get_blend_file_path(type, False)
+def append_object_from_asset(type_c: Type, context: Context) -> Object:
+    obj_name = type_c.name
+    file_path = get_blend_file_path(type_c, False)
     if not file_path.exists():
         raise DGFileNotFound(file_path)
 
@@ -98,8 +98,8 @@ def show_error_message(msg: str, title: str = "Error") -> None:
     )
 
 
-def get_node_group(type: Type, minimum_version: VersionInt) -> NodeGroup | None:
-    prefix: str = node_group_name_prefix(type)
+def get_node_group(type_c: Type, minimum_version: VersionInt) -> NodeGroup | None:
+    prefix: str = node_group_name_prefix(type_c)
     matched: NodeGroup | None = None
 
     for ng in bpy.data.node_groups:
@@ -114,10 +114,10 @@ def get_node_group(type: Type, minimum_version: VersionInt) -> NodeGroup | None:
     return matched
 
 
-def share_node_group_if_exists(type: Type, obj: Object) -> None:
-    node_group = get_node_group(type, get_primitive_version(type))
+def share_node_group_if_exists(type_c: Type, obj: Object) -> None:
+    node_group = get_node_group(type_c, get_primitive_version(type_c))
     if node_group is not None:
-        mod = obj.modifiers[modifier_name(type)]
+        mod = obj.modifiers[modifier_name(type_c)]
         if mod.node_group == node_group:
             return
 
@@ -126,14 +126,14 @@ def share_node_group_if_exists(type: Type, obj: Object) -> None:
         bpy.data.node_groups.remove(to_delete)
 
 
-def load_primitive_from_asset(type: Type, context: Context, set_rot: bool) -> Object:
-    obj = append_object_from_asset(type, context)
+def load_primitive_from_asset(type_c: Type, context: Context, set_rot: bool) -> Object:
+    obj = append_object_from_asset(type_c, context)
     # This line may not be necessary,
     # but sometimes it doesn't work well unless you do this...?
     context.view_layer.objects.active = None
     context.view_layer.objects.active = obj
     # share duplicate resources
-    share_node_group_if_exists(type, obj)
+    share_node_group_if_exists(type_c, obj)
     # move to 3d-cursor's position and rotation
     cur = context.scene.cursor
     obj.location = cur.location
@@ -156,10 +156,10 @@ def calc_aabb(vecs: Iterable[Vector]) -> AABB:
     min_v = Vector((L, L, L))
     max_v = Vector((-L, -L, -L))
     for pt in vecs:
-        pt = Vector(pt)
+        pt2 = Vector(pt)
         for i in range(3):
-            min_v[i] = min(min_v[i], pt[i])
-            max_v[i] = max(max_v[i], pt[i])
+            min_v[i] = min(min_v[i], pt2[i])
+            max_v[i] = max(max_v[i], pt2[i])
 
     return AABB(min_v, max_v)
 
@@ -172,26 +172,26 @@ def is_modern_primitive(obj: Object) -> bool:
     return is_primitive_mod(obj.modifiers[0])
 
 
-def is_modern_primitive_specific(obj: Object, type: Type) -> bool:
+def is_modern_primitive_specific(obj: Object, type_c: Type) -> bool:
     if not is_modern_primitive(obj):
         return False
-    return obj.modifiers[0].name == modifier_name(type)
+    return obj.modifiers[0].name == modifier_name(type_c)
 
 
-def get_blend_file_path(type: Type, is_relative: bool) -> str:
-    rel_path = f"{ASSET_DIR_NAME}/{type.name.lower()}.blend"
+def get_blend_file_path(type_c: Type, is_relative: bool) -> str:
+    rel_path = f"{ASSET_DIR_NAME}/{type_c.name.lower()}.blend"
     if is_relative:
         return rel_path
     addon_dir = get_addon_dir()
     return addon_dir / rel_path
 
 
-def node_group_name_prefix(type: Type) -> str:
-    return f"{MODERN_PRIMITIVE_TAG}{type.name}_"
+def node_group_name_prefix(type_c: Type) -> str:
+    return f"{MODERN_PRIMITIVE_TAG}{type_c.name}_"
 
 
-def node_group_name(type: Type, version: VersionInt) -> str:
-    return node_group_name_prefix(type) + str(version)
+def node_group_name(type_c: Type, version: VersionInt) -> str:
+    return node_group_name_prefix(type_c) + str(version)
 
 
 def type_from_modifier_name(name: str) -> Type:
@@ -201,8 +201,8 @@ def type_from_modifier_name(name: str) -> Type:
     raise DGUnknownType()
 
 
-def modifier_name(type: Type) -> str:
-    return f"{MODERN_PRIMITIVE_TAG}{type.name}"
+def modifier_name(type_c: Type) -> str:
+    return f"{MODERN_PRIMITIVE_TAG}{type_c.name}"
 
 
 def is_primitive_mod(mod: Modifier) -> bool:
@@ -269,11 +269,11 @@ def get_category_name_from_operator(typ: Type) -> tuple[str, str]:
     if not hasattr(typ, "bl_idname") or not isinstance(typ.bl_idname, str):
         raise TypeError(f"Expected an Operator type with a string bl_idname, got {typ}")
 
+    CATEGORY_SEGMENTS = 2
     parts = typ.bl_idname.split(".")
-    if len(parts) == 2:
+    if len(parts) == CATEGORY_SEGMENTS:
         return tuple(parts)
-    else:
-        raise ValueError(f"Invalid bl_idname format: {typ.bl_idname}")
+    raise ValueError(f"Invalid bl_idname format: {typ.bl_idname}")
 
 
 def exec_operator_from_type(typ: Type, *args, **kwargs) -> None:
