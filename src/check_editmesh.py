@@ -1,7 +1,9 @@
+from collections.abc import Iterable
+
 import bpy
-from typing import Iterable
-from bpy.types import Scene, Context, Object
 from bpy.app.handlers import persistent
+from bpy.types import Context, Object, Scene
+
 from .aux_func import is_modern_primitive
 from .text import TextDrawer
 
@@ -39,13 +41,11 @@ def check_editmesh(scene: Scene):
         pm = get_primitive_mesh(context)
         if len(pm) > 0:
             textdraw_warning.set_text(make_warning_message(pm))
-            if textdraw_warning.show(context):
-                if context.area is not None:
-                    context.area.tag_redraw()
+            if textdraw_warning.show(context) and context.area is not None:
+                context.area.tag_redraw()
             return
-    if textdraw_warning.hide(context):
-        if context.area is not None:
-            context.area.tag_redraw()
+    if textdraw_warning.hide(context) and context.area is not None:
+        context.area.tag_redraw()
 
 
 @persistent
