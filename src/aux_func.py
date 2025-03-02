@@ -1,33 +1,34 @@
-import bpy
 import sys
+from collections.abc import Iterable
 from typing import cast
+
+import bpy
 from bpy.types import (
-    Object,
-    Context,
-    bpy_struct,
-    NodeGroup,
-    NodesModifier,
-    Modifier,
     AddonPreferences,
+    Context,
     Mesh,
     MeshVertex,
+    Modifier,
+    NodeGroup,
+    Object,
+    bpy_struct,
 )
-from .exception import (
-    DGFileNotFound,
-    DGObjectNotFound,
-    DGInvalidVersionNumber,
-    DGUnknownType,
-)
+from mathutils import Matrix, Vector
+
 from .constants import (
-    Type,
     ASSET_DIR_NAME,
-    MODERN_PRIMITIVE_TAG,
     MODERN_PRIMITIVE_PREFIX,
+    MODERN_PRIMITIVE_TAG,
+    Type,
     get_addon_dir,
     get_addon_name,
 )
-from mathutils import Vector, Matrix
-from collections.abc import Iterable
+from .exception import (
+    DGFileNotFound,
+    DGInvalidVersionNumber,
+    DGObjectNotFound,
+    DGUnknownType,
+)
 from .version import VersionInt, get_primitive_version
 
 
