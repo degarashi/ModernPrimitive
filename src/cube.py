@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 import bpy.utils
 from bpy.types import Context, Object, Operator
 from mathutils import Vector
@@ -11,7 +13,7 @@ from .primitive_prop import get_max, get_min
 class DCube_CenterOrigin_Operator(Operator):
     bl_idname = f"object.{MODERN_PRIMITIVE_PREFIX}_dcube_origin_center"
     bl_label = "Set DeformableCube Origin to Center"
-    bl_options = {"REGISTER", "UNDO"}
+    bl_options: ClassVar[set[str]] = {"REGISTER", "UNDO"}
 
     @classmethod
     def poll(cls, context: Context | None) -> bool:
