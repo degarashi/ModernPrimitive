@@ -1,10 +1,11 @@
-from bpy.types import Operator, Context, Object
-from .constants import Type, MODERN_PRIMITIVE_PREFIX
-from .aux_func import is_modern_primitive_specific
 import bpy.utils
-from .aux_node import get_interface_value, set_interface_value
+from bpy.types import Context, Object, Operator
 from mathutils import Vector
-from .primitive_prop import get_min, get_max
+
+from .aux_func import is_modern_primitive_specific
+from .aux_node import get_interface_value, set_interface_value
+from .constants import MODERN_PRIMITIVE_PREFIX, Type
+from .primitive_prop import get_max, get_min
 
 
 class DCube_CenterOrigin_Operator(Operator):
