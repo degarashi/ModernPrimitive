@@ -1,6 +1,10 @@
-import blf
-from bpy.types import SpaceView3D, Context, Region, Area
 from typing import Any
+
+import blf
+from bpy.types import Area, Context, Region, SpaceView3D
+from mathutils import Color
+
+from .draw_aux import set_color as set_color_g
 
 
 def get_region(context: Context, area_type: str, region_type: str) -> Region | None:
@@ -24,16 +28,21 @@ def get_region(context: Context, area_type: str, region_type: str) -> Region | N
 class TextDrawer:
     __text: str
     __handle: Any | None
+    __color: Color
 
     def __init__(self, msg: str):
         self.__text = msg
         self.__handle = None
+        self.__color = Color((1, 1, 1))
 
     def is_running(self) -> bool:
         return self.__handle is not None
 
     def set_text(self, text: str) -> None:
         self.__text = text
+
+    def set_color(self, col: Color) -> None:
+        self.__color = col.copy()
 
     def show(self, context: Context) -> bool:
         if not self.is_running():
@@ -65,7 +74,7 @@ class TextDrawer:
             blf.enable(font_id, blf.SHADOW)
             blf.shadow_offset(font_id, 1, -1)
 
-            blf.color(font_id, 1, 0.15, 0.15, 1)
+            set_color_g(blf, self.__color)
             blf.size(font_id, 20)
             w, h = blf.dimensions(font_id, self.__text)
             blf.position(font_id, region.width / 2 - w / 2, region.height - 120, 0)
