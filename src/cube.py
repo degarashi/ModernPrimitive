@@ -4,7 +4,7 @@ import bpy.utils
 from bpy.types import Context, Object, Operator
 from mathutils import Vector
 
-from .aux_func import is_modern_primitive_specific
+from .aux_func import is_modern_primitive_specific, is_mpr_enabled
 from .aux_node import get_interface_value, set_interface_value
 from .constants import MODERN_PRIMITIVE_PREFIX, Type
 from .primitive_prop import get_max, get_min
@@ -20,7 +20,9 @@ class DCube_CenterOrigin_Operator(Operator):
         if len(context.selected_objects) == 0:
             return False
         for obj in context.selected_objects:
-            if not is_modern_primitive_specific(obj, Type.DeformableCube):
+            if not is_modern_primitive_specific(obj, Type.DeformableCube) or not is_mpr_enabled(
+                obj.modifiers
+            ):
                 return False
         return True
 
