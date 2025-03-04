@@ -5,13 +5,14 @@ from bpy.app.handlers import persistent
 from bpy.types import Context, Object, Scene
 
 from .aux_func import is_modern_primitive
+from .color import HUDColor
 from .text import TextDrawer
 
 textdraw_warning = TextDrawer("")
 
 
 def make_warning_message(objs: Iterable[Object]) -> str:
-    ret = "Warning: Editing ModernPrimitive's Basemesh"
+    ret = "Editing ModernPrimitive's Mesh"
     for obj in objs:
         ret += "\n"
         ret += f"[{obj.name}]"
@@ -38,9 +39,11 @@ def get_primitive_mesh(context: Context) -> set[Object]:
 def check_editmesh(scene: Scene):
     context = bpy.context
     if context.mode == "EDIT_MESH":
+        hud_color = HUDColor(context.preferences)
         pm = get_primitive_mesh(context)
         if len(pm) > 0:
             textdraw_warning.set_text(make_warning_message(pm))
+            textdraw_warning.set_color(hud_color.white)
             if textdraw_warning.show(context) and context.area is not None:
                 context.area.tag_redraw()
             return
