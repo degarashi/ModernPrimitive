@@ -1,4 +1,12 @@
 # Changelog
+## v0.0.27
+- added Pivot adjustment option
+<img src="./doc_images/pivot_adjust.jpg" alt="" width="50%" />
+
+- added "Treat As Short" option to ConvertTo operator<br>
+This is useful when switching flat cubes to torus
+<img src="./doc_images/treat_as_short.jpg" alt="" width="50%" />
+
 ## v0.0.26
 - ConvertTo(Primitive) operator: copy materials and modifiers from original object
 
