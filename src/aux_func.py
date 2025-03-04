@@ -301,3 +301,7 @@ def copy_modifier(from_mod: Modifier, to_mod: ObjectModifiers) -> None:
 def disable_modifier(mod: Modifier) -> None:
     mod.show_viewport = False
     mod.show_render = False
+
+
+def is_mpr_enabled(mod: ObjectModifiers) -> bool:
+    return mod[0].show_viewport
