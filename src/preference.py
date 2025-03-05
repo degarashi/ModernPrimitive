@@ -1,6 +1,7 @@
-from bpy.types import AddonPreferences, Context
-from bpy.utils import register_class, unregister_class
 from bpy.props import BoolProperty
+from bpy.types import AddonPreferences, Context, UILayout
+from bpy.utils import register_class, unregister_class
+
 from .constants import get_addon_name
 
 
@@ -21,17 +22,21 @@ class Preference(AddonPreferences):
     show_gizmo_value: BoolProperty(name="Show Gizmo Value", default=True)
     # ------
 
-    def draw(self, ctx: Context) -> None:
-        layout = self.layout
+    def __box_create(self, layout: UILayout) -> None:
         box = layout.box()
         box.label(text="Make option (Default)")
         box.prop(self, "make_cursors_rot")
         box.prop(self, "make_appropriate_size")
         box.prop(self, "make_smooth_shading")
 
+    def __box_gizmo(self, layout: UILayout) -> None:
         box = layout.box()
         box.label(text="HUD")
         box.prop(self, "show_gizmo_value", text="Show Gizmo Value (Initial state)")
+
+    def draw(self, ctx: Context) -> None:
+        self.__box_create(self.layout)
+        self.__box_gizmo(self.layout)
 
 
 def register() -> None:
