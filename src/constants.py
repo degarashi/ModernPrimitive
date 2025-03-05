@@ -1,5 +1,6 @@
 from enum import Enum, auto
 from pathlib import Path
+from typing import ClassVar
 
 
 class Type(Enum):
@@ -36,13 +37,13 @@ def get_assets_dir() -> Path:
     return get_addon_dir() / ASSET_DIR_NAME
 
 
-_ADDON_NAME: str | None = None
+class Variables:
+    _ADDON_NAME: ClassVar[str | None] = None
 
 
 def get_addon_name() -> str:
-    global _ADDON_NAME
-    if _ADDON_NAME is None:
+    if Variables._ADDON_NAME is None:
         a_name = __package__.split(".")
         a_name.pop()
-        _ADDON_NAME = ".".join(a_name)
-    return _ADDON_NAME
+        Variables._ADDON_NAME = ".".join(a_name)
+    return Variables._ADDON_NAME
