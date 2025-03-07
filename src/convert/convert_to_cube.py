@@ -25,8 +25,8 @@ class ConvertToCube_Operator(_ConvertToCube_Operator):
     """Make Modern Cube From Object"""
 
     B = _ConvertToCube_Operator
-    bl_idname = B.bl_idname
-    bl_label = B.bl_label
+    bl_idname = B.get_bl_idname()
+    bl_label = B.get_bl_label()
 
     cube_type: EnumProperty(
         name="Cube Type",

@@ -57,13 +57,11 @@ class ConvertTo_BaseOperator(Operator):
         return cls.type.name
 
     @classmethod
-    @property
-    def bl_idname(cls):
+    def get_bl_idname(cls):
         return f"mesh.{MODERN_PRIMITIVE_PREFIX}_convert_to_{cls.type_name.lower()}"
 
     @classmethod
-    @property
-    def bl_label(cls):
+    def get_bl_label(cls):
         return f"Convert object to Modern{cls.type_name}"
 
     bl_options = {"REGISTER", "UNDO"}

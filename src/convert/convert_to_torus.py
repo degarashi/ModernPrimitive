@@ -19,8 +19,8 @@ class ConvertToTorus_Operator(_ConvertToTorus_Operator):
     """Make Modern Torus From Object"""
 
     B = _ConvertToTorus_Operator
-    bl_idname = B.bl_idname
-    bl_label = B.bl_label
+    bl_idname = B.get_bl_idname()
+    bl_label = B.get_bl_label()
 
     def _handle_proc(
         self, context: Context, bbox: BBox, verts: Sequence[Vector]

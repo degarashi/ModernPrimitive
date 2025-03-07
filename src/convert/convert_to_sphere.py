@@ -16,13 +16,11 @@ from .convert_to_baseop import BBox, ConvertTo_BaseOperator
 
 class _ConvertToSphere_Operator(ConvertTo_BaseOperator):
     @classmethod
-    @property
-    def bl_idname(cls) -> str:
+    def get_bl_idname(cls) -> str:
         return "mesh.mpr_convert_to_sphere"
 
     @classmethod
-    @property
-    def bl_label(cls) -> str:
+    def get_bl_label(cls) -> str:
         return "Convert object to Modern Sphere"
 
 
@@ -30,8 +28,8 @@ class ConvertToSphere_Operator(_ConvertToSphere_Operator):
     """Make Modern UVSphere From Object"""
 
     B = _ConvertToSphere_Operator
-    bl_idname = B.bl_idname
-    bl_label = B.bl_label
+    bl_idname = B.get_bl_idname()
+    bl_label = B.get_bl_label()
 
     sphere_type: EnumProperty(
         name="Sphere Type",
