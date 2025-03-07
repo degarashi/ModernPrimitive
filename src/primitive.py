@@ -1,7 +1,8 @@
-from .constants import Type, MODERN_PRIMITIVE_PREFIX
-from .aux_func import node_group_name
+from collections.abc import Callable
+
 from . import primitive_prop as P
-from typing import Callable
+from .aux_func import node_group_name
+from .constants import MODERN_PRIMITIVE_PREFIX, Type
 
 
 class Primitive:
