@@ -1,6 +1,6 @@
 import math
-from typing import cast
 from collections.abc import Iterable, Sequence
+from typing import ClassVar, cast
 
 import bpy
 import numpy as np
@@ -64,7 +64,7 @@ class ConvertTo_BaseOperator(Operator):
     def get_bl_label(cls):
         return f"Convert object to Modern{cls.type_name}"
 
-    bl_options = {"REGISTER", "UNDO"}
+    bl_options: ClassVar[set[str]] = {"REGISTER", "UNDO"}
     keep_original: BoolProperty(name="Keep Original", default=False)
     apply_scale: BoolProperty(name="Apply Scaling", default=True)
 
