@@ -86,7 +86,7 @@ def append_object_from_asset(type_c: Type, context: Context) -> Object:
     try:
         return get_object_just_added(context)
     except IndexError as e:
-        # ロードできてない
+        # Cannot load
         raise DGObjectNotFound(obj_name, file_path) from e
 
 
