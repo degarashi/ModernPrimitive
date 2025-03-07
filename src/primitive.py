@@ -12,13 +12,11 @@ class Primitive:
         return cls.type.name
 
     @classmethod
-    @property
-    def bl_idname(cls):
+    def get_bl_idname(cls):
         return f"mesh.{MODERN_PRIMITIVE_PREFIX}_make_{cls.type_name.lower()}"
 
     @classmethod
-    @property
-    def bl_label(cls):
+    def get_bl_label(cls):
         return f"Make Modern {cls.type_name}"
 
     @classmethod

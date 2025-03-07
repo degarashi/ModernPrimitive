@@ -103,24 +103,24 @@ class MakeCube_Operator(OperatorBase, Primitive_Cube):
     """Make Modern Cube"""
 
     P = Primitive_Cube
-    bl_idname = P.bl_idname
-    bl_label = P.bl_label
+    bl_idname = P.get_bl_idname()
+    bl_label = P.get_bl_label()
 
 
 class MakeCone_Operator(OperatorBase, Primitive_Cone):
     """Make Modern Cone"""
 
     P = Primitive_Cone
-    bl_idname = P.bl_idname
-    bl_label = P.bl_label
+    bl_idname = P.get_bl_idname()
+    bl_label = P.get_bl_label()
 
 
 class MakeCylinder_Operator(OperatorBase, Primitive_Cylinder):
     """Make Modern Cylinder"""
 
     P = Primitive_Cylinder
-    bl_idname = P.bl_idname
-    bl_label = P.bl_label
+    bl_idname = P.get_bl_idname()
+    bl_label = P.get_bl_label()
 
     @classmethod
     @property
@@ -132,8 +132,8 @@ class MakeGrid_Operator(OperatorBase, Primitive_Grid):
     """Make Modern Grid"""
 
     P = Primitive_Grid
-    bl_idname = P.bl_idname
-    bl_label = P.bl_label
+    bl_idname = P.get_bl_idname()
+    bl_label = P.get_bl_label()
 
     @classmethod
     @property
@@ -145,8 +145,8 @@ class MakeTorus_Operator(OperatorBase, Primitive_Torus):
     """Make Modern Torus"""
 
     P = Primitive_Torus
-    bl_idname = P.bl_idname
-    bl_label = P.bl_label
+    bl_idname = P.get_bl_idname()
+    bl_label = P.get_bl_label()
 
     @classmethod
     @property
@@ -158,8 +158,8 @@ class MakeICOSphere_Operator(OperatorBase, Primitive_ICOSphere):
     """Make Modern Ico Sphere"""
 
     P = Primitive_ICOSphere
-    bl_idname = P.bl_idname
-    bl_label = P.bl_label
+    bl_idname = P.get_bl_idname()
+    bl_label = P.get_bl_label()
 
     @classmethod
     @property
@@ -176,8 +176,8 @@ class MakeUVSphere_Operator(OperatorBase, Primitive_UVSphere):
     """Make Modern UV Sphere"""
 
     P = Primitive_UVSphere
-    bl_idname = P.bl_idname
-    bl_label = P.bl_label
+    bl_idname = P.get_bl_idname()
+    bl_label = P.get_bl_label()
 
     @classmethod
     @property
@@ -194,8 +194,8 @@ class MakeTube_Operator(OperatorBase, Primitive_Tube):
     """Make Modern Tube"""
 
     P = Primitive_Tube
-    bl_idname = P.bl_idname
-    bl_label = P.bl_label
+    bl_idname = P.get_bl_idname()
+    bl_label = P.get_bl_label()
 
     @classmethod
     @property
@@ -207,8 +207,8 @@ class MakeGear_Operator(OperatorBase, Primitive_Gear):
     """Make Modern Gear"""
 
     P = Primitive_Gear
-    bl_idname = P.bl_idname
-    bl_label = P.bl_label
+    bl_idname = P.get_bl_idname()
+    bl_label = P.get_bl_label()
 
     @classmethod
     @property
@@ -220,8 +220,8 @@ class MakeSpring_Operator(OperatorBase, Primitive_Spring):
     """Make Modern Spring"""
 
     P = Primitive_Spring
-    bl_idname = P.bl_idname
-    bl_label = P.bl_label
+    bl_idname = P.get_bl_idname()
+    bl_label = P.get_bl_label()
 
     @classmethod
     @property
@@ -233,8 +233,8 @@ class MakeDeformableCube_Operator(OperatorBase, Primitive_DeformableCube):
     """Make Modern Deformable Cube"""
 
     P = Primitive_DeformableCube
-    bl_idname = P.bl_idname
-    bl_label = P.bl_label
+    bl_idname = P.get_bl_idname()
+    bl_label = P.get_bl_label()
 
     @classmethod
     @property
@@ -246,8 +246,8 @@ class MakeCapsule_Operator(OperatorBase, Primitive_Capsule):
     """Make Modern Capsule"""
 
     P = Primitive_Capsule
-    bl_idname = P.bl_idname
-    bl_label = P.bl_label
+    bl_idname = P.get_bl_idname()
+    bl_label = P.get_bl_label()
 
     @classmethod
     @property
@@ -259,8 +259,8 @@ class MakeQuadSphere_Operator(OperatorBase, Primitive_QuadSphere):
     """Make Modern QuadSphere"""
 
     P = Primitive_QuadSphere
-    bl_idname = P.bl_idname
-    bl_label = P.bl_label
+    bl_idname = P.get_bl_idname()
+    bl_label = P.get_bl_label()
 
     @classmethod
     @property
