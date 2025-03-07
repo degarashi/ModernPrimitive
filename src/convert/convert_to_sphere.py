@@ -1,16 +1,17 @@
+from collections.abc import Sequence
+
+import bpy.ops
+from bpy.props import EnumProperty
 from bpy.types import (
     Context,
     Object,
 )
-from .convert_to_baseop import ConvertTo_BaseOperator, BBox
-import bpy.ops
-
-from ..aux_func import get_object_just_added
-from .. import primitive_prop as prop
-from ..aux_node import set_interface_values
-from bpy.props import EnumProperty
 from mathutils import Vector
-from typing import Sequence
+
+from .. import primitive_prop as prop
+from ..aux_func import get_object_just_added
+from ..aux_node import set_interface_values
+from .convert_to_baseop import BBox, ConvertTo_BaseOperator
 
 
 class _ConvertToSphere_Operator(ConvertTo_BaseOperator):

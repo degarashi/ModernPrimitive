@@ -1,13 +1,16 @@
-from bpy.types import Operator, Context, Object, Event
-from ..constants import MODERN_PRIMITIVE_PREFIX
-from typing import cast, Iterable, Sequence
-from bpy.props import BoolProperty, EnumProperty, StringProperty
-import bpy
-from ..aux_func import calc_aabb, get_evaluated_vertices, mul_vert_mat, is_primitive_mod
-from mathutils import Matrix, Vector, Quaternion, geometry
 import math
+from typing import cast
+from collections.abc import Iterable, Sequence
+
+import bpy
 import numpy as np
+from bpy.props import BoolProperty, EnumProperty, StringProperty
+from bpy.types import Context, Event, Object, Operator
+from mathutils import Matrix, Quaternion, Vector, geometry
+
+from ..aux_func import calc_aabb, get_evaluated_vertices, is_primitive_mod, mul_vert_mat
 from ..aux_math import is_uniform
+from ..constants import MODERN_PRIMITIVE_PREFIX
 
 
 class BBox:

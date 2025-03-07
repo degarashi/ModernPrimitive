@@ -1,17 +1,19 @@
+from collections.abc import Sequence
+
+import bpy.ops
 from bpy.types import (
     Context,
     Object,
 )
-from .convert_to_baseop import ConvertTo_BaseOperator, BBox
-import bpy.ops
+from mathutils import Vector
+
+from .. import primitive_prop as prop
 from ..aux_func import (
     get_object_just_added,
 )
 from ..aux_node import set_interface_values
-from .. import primitive_prop as prop
 from ..constants import Type
-from mathutils import Vector
-from typing import Sequence
+from .convert_to_baseop import BBox, ConvertTo_BaseOperator
 
 
 class _ConvertToGrid_Operator(ConvertTo_BaseOperator):

@@ -1,13 +1,14 @@
-from .convert_to_baseop import ConvertTo_BaseOperator, BBox
-from ..constants import Type, MIN_RADIUS
-from bpy.types import Object, Context
-from ..aux_func import get_object_just_added
-from mathutils import Vector
-from ..aux_node import set_interface_values
-from .. import primitive_prop as prop
-from typing import Sequence
+from collections.abc import Sequence
 
 import bpy.ops
+from bpy.types import Context, Object
+from mathutils import Vector
+
+from .. import primitive_prop as prop
+from ..aux_func import get_object_just_added
+from ..aux_node import set_interface_values
+from ..constants import MIN_RADIUS, Type
+from .convert_to_baseop import BBox, ConvertTo_BaseOperator
 
 
 class _ConvertToCone_Operator(ConvertTo_BaseOperator):
