@@ -91,7 +91,7 @@ class Drawer:
         orig_pos: Vector,
         dir_v: Vector,
     ) -> Vector:
-        # 描画元位置
+        # Origin position
         ori_p = perspec(self.__m_pers, orig_pos.to_4d())
 
         view_ori = Vector((0, 0, 1, 1))
@@ -103,7 +103,7 @@ class Drawer:
         ratio = abs(win_diff.x - win_ori.x)
         ratio *= 0.008
 
-        # ギズモ中心位置のZ距離
+        # z-distance at the center of Gizmo
         gizmo_dist = ori_p.z
 
         AXIS_LEN = 4.0
