@@ -17,9 +17,9 @@ def is_uniform(vec: Vector) -> bool:
 
 def calc_from_to_rotation(from_vec: Vector, to_vec: Vector) -> Quaternion:
     dot = from_vec.dot(to_vec)
-    # ベクトルがほぼ反対方向を向いている場合
+    # If the vector is pointing in almost the opposite direction
     if dot < -1 + 1e-10:
-        # from_vec と垂直な適当なベクトルを選び回転軸とする
+        # Choose an appropriate vector perpendicular to from vec and use the axis of rotation.
         THRESHOLD = 0.9
         ortho_vec = Vector((1, 0, 0)) if abs(from_vec.x) < THRESHOLD else Vector((0, 1, 0))
         axis = from_vec.cross(ortho_vec).normalized()
@@ -27,7 +27,7 @@ def calc_from_to_rotation(from_vec: Vector, to_vec: Vector) -> Quaternion:
 
     axis = from_vec.cross(to_vec)
     if math.isclose(axis.length, 0):
-        # 既に同じ方向
+        # Already in the same direction
         return Quaternion()
 
     angle = Vector(from_vec).angle(to_vec)
