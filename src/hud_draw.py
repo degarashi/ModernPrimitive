@@ -629,6 +629,16 @@ def proc_spring(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
     d.draw_text_at(d.color.y, gz(P.DivisionRing), d.div_text(div_ring))
 
 
+DCUBE_GIZMO_POS = {
+    P.MinX: 0,
+    P.MaxX: 1,
+    P.MinY: 2,
+    P.MaxY: 3,
+    P.MinZ: 4,
+    P.MaxZ: 5,
+}
+
+
 def proc_dcube(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
     out = get_interface_values(mod, PR.Primitive_DeformableCube.get_param_names())
     min_x = out[P.MinX.name]
@@ -638,48 +648,47 @@ def proc_dcube(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr) -> None:
     min_z = out[P.MinZ.name]
     max_z = out[P.MaxZ.name]
 
-    center_x = (max_x - min_x) / 2
-    center_y = (max_y - min_y) / 2
-    center_z = (max_z - min_z) / 2
+    def gz(p: P.Prop) -> Vector:
+        return gizmo_info[DCUBE_GIZMO_POS[p]].position
 
     d.draw_text_at_2(
         d.color.x,
-        Vector((-min_x, center_y, center_z)),
+        gz(P.MinX),
         None,
         Vector((-1, 0, 0)),
         d.unit_dist(min_x),
     )
     d.draw_text_at_2(
         d.color.x,
-        Vector((max_x, center_y, center_z)),
+        gz(P.MaxX),
         None,
         Vector((1, 0, 0)),
         d.unit_dist(max_x),
     )
     d.draw_text_at_2(
         d.color.y,
-        Vector((center_x, -min_y, center_z)),
+        gz(P.MinY),
         None,
         Vector((0, -1, 0)),
         d.unit_dist(min_y),
     )
     d.draw_text_at_2(
         d.color.y,
-        Vector((center_x, max_y, center_z)),
+        gz(P.MaxY),
         None,
         Vector((0, 1, 0)),
         d.unit_dist(max_y),
     )
     d.draw_text_at_2(
         d.color.z,
-        Vector((center_x, center_y, -min_z)),
+        gz(P.MinZ),
         None,
         Vector((0, 0, -1)),
         d.unit_dist(min_z),
     )
     d.draw_text_at_2(
         d.color.z,
-        Vector((center_x, center_y, max_z)),
+        gz(P.MaxZ),
         None,
         Vector((0, 0, 1)),
         d.unit_dist(max_z),
