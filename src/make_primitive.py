@@ -1,32 +1,35 @@
-from bpy.types import bpy_struct, Context, Operator, SpaceView3D, UILayout
+import math
+from collections.abc import Iterable
+from typing import ClassVar
+
+import bpy.ops
 from bpy.props import BoolProperty, FloatProperty
+from bpy.types import Context, Operator, SpaceView3D, UILayout, bpy_struct
+from mathutils import Vector
+
 from .aux_func import (
+    get_addon_preferences,
     load_primitive_from_asset,
     register_class,
     unregister_class,
-    get_addon_preferences,
 )
+from .aux_node import set_interface_value
 from .exception import DGFileNotFound, DGObjectNotFound
 from .primitive import (
-    Primitive_Cube,
+    Primitive_Capsule,
     Primitive_Cone,
-    Primitive_Grid,
+    Primitive_Cube,
     Primitive_Cylinder,
+    Primitive_DeformableCube,
+    Primitive_Gear,
+    Primitive_Grid,
     Primitive_ICOSphere,
-    Primitive_UVSphere,
+    Primitive_QuadSphere,
+    Primitive_Spring,
     Primitive_Torus,
     Primitive_Tube,
-    Primitive_Gear,
-    Primitive_Spring,
-    Primitive_DeformableCube,
-    Primitive_Capsule,
-    Primitive_QuadSphere,
+    Primitive_UVSphere,
 )
-from mathutils import Vector
-from .aux_node import set_interface_value
-import math
-import bpy.ops
-from typing import Iterable
 
 
 def get_view3d_pos(context: Context) -> Vector:
@@ -39,7 +42,7 @@ def get_view3d_pos(context: Context) -> Vector:
 
 
 class OperatorBase(Operator):
-    bl_options = {"REGISTER", "UNDO"}
+    bl_options: ClassVar[set[str]] = {"REGISTER", "UNDO"}
     set_cursor_rot: BoolProperty(name="Set Cursor's Rotation", default=False)
     appropriate_size: BoolProperty(
         name="Appropriate Size",
