@@ -97,6 +97,8 @@ InnerCircleDivision = Prop("InnerCircle Division", int, {PT.Division})
 
 Rotations = Prop("Rotations", float, {PT.Other})
 
+CornerRatio = Prop("Corner Ratio", Vector, {PT.Other})
+
 PROP_LIST: list[Prop] = [
     Size,
     SizeX,
