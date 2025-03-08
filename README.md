@@ -35,13 +35,11 @@ DeformableCube's "set origin to center" operator <br>
 <img src="./doc_images/usage_deformable_cube_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_capsule_0.jpg" alt="" width="25%" />
 
 # Changelog
-## v0.0.28
-- added Apply mesh operator
+## v0.0.29
+- Addressed an issue where installation failed in some environments with the following error:
+"validating class: Operator.bl_idname expected a string type, not method"
 
-This applies the results of the geometry node modifier to the mesh and hides the modifier.
-<img src="./doc_images/apply_mesh_0.jpg" alt="" width="50%" />
-
-- some refactoring and bugfixes...
+- some source code refactoring...
 
 ## Other
 [<ins>View all log</ins>](CHANGELOG.md)

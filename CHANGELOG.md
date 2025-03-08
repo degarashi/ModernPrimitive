@@ -1,4 +1,12 @@
 # Changelog
+## v0.0.28
+- added Apply mesh operator
+
+This applies the results of the geometry node modifier to the mesh and hides the modifier.
+<img src="./doc_images/apply_mesh_0.jpg" alt="" width="50%" />
+
+- some refactoring and bugfixes...
+
 ## v0.0.27
 - added Pivot adjustment option
 <img src="./doc_images/pivot_adjust.jpg" alt="" width="50%" />
