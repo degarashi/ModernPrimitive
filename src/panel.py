@@ -20,6 +20,7 @@ from .convert import (
 from .equalize_dcube_size import Equalize_DCube_Operator
 from .focus_modifier import FocusModifier_Operator
 from .make_primitive import OPS_GROUPS, make_operator_to_layout
+from .reset_origin import ResetOrigin_Operator
 from .restore_default import RestoreDefault_Operator
 from .switch_wireframe import SwitchWireframe
 from .wireframe import ENTRY_NAME as Wireframe_EntryName
@@ -115,8 +116,11 @@ class MPR_PT_Main(Panel):
 
     def __restore_panel(self) -> None:
         box = self.layout.box()
-        box.label(text="Restore Default")
-        row = box.row()
+        box.label(text="Restore")
+
+        box_param = box.box()
+        box_param.label(text="Parameters")
+        row = box_param.row()
         btn = row.operator(RestoreDefault_Operator.bl_idname, text="All")
         btn.reset_size = True
         btn.reset_size_mode = "All"
@@ -135,6 +139,10 @@ class MPR_PT_Main(Panel):
         btn.reset_division = True
         btn.reset_division_mode = "All"
         btn.reset_other = False
+
+        box_origin = box.box()
+        box_origin.label(text="Origin")
+        box_origin.operator(ResetOrigin_Operator.bl_idname, text="Reset")
 
     def draw(self, ctx: Context) -> None:
         self.__focus_panel()
