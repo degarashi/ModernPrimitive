@@ -31,6 +31,7 @@ MODULE_NAMES: list[str] = [
     "restore_default",
     "convert",
     "apply_mesh",
+    "reset_origin",
 ]
 
 modules = (
