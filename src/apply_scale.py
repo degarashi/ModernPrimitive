@@ -1,6 +1,6 @@
 import math
 from collections.abc import Callable
-from typing import Any, cast
+from typing import Any, ClassVar, cast
 
 from bpy.props import BoolProperty
 from bpy.types import Context, NodesModifier, Object, Operator
@@ -241,7 +241,7 @@ class ApplyScale_Operator(Operator):
 
     bl_idname = f"object.{MODERN_PRIMITIVE_PREFIX}_apply_scale"
     bl_label = "Apply scaling to ModernPrimitive"
-    bl_options = {"REGISTER", "UNDO"}
+    bl_options: ClassVar[set[str]] = {"REGISTER", "UNDO"}
 
     strict: BoolProperty(name="Strict Mode", default=True)
 
@@ -287,7 +287,7 @@ class ApplyScale_Operator(Operator):
                     obj.scale = Vector((1, 1, 1))
                 except DGInvalidInput as e:
                     # An error has occurred, notify the contents
-                    self.report({"ERROR"}, f"{obj.name}: {str(e)}")
+                    self.report({"ERROR"}, f"{obj.name}: {e!s}")
 
         return {"FINISHED"}
 
