@@ -1,22 +1,24 @@
-from bpy.utils import register_class, unregister_class
-from bpy.props import BoolProperty
-from bpy.types import Operator, Context, Object, NodesModifier
-from typing import Callable, cast, Any
-from mathutils import Vector, Quaternion
-from .constants import MODERN_PRIMITIVE_PREFIX, Type
-from .aux_func import get_selected_primitive
-from .aux_node import (
-    swap_interface_value,
-    modify_interface_value,
-    get_interface_value,
-    set_interface_value,
-)
-from .version import TypeAndVersion, get_primitive_version
-from .exception import DGInvalidInput
 import math
-from . import primitive_prop as prop
-from .aux_math import is_uniform, is_close
+from collections.abc import Callable
+from typing import Any, cast
 
+from bpy.props import BoolProperty
+from bpy.types import Context, NodesModifier, Object, Operator
+from bpy.utils import register_class, unregister_class
+from mathutils import Quaternion, Vector
+
+from . import primitive_prop as prop
+from .aux_func import get_selected_primitive
+from .aux_math import is_close, is_uniform
+from .aux_node import (
+    get_interface_value,
+    modify_interface_value,
+    set_interface_value,
+    swap_interface_value,
+)
+from .constants import MODERN_PRIMITIVE_PREFIX, Type
+from .exception import DGInvalidInput
+from .version import TypeAndVersion, get_primitive_version
 
 WarnProc = Callable[[str], None]
 
