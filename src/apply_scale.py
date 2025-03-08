@@ -8,8 +8,8 @@ from bpy.utils import register_class, unregister_class
 from mathutils import Quaternion, Vector
 
 from . import primitive_prop as prop
-from .aux_func import get_selected_primitive
-from .aux_math import is_close, is_uniform
+from .aux_func import get_evaluated_mesh, get_selected_primitive
+from .aux_math import is_close, is_uniform, MinMax
 from .aux_node import (
     get_interface_value,
     modify_interface_value,
@@ -161,9 +161,7 @@ def proc_gear(obj: Object, mod: NodesModifier, warn: WarnProc) -> None:
     scale_val = _abs_average_xy(obj.scale)
     modify_interface_value(mod, prop.OuterRadius.name, lambda val: val * scale_val)
     modify_interface_value(mod, prop.InnerRadius.name, lambda val: val * scale_val)
-    modify_interface_value(
-        mod, prop.InnerCircleRadius.name, lambda val: val * scale_val
-    )
+    modify_interface_value(mod, prop.InnerCircleRadius.name, lambda val: val * scale_val)
     modify_interface_value(mod, prop.FilletRadius.name, lambda val: val * scale_val)
 
     # -- z scaling --
@@ -259,9 +257,7 @@ class ApplyScale_Operator(Operator):
         warn = self.warn if not self.strict else self.warn_as_error
         objs = get_selected_primitive(context)
         for obj in objs:
-            typ_ver = TypeAndVersion.get_type_and_version(
-                obj.modifiers[0].node_group.name
-            )
+            typ_ver = TypeAndVersion.get_type_and_version(obj.modifiers[0].node_group.name)
             if typ_ver is None:
                 self.report({"WARNING"}, f"unknown primitive type: {obj.name}")
             else:
@@ -283,8 +279,12 @@ class ApplyScale_Operator(Operator):
                     PROC_MAP[typ_ver.type](obj, mod, warn)
                     # Since the node group value has been changed, update it here
                     mod.node_group.interface_update(context)
+                    old_scale = obj.scale.copy()
                     # reset scale value
                     obj.scale = Vector((1, 1, 1))
+                    for v in obj.data.vertices:
+                        v.co *= old_scale
+
                 except DGInvalidInput as e:
                     # An error has occurred, notify the contents
                     self.report({"ERROR"}, f"{obj.name}: {e!s}")
