@@ -16,6 +16,7 @@ from .aux_func import (
     is_modern_primitive,
     type_from_modifier_name,
 )
+from .aux_math import make_vec3
 from .aux_node import get_interface_values
 from .color import HUDColor
 from .constants import MODERN_PRIMITIVE_PREFIX, Type
@@ -88,6 +89,7 @@ class Drawer:
         self.__pref = context.preferences.view
         self.__window_size = (reg.width, reg.height)
         self.__m_pers = reg3d.perspective_matrix @ m_world
+        self.__scale = m_world.to_scale()
         self.__m_window = reg3d.window_matrix
         self.__system = context.scene.unit_settings.system
 
@@ -125,7 +127,9 @@ class Drawer:
 
         AXIS_LEN = 4.0
         ui_ratio = self.__pref.gizmo_size / 100.0 * self.__pref.ui_scale
-        move_dist = AXIS_LEN * gizmo_dist / 6 / ratio * ui_ratio
+        move_dist = make_vec3(AXIS_LEN * gizmo_dist / 6 / ratio * ui_ratio)
+        for i in range(3):
+            move_dist[i] /= self.__scale[i]
         return dir_v * move_dist + orig_pos
 
     def draw_text_at(
