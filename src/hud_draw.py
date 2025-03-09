@@ -1,5 +1,5 @@
 from collections.abc import Iterable
-from typing import Any, TypeVar, cast
+from typing import Any, ClassVar, TypeVar, cast
 
 import blf
 import bpy
@@ -27,7 +27,15 @@ from .gizmo_info import GizmoInfoAr, get_gizmo_info
 units = bpy.utils.units
 
 
-def perspec(mat: Matrix, pos: Vector) -> Vector:
+def tf_posvec(mat: Matrix, pos: Vector) -> Vector:
+    """Transform position vector with perspective matrix
+    Args:
+        mat (Matrix): Perspective matrix
+        pos (Vector): Position vector(d=4)
+
+    Returns:
+        Vector: transformed vector(d=3)
+    """
     pos = mat @ pos
     pos.x /= pos.w
     pos.y /= pos.w
@@ -35,13 +43,25 @@ def perspec(mat: Matrix, pos: Vector) -> Vector:
     return pos.xyz
 
 
-def to_win(window_size: Iterable[int], sc_pos: Vector) -> Vector:
+def tf_window(window_size: Iterable[int], sc_pos: Vector) -> Vector:
+    """
+    Args:
+        window_size(Iterable[int]): window size(d=2) pixel unit
+        sc_pos(Vector): screen-space position vector(d=2)
+
+    Returns:
+        Vector: transformed vector
+    """
     return Vector(
         (
             (sc_pos.x / 2 + 0.5) * window_size[0],
             (sc_pos.y / 2 + 0.5) * window_size[1],
         )
     )
+
+
+def tf_w_p(window_size: Iterable[int], p_mat: Matrix, pos: Vector) -> Vector:
+    return tf_window(window_size, tf_posvec(p_mat, pos))
 
 
 ONE = Vector((1, 1))
@@ -57,7 +77,7 @@ class Drawer:
     __m_pers: Matrix
     __m_window: Matrix
     __system: str
-    __dim: Vector
+    __text_dim: Vector
 
     def __init__(self, blf: Any, context: Context, m_world: Matrix):
         reg = context.region
@@ -78,29 +98,26 @@ class Drawer:
         blf.shadow_offset(FONT_ID, 1, -1)
         blf.size(FONT_ID, 15 * scale)
         set_color(blf, HUDColor.WHITE)
-        self.__dim = Vector(blf.dimensions(FONT_ID, "A"))
-        self.__dim.y += 4
+        self.__text_dim = Vector(blf.dimensions(FONT_ID, "A"))
+        self.__text_dim.y += 4
 
         return self
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
         self.__blf.disable(FONT_ID, blf.SHADOW)
 
-    def gizmo_depend_worldpos(
+    def _gizmo_depend_worldpos(
         self,
         orig_pos: Vector,
         dir_v: Vector,
     ) -> Vector:
         # Origin position
-        ori_p = perspec(self.__m_pers, orig_pos.to_4d())
+        ori_p = tf_posvec(self.__m_pers, orig_pos.to_4d())
 
-        view_ori = Vector((0, 0, 1, 1))
-        p_ori = perspec(self.__m_window, view_ori)
-        win_ori = to_win(self.__window_size, p_ori)
-        view_diff = Vector((1, 0, 1, 1))
-        p_diff = perspec(self.__m_window, view_diff)
-        win_diff = to_win(self.__window_size, p_diff)
-        ratio = abs(win_diff.x - win_ori.x)
+        win_ori = tf_w_p(self.__window_size, self.__m_window, Vector((0, 0, 1, 1)))
+        win_x_one = tf_w_p(self.__window_size, self.__m_window, Vector((1, 0, 1, 1)))
+
+        ratio = abs(win_x_one.x - win_ori.x)
         ratio *= 0.008
 
         # z-distance at the center of Gizmo
@@ -119,10 +136,10 @@ class Drawer:
         label_offset_r: Vector = HALF_ONE,
     ) -> None:
         set_color(self.__blf, color)
-        ori_w = to_win(self.__window_size, perspec(self.__m_pers, ori_pos.to_4d()))
-        set_position_draw(self.__blf, ori_w + self.__dim * label_offset_r, msg)
+        ori_w = tf_w_p(self.__window_size, self.__m_pers, ori_pos.to_4d())
+        set_position_draw(self.__blf, ori_w + self.__text_dim * label_offset_r, msg)
 
-    def draw_text_at_2(
+    def draw_text_at_2(  # noqa: PLR0913
         self,
         color: Color,
         ori_pos: Vector,
@@ -136,11 +153,11 @@ class Drawer:
             self.draw_text_at(color, ori_pos, msg0, label_offset0_r)
 
         set_color(self.__blf, color)
-        target_pos = self.gizmo_depend_worldpos(ori_pos, lc_dir)
+        target_pos = self._gizmo_depend_worldpos(ori_pos, lc_dir)
         set_position_draw(
             self.__blf,
-            to_win(self.__window_size, perspec(self.__m_pers, target_pos.to_4d()))
-            + self.__dim * label_offset1_r,
+            tf_w_p(self.__window_size, self.__m_pers, target_pos.to_4d())
+            + self.__text_dim * label_offset1_r,
             msg1,
         )
 
@@ -795,7 +812,7 @@ class MPR_Hud(Operator):
     bl_idname = f"ui.{MODERN_PRIMITIVE_PREFIX}_show_hud"
     bl_label = "Show/Hide MPR HUD"
     bl_description = "Show/Hide ModernPrimitive HUD"
-    bl_options = set()
+    bl_options: ClassVar[set[str]] = set()
 
     __handle = None
     show: BoolProperty(name="Show HUD", default=True)
@@ -848,11 +865,14 @@ class MPR_Hud(Operator):
             mesh = get_evaluated_mesh(context, obj)
             gizmo_info = get_gizmo_info(mesh)
 
+            QUADVIEW_NUM = 4
             # In quad view mode,
             # scale values are not displayed except for the upper-right view
-            if len(space.region_quadviews) == 4:
-                if space.region_quadviews[-1] != reg3d:
-                    show_hud = False
+            if (
+                len(space.region_quadviews) == QUADVIEW_NUM
+                and space.region_quadviews[-1] != reg3d
+            ):
+                show_hud = False
             with make_drawer(blf, context, obj.matrix_world) as drawer:
                 if show_hud:
                     drawer.show_hud(obj.scale)
@@ -869,9 +889,8 @@ class MPR_Hud(Operator):
             cls.__handle_remove(context)
         return {"FINISHED"}
 
-
-# Display status of gizmo values from preferences
-show_value_flag = None
+    # Display status of gizmo values from preferences
+    show_value_flag: ClassVar[bool | None] = None
 
 
 # Set the gizmo value only once for the first time
@@ -880,20 +899,19 @@ def init_gizmo_value_show() -> None:
     bpy.ops.ui.mpr_show_hud(show=True)
 
     # Do nothing if the flag value is not set due to some mistake
-    if show_value_flag is None:
+    if MPR_Hud.show_value_flag is None:
         pass
     else:
         # Set gizmo value display according to preferences value
-        bpy.ops.ui.mpr_show_hud(show=show_value_flag)
+        bpy.ops.ui.mpr_show_hud(show=MPR_Hud.show_value_flag)
 
         # Set the flag value to the window manager property value
-        bpy.context.window_manager.show_gizmo_values = show_value_flag
+        bpy.context.window_manager.show_gizmo_values = MPR_Hud.show_value_flag
 
 
 def register() -> None:
     # show-gizmo flag from preferences
-    global show_value_flag
-    show_value_flag = get_addon_preferences(bpy.context).show_gizmo_value
+    MPR_Hud.show_value_flag = get_addon_preferences(bpy.context).show_gizmo_value
 
     register_class(MPR_Hud)
     # This means not calling the operator now,
