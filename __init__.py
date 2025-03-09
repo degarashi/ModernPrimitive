@@ -19,7 +19,7 @@ def reload_modules(mod_name: list[str]):
 MODULE_NAMES: list[str] = [
     "modern_primitive",
     "focus_modifier",
-    "cube",
+    "equalize_dcube_size",
     "version",
     "panel",
     "check_editmesh",

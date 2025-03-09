@@ -17,7 +17,7 @@ from .convert import (
     ConvertToTorus_Operator,
     ConvertToTube_Operator,
 )
-from .cube import DCube_CenterOrigin_Operator
+from .equalize_dcube_size import DCube_CenterOrigin_Operator
 from .focus_modifier import FocusModifier_Operator
 from .make_primitive import OPS_GROUPS, make_operator_to_layout
 from .restore_default import RestoreDefault_Operator
