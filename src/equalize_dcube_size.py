@@ -10,7 +10,7 @@ from .constants import MODERN_PRIMITIVE_PREFIX, Type
 from .primitive_prop import get_max, get_min
 
 
-class DCube_CenterOrigin_Operator(Operator):
+class Equalize_DCube_Operator(Operator):
     bl_idname = f"object.{MODERN_PRIMITIVE_PREFIX}_dcube_origin_center"
     bl_label = "Set DeformableCube Origin to Center"
     bl_options: ClassVar[set[str]] = {"REGISTER", "UNDO"}
@@ -59,14 +59,14 @@ MENU_TARGET = bpy.types.VIEW3D_MT_object
 
 def menu_func(self, context: Context) -> None:
     layout = self.layout
-    layout.operator(DCube_CenterOrigin_Operator.bl_idname, icon="CUBE")
+    layout.operator(Equalize_DCube_Operator.bl_idname, icon="CUBE")
 
 
 def register() -> None:
-    bpy.utils.register_class(DCube_CenterOrigin_Operator)
+    bpy.utils.register_class(Equalize_DCube_Operator)
     MENU_TARGET.append(menu_func)
 
 
 def unregister() -> None:
-    bpy.utils.unregister_class(DCube_CenterOrigin_Operator)
+    bpy.utils.unregister_class(Equalize_DCube_Operator)
     MENU_TARGET.remove(menu_func)

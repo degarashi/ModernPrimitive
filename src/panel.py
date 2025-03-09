@@ -17,7 +17,7 @@ from .convert import (
     ConvertToTorus_Operator,
     ConvertToTube_Operator,
 )
-from .equalize_dcube_size import DCube_CenterOrigin_Operator
+from .equalize_dcube_size import Equalize_DCube_Operator
 from .focus_modifier import FocusModifier_Operator
 from .make_primitive import OPS_GROUPS, make_operator_to_layout
 from .restore_default import RestoreDefault_Operator
@@ -85,7 +85,7 @@ class MPR_PT_Main(Panel):
     def __dcube_panel(self) -> None:
         box = self.layout.box()
         box.label(text="D-Cube:")
-        box.operator(DCube_CenterOrigin_Operator.bl_idname, text="Set origin to Center")
+        box.operator(Equalize_DCube_Operator.bl_idname, text="Equalize Size")
 
     def __apply_mesh_panel(self) -> None:
         box = self.layout.box()
