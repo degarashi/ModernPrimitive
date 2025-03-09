@@ -1,10 +1,12 @@
+from typing import Any
+from collections.abc import Callable, Iterable
+
 from bpy.types import (
+    Context,
     NodeGroup,
     NodeGroupInput,
     NodesModifier,
-    Context,
 )
-from typing import Any, Iterable, Callable
 
 
 def find_group_input(node_group: NodeGroup) -> NodeGroupInput:
