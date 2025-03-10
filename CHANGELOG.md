@@ -1,4 +1,10 @@
 # Changelog
+## v0.0.29
+- Addressed an issue where installation failed in some environments with the following error:
+"validating class: Operator.bl_idname expected a string type, not method"
+
+- some source code refactoring...
+
 ## v0.0.28
 - added Apply mesh operator
 
