@@ -1,10 +1,12 @@
 from typing import ClassVar
 
+import bmesh
 import bpy.utils
 from bpy.types import Context, Object, Operator
 from mathutils import Vector
 
 from .aux_func import is_modern_primitive_specific, is_mpr_enabled
+from .aux_math import MinMax
 from .aux_node import get_interface_value, set_interface_value
 from .constants import MODERN_PRIMITIVE_PREFIX, Type
 from .primitive_prop import get_max, get_min
@@ -27,30 +29,44 @@ class Equalize_DCube_Operator(Operator):
         return True
 
     @staticmethod
-    def _make_centered(obj: Object, context: Context) -> None:
-        # use no mesh data (modifier only)
+    def _make_single_vertex(context: Context, obj: Object, pos: Vector) -> None:
+        context.view_layer.objects.active = obj
+        bpy.ops.object.mode_set(mode="EDIT")
+        mesh = bmesh.from_edit_mesh(obj.data)
+        bmesh.ops.delete(mesh, geom=mesh.verts[:], context="VERTS")
+        mesh.verts.new(pos)
+        bmesh.update_edit_mesh(obj.data)
+        bpy.ops.object.mode_set(mode="OBJECT")
 
+    @staticmethod
+    def _make_centered(obj: Object, context: Context) -> None:
+        bb = MinMax.from_obj_bb(obj)
+
+        # Equalize the modifier values
         mod = obj.modifiers[0]
-        center = Vector()
         for i in range(3):
             min_name = get_min(i).name
             max_name = get_max(i).name
             # min = minus-value
             min_v = get_interface_value(mod, min_name)
             max_v = get_interface_value(mod, max_name)
-            center[i] = (-min_v + max_v) / 2
             width = (min_v + max_v) / 2
             set_interface_value(mod, (min_name, width))
             set_interface_value(mod, (max_name, width))
-        center = obj.matrix_world @ center
 
         node_group = mod.node_group
         node_group.interface_update(context)
-        obj.location = center
+
+        center = bb.average
+        __class__._make_single_vertex(context, obj, center)
 
     def execute(self, context: Context | None) -> set[str]:
+        # preserve active object
+        act_obj = context.active_object
         for obj in context.selected_objects:
             self._make_centered(obj, context)
+        # restore active obejct
+        context.view_layer.objects.active = act_obj
         return {"FINISHED"}
 
 
