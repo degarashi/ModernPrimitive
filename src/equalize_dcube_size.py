@@ -30,6 +30,7 @@ class Equalize_DCube_Operator(Operator):
 
     @staticmethod
     def _make_single_vertex(context: Context, obj: Object, pos: Vector) -> None:
+        """Replaces the meshes that an object has at a single vertex with specified coordinates"""
         context.view_layer.objects.active = obj
         bpy.ops.object.mode_set(mode="EDIT")
         mesh = bmesh.from_edit_mesh(obj.data)
@@ -54,11 +55,8 @@ class Equalize_DCube_Operator(Operator):
             set_interface_value(mod, (min_name, width))
             set_interface_value(mod, (max_name, width))
 
-        node_group = mod.node_group
-        node_group.interface_update(context)
-
-        center = bb.average
-        __class__._make_single_vertex(context, obj, center)
+        mod.node_group.interface_update(context)
+        __class__._make_single_vertex(context, obj, bb.average)
 
     def execute(self, context: Context | None) -> set[str]:
         # preserve active object
