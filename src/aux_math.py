@@ -45,6 +45,9 @@ class MinMax(NamedTuple):
         cls.update_obj(obj)
         return MinMax.from_iterable(obj.bound_box)
 
+    def __str__(self) -> str:
+        return f"MinMax(min={self.min}, max={self.max})"
+
 
 def is_close(*args) -> bool:
     base = args[0]
