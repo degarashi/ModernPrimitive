@@ -179,13 +179,13 @@ def is_modern_primitive(obj: Object) -> bool:
         return False
     if len(obj.modifiers) == 0:
         return False
-    return is_primitive_mod(obj.modifiers[0])
+    return is_primitive_mod(get_mpr_modifier(obj.modifiers))
 
 
 def is_modern_primitive_specific(obj: Object, type_c: Type) -> bool:
     if not is_modern_primitive(obj):
         return False
-    return obj.modifiers[0].name == modifier_name(type_c)
+    return get_mpr_modifier(obj.modifiers).name == modifier_name(type_c)
 
 
 def get_blend_file_path(type_c: Type, is_relative: bool) -> str:
