@@ -13,6 +13,7 @@ from . import primitive_prop as P
 from .aux_func import (
     get_addon_preferences,
     get_evaluated_mesh,
+    get_mpr_modifier,
     is_modern_primitive,
     type_from_modifier_name,
 )
@@ -805,7 +806,7 @@ PROCS: dict[Type, Any] = {
 def is_primitive_selected(obj: Object | None) -> bool:
     if obj is None or not is_modern_primitive(obj):
         return False
-    mod = obj.modifiers[0]
+    mod = get_mpr_modifier(obj.modifiers)
     return mod.show_viewport and mod.is_active
 
 
@@ -858,7 +859,7 @@ class MPR_Hud(Operator):
             return
 
         try:
-            typ = type_from_modifier_name(obj.modifiers[0].name)
+            typ = type_from_modifier_name(get_mpr_modifier(obj.modifiers).name)
             if typ not in PROCS:
                 return
 
@@ -880,7 +881,7 @@ class MPR_Hud(Operator):
             with make_drawer(blf, context, obj.matrix_world) as drawer:
                 if show_hud:
                     drawer.show_hud(obj.scale)
-                PROCS[typ](obj.modifiers[0], drawer, gizmo_info)
+                PROCS[typ](get_mpr_modifier(obj.modifiers), drawer, gizmo_info)
 
         except DGUnknownType:
             pass

@@ -10,6 +10,7 @@ from mathutils import Vector
 
 from .. import primitive_prop as prop
 from ..aux_func import (
+    get_mpr_modifier,
     get_object_just_added,
 )
 from ..aux_node import set_interface_values
@@ -48,7 +49,7 @@ class ConvertToCube_Operator(_ConvertToCube_Operator):
         cube = get_object_just_added(context)
         if self.cube_type == "Cube":
             set_interface_values(
-                cube.modifiers[0],
+                get_mpr_modifier(cube.modifiers),
                 context,
                 (
                     (prop.Size.name, bbox.size),
@@ -56,7 +57,7 @@ class ConvertToCube_Operator(_ConvertToCube_Operator):
             )
         else:
             set_interface_values(
-                cube.modifiers[0],
+                get_mpr_modifier(cube.modifiers),
                 context,
                 (
                     (prop.MinX.name, bbox.size.x / 2),

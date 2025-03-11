@@ -6,6 +6,7 @@ from mathutils import Vector
 
 from .. import primitive_prop as prop
 from ..aux_func import (
+    get_mpr_modifier,
     get_object_just_added,
 )
 from ..aux_node import set_interface_values
@@ -34,7 +35,7 @@ class ConvertToCylinder_Operator(_ConvertToCylinder_Operator):
         height = bbox.size.z
 
         set_interface_values(
-            cy.modifiers[0],
+            get_mpr_modifier(cy.modifiers),
             context,
             (
                 (prop.Radius.name, radius),

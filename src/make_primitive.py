@@ -9,6 +9,7 @@ from mathutils import Vector
 
 from .aux_func import (
     get_addon_preferences,
+    get_mpr_modifier,
     load_primitive_from_asset,
     register_class,
     unregister_class,
@@ -82,7 +83,7 @@ class OperatorBase(Operator):
             size = max(1e-5, distance / 10)
             obj.scale = Vector([size] * 3)
 
-        mod = obj.modifiers[0]
+        mod = get_mpr_modifier(obj.modifiers)
         # Apply smooth shading
         set_interface_value(mod, ("Smooth", self.smooth))
         # Apply smooth shading angle

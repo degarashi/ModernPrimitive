@@ -1,14 +1,17 @@
+from typing import Sequence
+
+import bpy.ops
 from bpy.types import Context, Object
-from .convert_to_baseop import ConvertTo_BaseOperator, BBox
-from ..constants import Type, MIN_RADIUS
+from mathutils import Vector
+
+from .. import primitive_prop as prop
 from ..aux_func import (
+    get_mpr_modifier,
     get_object_just_added,
 )
 from ..aux_node import set_interface_values
-from .. import primitive_prop as prop
-import bpy.ops
-from mathutils import Vector
-from typing import Sequence
+from ..constants import MIN_RADIUS, Type
+from .convert_to_baseop import BBox, ConvertTo_BaseOperator
 
 
 class _ConvertToTorus_Operator(ConvertTo_BaseOperator):
@@ -31,7 +34,7 @@ class ConvertToTorus_Operator(_ConvertToTorus_Operator):
         ring_radius = max(MIN_RADIUS, bbox.size.z / 2)
         radius = max(MIN_RADIUS, (bbox.size.x + bbox.size.y) / 4 - ring_radius)
         set_interface_values(
-            torus.modifiers[0],
+            get_mpr_modifier(torus.modifiers),
             context,
             (
                 (prop.RingRadius.name, ring_radius),

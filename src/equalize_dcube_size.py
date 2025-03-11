@@ -6,7 +6,12 @@ from bpy.props import BoolProperty
 from bpy.types import Context, Object, Operator
 from mathutils import Vector
 
-from .aux_func import BackupSelection, is_modern_primitive_specific, is_mpr_enabled
+from .aux_func import (
+    BackupSelection,
+    get_mpr_modifier,
+    is_modern_primitive_specific,
+    is_mpr_enabled,
+)
 from .aux_math import MinMax
 from .aux_node import get_interface_value, set_interface_value
 from .constants import MODERN_PRIMITIVE_PREFIX, Type
@@ -50,7 +55,7 @@ class Equalize_DCube_Operator(Operator):
         bb = MinMax.from_obj_bb(obj)
 
         # Equalize the modifier values
-        mod = obj.modifiers[0]
+        mod = get_mpr_modifier(obj.modifiers)
         for i in range(3):
             min_name = get_min(i).name
             max_name = get_max(i).name

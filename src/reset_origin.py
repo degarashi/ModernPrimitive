@@ -5,7 +5,7 @@ from bpy.types import Context, Object, Operator
 from bpy.utils import register_class, unregister_class
 from mathutils import Vector
 
-from .aux_func import get_selected_primitive
+from .aux_func import get_mpr_modifier, get_selected_primitive
 from .aux_math import MinMax
 from .aux_node import get_interface_value
 from .constants import MODERN_PRIMITIVE_PREFIX
@@ -28,7 +28,7 @@ class ResetOrigin_Operator(Operator):
         box = MinMax.from_obj_bb(obj)
 
         # Pivot座標を取得
-        mod = obj.modifiers[0]
+        mod = get_mpr_modifier(obj.modifiers)
         diff = Vector()
         with suppress(KeyError):
             pivot = Vector(val for val in get_interface_value(mod, CornerRatio.name))

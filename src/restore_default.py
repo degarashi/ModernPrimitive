@@ -1,19 +1,20 @@
-import bpy
-from bpy.utils import register_class, unregister_class
-from bpy.types import Operator, Context, Object
-from bpy.props import BoolProperty, EnumProperty
 from typing import Any
-from .constants import MODERN_PRIMITIVE_PREFIX, Type
+
+import bpy
+from bpy.props import BoolProperty, EnumProperty
+from bpy.types import Context, Object, Operator
+from bpy.utils import register_class, unregister_class
+
 from . import primitive as P
-from .primitive_prop import Prop, prop_from_name
 from .aux_func import (
-    type_from_modifier_name,
-    get_selected_primitive,
     get_blend_file_path,
+    get_mpr_modifier,
+    get_selected_primitive,
+    type_from_modifier_name,
 )
 from .aux_node import get_interface_values, set_interface_values
-from .primitive_prop import PropType
-
+from .constants import MODERN_PRIMITIVE_PREFIX, Type
+from .primitive_prop import Prop, PropType, prop_from_name
 
 reset_list = (
     ("All", "All", "Around XYZ axis"),
@@ -57,7 +58,7 @@ class RestoreDefault_Operator(Operator):
     def execute(self, context: Context) -> set[str]:
         sel = get_selected_primitive(context)
         for obj in sel:
-            mod = obj.modifiers[0]
+            mod = get_mpr_modifier(obj.modifiers)
             typ = type_from_modifier_name(mod.name)
             def_val = get_default_value(typ)
 
@@ -106,7 +107,7 @@ def get_default_value(typ: Type) -> dict[Prop, Any]:
         param_names = P.TYPE_TO_PRIMITIVE[typ].get_param_names()
 
         result: dict[Prop, Any] = {}
-        param_values = get_interface_values(obj.modifiers[0], param_names)
+        param_values = get_interface_values(get_mpr_modifier(obj.modifiers), param_names)
         for k, v in param_values.items():
             result[prop_from_name(k)] = v
 

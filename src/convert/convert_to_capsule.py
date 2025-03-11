@@ -5,9 +5,7 @@ from bpy.types import Context, Object
 from mathutils import Vector
 
 from .. import primitive_prop as prop
-from ..aux_func import (
-    get_object_just_added,
-)
+from ..aux_func import get_mpr_modifier, get_object_just_added
 from ..aux_node import set_interface_values
 from ..constants import MIN_RADIUS, MIN_SIZE, Type
 from .convert_to_baseop import BBox, ConvertTo_BaseOperator
@@ -33,7 +31,7 @@ class ConvertToCapsule_Operator(_ConvertToCapsule_Operator):
         radius = max(MIN_RADIUS, (bbox.size.x + bbox.size.y) / 4)
         height = max(MIN_SIZE, bbox.size.z - radius*2)
         set_interface_values(
-            capsule.modifiers[0],
+            get_mpr_modifier(capsule.modifiers),
             context,
             (
                 (prop.Radius.name, radius),

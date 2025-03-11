@@ -6,6 +6,7 @@ from mathutils import Vector
 
 from .. import primitive_prop as prop
 from ..aux_func import (
+    get_mpr_modifier,
     get_object_just_added,
 )
 from ..aux_node import set_interface_values
@@ -34,7 +35,7 @@ class ConvertToTube_Operator(_ConvertToTube_Operator):
         outer_radius = max(MIN_RADIUS, (bbox.size.x + bbox.size.y) / 4)
         inner_radius = outer_radius / 2
         set_interface_values(
-            tube.modifiers[0],
+            get_mpr_modifier(tube.modifiers),
             context,
             (
                 (prop.Height.name, height),

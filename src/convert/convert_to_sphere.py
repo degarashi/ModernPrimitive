@@ -9,7 +9,7 @@ from bpy.types import (
 from mathutils import Vector
 
 from .. import primitive_prop as prop
-from ..aux_func import get_object_just_added
+from ..aux_func import get_mpr_modifier, get_object_just_added
 from ..aux_node import set_interface_values
 from .convert_to_baseop import BBox, ConvertTo_BaseOperator
 
@@ -56,7 +56,7 @@ class ConvertToSphere_Operator(_ConvertToSphere_Operator):
 
         # I just want the size of Bounding box.
         #   so there is no need to read vertices
-        mod = sphere.modifiers[0]
+        mod = get_mpr_modifier(sphere.modifiers)
         set_interface_values(
             mod,
             context,

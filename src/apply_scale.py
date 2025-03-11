@@ -8,8 +8,8 @@ from bpy.utils import register_class, unregister_class
 from mathutils import Quaternion, Vector
 
 from . import primitive_prop as prop
-from .aux_func import get_evaluated_mesh, get_selected_primitive
-from .aux_math import is_close, is_uniform, MinMax
+from .aux_func import get_mpr_modifier, get_selected_primitive
+from .aux_math import is_close, is_uniform
 from .aux_node import (
     get_interface_value,
     modify_interface_value,
@@ -257,7 +257,9 @@ class ApplyScale_Operator(Operator):
         warn = self.warn if not self.strict else self.warn_as_error
         objs = get_selected_primitive(context)
         for obj in objs:
-            typ_ver = TypeAndVersion.get_type_and_version(obj.modifiers[0].node_group.name)
+            typ_ver = TypeAndVersion.get_type_and_version(
+                get_mpr_modifier(obj.modifiers).node_group.name
+            )
             if typ_ver is None:
                 self.report({"WARNING"}, f"unknown primitive type: {obj.name}")
             else:
@@ -271,9 +273,7 @@ class ApplyScale_Operator(Operator):
                     )
                     continue
 
-                # is_modern_primitive() assumes modifier number 0,
-                # so do that here as well
-                mod = obj.modifiers[0]
+                mod = get_mpr_modifier(obj.modifiers)
                 mod = cast(NodesModifier, mod)
                 try:
                     PROC_MAP[typ_ver.type](obj, mod, warn)

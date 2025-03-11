@@ -9,6 +9,7 @@ from mathutils import Vector
 
 from .. import primitive_prop as prop
 from ..aux_func import (
+    get_mpr_modifier,
     get_object_just_added,
 )
 from ..aux_node import set_interface_values
@@ -34,7 +35,7 @@ class ConvertToGrid_Operator(_ConvertToGrid_Operator):
 
         bpy.ops.mesh.mpr_make_grid()
         grid = get_object_just_added(context)
-        mod = grid.modifiers[0]
+        mod = get_mpr_modifier(grid.modifiers)
         set_interface_values(
             mod,
             context,

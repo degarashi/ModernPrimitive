@@ -4,7 +4,7 @@ import bpy
 from bpy.types import Context, Object, Operator
 from bpy.utils import register_class, unregister_class
 
-from .aux_func import disable_modifier, get_selected_primitive, is_mpr_enabled
+from .aux_func import disable_modifier, get_mpr_modifier, get_selected_primitive, is_mpr_enabled
 from .constants import MODERN_PRIMITIVE_PREFIX
 
 
@@ -44,7 +44,7 @@ class ApplyMesh_Operator(Operator):
         mesh.name = mesh_name
         obj.data = mesh
 
-        mpr_mod = obj.modifiers[0]
+        mpr_mod = get_mpr_modifier(obj.modifiers)
         disable_modifier(mpr_mod)
         bpy.data.objects.remove(new_obj)
         return True

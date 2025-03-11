@@ -5,7 +5,7 @@ from bpy.types import Context, Object
 from mathutils import Vector
 
 from .. import primitive_prop as prop
-from ..aux_func import get_object_just_added
+from ..aux_func import get_mpr_modifier, get_object_just_added
 from ..aux_node import set_interface_values
 from ..constants import MIN_RADIUS, Type
 from .convert_to_baseop import BBox, ConvertTo_BaseOperator
@@ -42,7 +42,7 @@ class ConvertToCone_Operator(_ConvertToCone_Operator):
         bpy.ops.mesh.mpr_make_cone()
         cone = get_object_just_added(context)
         set_interface_values(
-            cone.modifiers[0],
+            get_mpr_modifier(cone.modifiers),
             context,
             (
                 (prop.TopRadius.name, top_r),
