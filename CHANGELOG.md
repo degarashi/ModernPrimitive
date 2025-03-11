@@ -1,4 +1,11 @@
 # Changelog
+## v0.0.30
+- You can now freely move the origin of an object. (Please use the "Affect Only" option in Blender to move only the origin.) Also, if you want to return the origin of the object to its initial position, please press the Reset button in the N-Panel.
+<img src="./doc_images/move_origin.jpg" alt="" width="100%" />
+<img src="./doc_images/reset_origin.jpg" alt="" width="50%" />
+
+- Fixed an issue where the HUD text position would shift when the object has scaling.
+
 ## v0.0.29
 - Addressed an issue where installation failed in some environments with the following error:
 "validating class: Operator.bl_idname expected a string type, not method"
