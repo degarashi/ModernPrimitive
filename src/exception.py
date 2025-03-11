@@ -50,3 +50,6 @@ class DGUnknownType(DGException):
 
 class DGPropertyNotFound(DGException):
     pass
+
+class DGModifierNotFound(DGException):
+    pass
