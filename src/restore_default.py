@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, ClassVar
 
 import bpy
 from bpy.props import BoolProperty, EnumProperty
@@ -28,7 +28,7 @@ class RestoreDefault_Operator(Operator):
 
     bl_idname = f"object.{MODERN_PRIMITIVE_PREFIX}_restore_default"
     bl_label = "Restore Primitive Paramteres To Default"
-    bl_options = {"REGISTER", "UNDO"}
+    bl_options: ClassVar[set[str]] = {"REGISTER", "UNDO"}
 
     reset_size: BoolProperty(name="Reset Size", default=True)
     reset_size_mode: EnumProperty(name="Size Mode", items=reset_list, default="All")
