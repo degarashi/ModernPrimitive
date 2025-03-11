@@ -4,6 +4,8 @@ import bpy
 from bpy.props import BoolProperty, EnumProperty
 from bpy.types import Context, Object, Operator
 from bpy.utils import register_class, unregister_class
+from idprop.types import IDPropertyArray
+from mathutils import Vector
 
 from . import primitive as P
 from .aux_func import (
@@ -33,9 +35,7 @@ class RestoreDefault_Operator(Operator):
     reset_size: BoolProperty(name="Reset Size", default=True)
     reset_size_mode: EnumProperty(name="Size Mode", items=reset_list, default="All")
     reset_division: BoolProperty(name="Reset Division", default=True)
-    reset_division_mode: EnumProperty(
-        name="Division Mode", items=reset_list, default="All"
-    )
+    reset_division_mode: EnumProperty(name="Division Mode", items=reset_list, default="All")
     reset_other: BoolProperty(name="Other", default=True)
 
     @classmethod
@@ -96,6 +96,12 @@ class RestoreDefault_Operator(Operator):
 _default_value: dict[Type, dict[Prop, Any]] = {}
 
 
+def expand_idarray(val: Any) -> Any:
+    if isinstance(val, IDPropertyArray):
+        return val.to_list()
+    return val
+
+
 def get_default_value(typ: Type) -> dict[Prop, Any]:
     if typ not in _default_value:
         path = get_blend_file_path(typ, False)
@@ -109,7 +115,7 @@ def get_default_value(typ: Type) -> dict[Prop, Any]:
         result: dict[Prop, Any] = {}
         param_values = get_interface_values(get_mpr_modifier(obj.modifiers), param_names)
         for k, v in param_values.items():
-            result[prop_from_name(k)] = v
+            result[prop_from_name(k)] = expand_idarray(v)
 
         # I'm done with it so I'll delete it now
         bpy.data.objects.remove(obj)
