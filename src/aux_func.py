@@ -11,6 +11,7 @@ from bpy.types import (
     MeshVertex,
     Modifier,
     NodeGroup,
+    NodesModifier,
     Object,
     ObjectModifiers,
     bpy_struct,
@@ -28,10 +29,19 @@ from .constants import (
 from .exception import (
     DGFileNotFound,
     DGInvalidVersionNumber,
+    DGModifierNotFound,
     DGObjectNotFound,
     DGUnknownType,
 )
 from .version import VersionInt, get_primitive_version
+
+
+def get_mpr_modifier(mods: ObjectModifiers) -> NodesModifier:
+    # For now, it's fixed at 0 in the modifier list
+    mod = mods[0]
+    if not is_primitive_mod(mod):
+        raise DGModifierNotFound()
+    return mod
 
 
 # Is the object valid in blender?
