@@ -14,6 +14,7 @@ from bpy.types import (
     NodesModifier,
     Object,
     ObjectModifiers,
+    RegionView3D,
     bpy_struct,
 )
 from mathutils import Matrix, Vector
@@ -315,3 +316,11 @@ def disable_modifier(mod: Modifier) -> None:
 
 def is_mpr_enabled(mod: ObjectModifiers) -> bool:
     return mod[0].show_viewport
+
+
+def get_view3d_pos(region: RegionView3D) -> Vector:
+    # view matrix
+    v_mat = region.view_matrix
+    # The position of the viewpoint can be obtained as a position vector
+    #   of the inverse matrix of the view matrix
+    return v_mat.inverted().translation

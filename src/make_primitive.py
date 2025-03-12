@@ -10,6 +10,7 @@ from mathutils import Vector
 from .aux_func import (
     get_addon_preferences,
     get_mpr_modifier,
+    get_view3d_pos,
     load_primitive_from_asset,
     register_class,
     unregister_class,
@@ -33,15 +34,6 @@ from .primitive import (
 )
 
 
-def get_view3d_pos(context: Context) -> Vector:
-    region = context.space_data.region_3d
-    # view matrix
-    v_mat = region.view_matrix
-    # The position of the viewpoint can be obtained as a position vector
-    #   of the inverse matrix of the view matrix
-    return v_mat.inverted().translation
-
-
 class OperatorBase(Operator):
     bl_options: ClassVar[set[str]] = {"REGISTER", "UNDO"}
     set_cursor_rot: BoolProperty(name="Set Cursor's Rotation", default=False)
@@ -51,9 +43,7 @@ class OperatorBase(Operator):
         description="Initialize primitive to appropriate size",
     )
     smooth: BoolProperty(name="Smooth Shading", default=False)
-    smooth_angle_deg: FloatProperty(
-        name="Smooth Angle", default=45.0, min=0.0, max=180.0
-    )
+    smooth_angle_deg: FloatProperty(name="Smooth Angle", default=45.0, min=0.0, max=180.0)
 
     @classmethod
     def poll(cls, context: Context | None) -> bool:
@@ -74,7 +64,7 @@ class OperatorBase(Operator):
 
         if self.appropriate_size:
             # Adjust the scaling value depending on the distance from the viewpoint
-            view_loc = get_view3d_pos(context)
+            view_loc = get_view3d_pos(context.space_data.region_3d)
             cur_loc = context.scene.cursor.location
             distance = (view_loc - cur_loc).length
 
@@ -316,9 +306,7 @@ def unregister() -> None:
     unregister_class(OPS)
 
 
-def make_operator_to_layout(
-    context: Context, layout: UILayout, op: OperatorBase
-) -> None:
+def make_operator_to_layout(context: Context, layout: UILayout, op: OperatorBase) -> None:
     pref = get_addon_preferences(context)
     p_app_size = pref.make_appropriate_size
     p_cur_rot = pref.make_cursors_rot
