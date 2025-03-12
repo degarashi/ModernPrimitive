@@ -36,7 +36,7 @@ DeformableCube's "set origin to center" operator <br>
 
 # Changelog
 ## v0.0.31
-- Fixed "Restore default value" Operator whitch references an invalid default value(causes blender crash)
+- Fixed "Restore default value" Operator which references an invalid default value(causes blender crash)
 
 ## Other
 [<ins>View all log</ins>](CHANGELOG.md)
