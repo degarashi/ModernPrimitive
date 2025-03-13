@@ -27,6 +27,7 @@ from .wireframe import ENTRY_NAME as Wireframe_EntryName
 
 
 class MPR_PT_Create(Panel):
+    bl_idname = "MPR_PT_Create"
     bl_category = "Tool"
     bl_parent_id = "MPR_PT_Main"
     bl_label = "Create"
