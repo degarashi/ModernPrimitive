@@ -69,12 +69,12 @@ class BackupSelection:
                 s.select_set(True)
 
 
-def register_class(cls: list[type[bpy_struct]]) -> None:
+def register_class(cls: Iterable[type[bpy_struct]]) -> None:
     for cl in cls:
         bpy.utils.register_class(cl)
 
 
-def unregister_class(cls: list[type[bpy_struct]]) -> None:
+def unregister_class(cls: Iterable[type[bpy_struct]]) -> None:
     for cl in cls:
         bpy.utils.unregister_class(cl)
 
