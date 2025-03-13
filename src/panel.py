@@ -1,11 +1,15 @@
 from typing import ClassVar
 
 from bpy.types import Context, Panel
-from bpy.utils import register_class, unregister_class
 
 from .apply_mesh import ApplyMesh_Operator
 from .apply_scale import ApplyScale_Operator
-from .aux_func import get_active_and_selected_primitive, is_mpr_enabled
+from .aux_func import (
+    get_active_and_selected_primitive,
+    is_mpr_enabled,
+    register_class,
+    unregister_class,
+)
 from .constants import MODERN_PRIMITIVE_CATEGORY
 from .convert import (
     ConvertToCapsule_Operator,
@@ -155,11 +159,15 @@ class MPR_PT_Main(Panel):
         self.__restore_panel()
 
 
+CLASS: tuple[type] = (
+    MPR_PT_Main,
+    MPR_PT_Create,
+)
+
+
 def register() -> None:
-    register_class(MPR_PT_Main)
-    register_class(MPR_PT_Create)
+    register_class(CLASS)
 
 
 def unregister() -> None:
-    unregister_class(MPR_PT_Main)
-    unregister_class(MPR_PT_Create)
+    unregister_class(CLASS)
