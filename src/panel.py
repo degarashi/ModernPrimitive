@@ -30,14 +30,17 @@ from .switch_wireframe import SwitchWireframe
 from .wireframe import ENTRY_NAME as Wireframe_EntryName
 
 
-class MPR_PT_Create(Panel):
-    bl_idname = "MPR_PT_Create"
+class MPR_PT_Base(Panel):
     bl_category = "Tool"
-    bl_parent_id = "MPR_PT_Main"
-    bl_label = "Create"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_options: ClassVar[set[str]] = {"DEFAULT_CLOSED"}
+
+
+class MPR_PT_Create(MPR_PT_Base):
+    bl_idname = "MPR_PT_Create"
+    bl_parent_id = "MPR_PT_Main"
+    bl_label = "Create"
 
     def draw(self, context) -> None:
         layout = self.layout
@@ -53,21 +56,46 @@ class MPR_PT_Create(Panel):
                 make_operator_to_layout(context, grid, op)
 
 
-class MPR_PT_Main(Panel):
-    bl_idname = "MPR_PT_Main"
-    bl_label = "Modern Primitive"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "UI"
-    bl_category = MODERN_PRIMITIVE_CATEGORY
-    bl_context = ".objectmode"
+class MPR_PT_Restore(MPR_PT_Base):
+    bl_idname = "MPR_PT_Restore"
+    bl_parent_id = "MPR_PT_Main"
+    bl_label = "Restore"
 
-    def __focus_panel(self) -> None:
-        layout = self.layout
-        layout.operator(FocusModifier_Operator.bl_idname, text="Focus/Unfocus Modifier")
+    def draw(self, context: Context) -> None:
+        box_param = self.layout.box()
+        box_param.label(text="Parameters")
+        row = box_param.row()
+        btn = row.operator(RestoreDefault_Operator.bl_idname, text="All")
+        btn.reset_size = True
+        btn.reset_size_mode = "All"
+        btn.reset_division = True
+        btn.reset_division_mode = "All"
+        btn.reset_other = True
 
-    def __convert_to_panel(self) -> None:
-        box = self.layout.box()
-        box.label(text="Convert to:")
+        btn = row.operator(RestoreDefault_Operator.bl_idname, text="Size")
+        btn.reset_size = True
+        btn.reset_size_mode = "All"
+        btn.reset_division = False
+        btn.reset_other = False
+
+        btn = row.operator(RestoreDefault_Operator.bl_idname, text="Division")
+        btn.reset_size = False
+        btn.reset_division = True
+        btn.reset_division_mode = "All"
+        btn.reset_other = False
+
+        box_origin = self.layout.box()
+        box_origin.label(text="Origin")
+        box_origin.operator(ResetOrigin_Operator.bl_idname, text="Reset")
+
+
+class MPR_PT_Convert(MPR_PT_Base):
+    bl_idname = "MPR_PT_Convert"
+    bl_parent_id = "MPR_PT_Main"
+    bl_label = "Convert To"
+
+    def draw(self, context: Context) -> None:
+        box = self.layout
         box.label(text="(SHIFT: Keep Original Object)")
         grid = box.grid_flow(columns=3, row_major=True)
         c = grid.operator(ConvertToCube_Operator.bl_idname, text="Cube")
@@ -87,6 +115,19 @@ class MPR_PT_Main(Panel):
         grid.operator(ConvertToTorus_Operator.bl_idname, text="Torus")
         grid.operator(ConvertToTube_Operator.bl_idname, text="Tube")
         grid.operator(ConvertToCapsule_Operator.bl_idname, text="Capsule")
+
+
+class MPR_PT_Main(Panel):
+    bl_idname = "MPR_PT_Main"
+    bl_label = "Modern Primitive"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_category = MODERN_PRIMITIVE_CATEGORY
+    bl_context = ".objectmode"
+
+    def __focus_panel(self) -> None:
+        layout = self.layout
+        layout.operator(FocusModifier_Operator.bl_idname, text="Focus/Unfocus Modifier")
 
     def __dcube_panel(self) -> None:
         box = self.layout.box()
@@ -119,49 +160,19 @@ class MPR_PT_Main(Panel):
         btn = row.operator(ApplyScale_Operator.bl_idname, text="Scale (Strict Mode)")
         btn.strict = True
 
-    def __restore_panel(self) -> None:
-        box = self.layout.box()
-        box.label(text="Restore")
-
-        box_param = box.box()
-        box_param.label(text="Parameters")
-        row = box_param.row()
-        btn = row.operator(RestoreDefault_Operator.bl_idname, text="All")
-        btn.reset_size = True
-        btn.reset_size_mode = "All"
-        btn.reset_division = True
-        btn.reset_division_mode = "All"
-        btn.reset_other = True
-
-        btn = row.operator(RestoreDefault_Operator.bl_idname, text="Size")
-        btn.reset_size = True
-        btn.reset_size_mode = "All"
-        btn.reset_division = False
-        btn.reset_other = False
-
-        btn = row.operator(RestoreDefault_Operator.bl_idname, text="Division")
-        btn.reset_size = False
-        btn.reset_division = True
-        btn.reset_division_mode = "All"
-        btn.reset_other = False
-
-        box_origin = box.box()
-        box_origin.label(text="Origin")
-        box_origin.operator(ResetOrigin_Operator.bl_idname, text="Reset")
-
     def draw(self, ctx: Context) -> None:
         self.__focus_panel()
-        self.__convert_to_panel()
         self.__dcube_panel()
         self.__apply_mesh_panel()
         self.__viewport_display_panel(ctx)
         self.__apply_panel()
-        self.__restore_panel()
 
 
 CLASS: tuple[type] = (
     MPR_PT_Main,
+    MPR_PT_Convert,
     MPR_PT_Create,
+    MPR_PT_Restore,
 )
 
 
