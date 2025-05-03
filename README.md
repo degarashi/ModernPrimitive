@@ -35,8 +35,8 @@ DeformableCube's "set origin to center" operator <br>
 <img src="./doc_images/usage_deformable_cube_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_capsule_0.jpg" alt="" width="25%" />
 
 # Changelog
-## v0.0.32
-- Refactoring and fixing the 'property' object has no attribute 'lower' error encountered during installation.
+## v0.0.33
+- fixed "KeyError: 'bpy_struct[key]: key "mpr_original_wireframe_state" not found'" when adding any modifier to modern-primitive object.
 
 ## Other
 [<ins>View all log</ins>](CHANGELOG.md)

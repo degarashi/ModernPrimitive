@@ -1,4 +1,7 @@
 # Changelog
+## v0.0.32
+- Refactoring and fixing the 'property' object has no attribute 'lower' error encountered during installation.
+
 ## v0.0.31
 - Fixed "Restore default value" Operator which references an invalid default value(causes blender crash)
 
