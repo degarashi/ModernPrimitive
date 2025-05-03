@@ -147,7 +147,7 @@ class MPR_PT_Main(Panel):
         obj = get_active_and_selected_primitive(ctx)
         if obj is not None and is_mpr_enabled(obj.modifiers):
             sp.label(text="Wireframe:")
-            view_text = f"{obj[Wireframe_EntryName]}" if obj is not None else ""
+            view_text = f'{getattr(obj, Wireframe_EntryName, "")}' if obj is not None else ""
             sp.label(text=view_text)
             sp.operator(SwitchWireframe.bl_idname, text="Switch")
 
