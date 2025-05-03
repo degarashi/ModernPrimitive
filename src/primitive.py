@@ -7,6 +7,8 @@ from .constants import MODERN_PRIMITIVE_PREFIX, Type
 
 
 class Primitive:
+    param: tuple[P.Prop] = ()
+
     @classproperty
     def type_name(cls):
         return cls.type.name
