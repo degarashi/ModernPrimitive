@@ -182,7 +182,7 @@ class Primitive_QuadSphere(Primitive):
     param: tuple[P.Prop] = (P.Subdivision, P.Radius)
 
 
-TYPE_TO_PRIMITIVE: dict[Type, Primitive] = {
+TYPE_TO_PRIMITIVE: dict[Type, type[Primitive]] = {
     Type.Cube: Primitive_Cube,
     Type.Cone: Primitive_Cone,
     Type.Grid: Primitive_Grid,
