@@ -32,7 +32,7 @@ class Primitive:
         return node_group_name(cls.type)
 
     @classmethod
-    def get_param_names(cls) -> tuple[str]:
+    def get_param_names(cls) -> set[str]:
         ret = set()
         for p in cls.param:
             ret.add(p.name)
