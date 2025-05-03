@@ -1,4 +1,7 @@
 # Changelog
+## v0.0.31
+- Fixed "Restore default value" Operator which references an invalid default value(causes blender crash)
+
 ## v0.0.30
 - You can now freely move the origin of an object. (Please use the "Affect Only" option in Blender to move only the origin.) Also, if you want to return the origin of the object to its initial position, please press the Reset button in the N-Panel.
 <img src="./doc_images/move_origin.jpg" alt="" width="100%" />
