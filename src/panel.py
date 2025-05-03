@@ -168,7 +168,7 @@ class MPR_PT_Main(Panel):
         self.__apply_panel()
 
 
-CLASS: tuple[type] = (
+CLASS: tuple[type, ...] = (
     MPR_PT_Main,
     MPR_PT_Convert,
     MPR_PT_Create,
