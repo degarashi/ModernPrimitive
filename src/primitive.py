@@ -2,12 +2,12 @@ from collections.abc import Callable
 
 from . import primitive_prop as P
 from .aux_func import node_group_name
+from .aux_other import classproperty
 from .constants import MODERN_PRIMITIVE_PREFIX, Type
 
 
 class Primitive:
-    @classmethod
-    @property
+    @classproperty
     def type_name(cls):
         return cls.type.name
 
@@ -19,18 +19,15 @@ class Primitive:
     def get_bl_label(cls):
         return f"Make Modern {cls.type_name}"
 
-    @classmethod
-    @property
+    @classproperty
     def menu_text(cls):
         return cls.type_name
 
-    @classmethod
-    @property
+    @classproperty
     def menu_icon(cls):
         return cls.type_name.upper()
 
-    @classmethod
-    @property
+    @classproperty
     def nodegroup_name(cls):
         return node_group_name(cls.type)
 

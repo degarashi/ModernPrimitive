@@ -16,6 +16,7 @@ from .aux_func import (
     unregister_class,
 )
 from .aux_node import set_interface_value
+from .aux_other import classproperty
 from .exception import DGFileNotFound, DGObjectNotFound
 from .primitive import (
     Primitive_Capsule,
@@ -113,8 +114,7 @@ class MakeCylinder_Operator(OperatorBase, Primitive_Cylinder):
     bl_idname = P.get_bl_idname()
     bl_label = P.get_bl_label()
 
-    @classmethod
-    @property
+    @classproperty
     def menu_icon(cls):
         return "MESH_" + cls.type_name.upper()
 
@@ -126,8 +126,7 @@ class MakeGrid_Operator(OperatorBase, Primitive_Grid):
     bl_idname = P.get_bl_idname()
     bl_label = P.get_bl_label()
 
-    @classmethod
-    @property
+    @classproperty
     def menu_icon(cls):
         return "MESH_" + cls.type_name.upper()
 
@@ -139,8 +138,7 @@ class MakeTorus_Operator(OperatorBase, Primitive_Torus):
     bl_idname = P.get_bl_idname()
     bl_label = P.get_bl_label()
 
-    @classmethod
-    @property
+    @classproperty
     def menu_icon(cls):
         return "MESH_" + cls.type_name.upper()
 
@@ -152,13 +150,11 @@ class MakeICOSphere_Operator(OperatorBase, Primitive_ICOSphere):
     bl_idname = P.get_bl_idname()
     bl_label = P.get_bl_label()
 
-    @classmethod
-    @property
+    @classproperty
     def menu_text(cls):
         return "Ico Sphere"
 
-    @classmethod
-    @property
+    @classproperty
     def menu_icon(cls):
         return "MESH_" + cls.type_name.upper()
 
@@ -170,13 +166,11 @@ class MakeUVSphere_Operator(OperatorBase, Primitive_UVSphere):
     bl_idname = P.get_bl_idname()
     bl_label = P.get_bl_label()
 
-    @classmethod
-    @property
+    @classproperty
     def menu_text(self):
         return "UV Sphere"
 
-    @classmethod
-    @property
+    @classproperty
     def menu_icon(cls):
         return "MESH_" + cls.type_name.upper()
 
@@ -188,8 +182,7 @@ class MakeTube_Operator(OperatorBase, Primitive_Tube):
     bl_idname = P.get_bl_idname()
     bl_label = P.get_bl_label()
 
-    @classmethod
-    @property
+    @classproperty
     def menu_icon(cls):
         return "SURFACE_NCYLINDER"
 
@@ -201,8 +194,7 @@ class MakeGear_Operator(OperatorBase, Primitive_Gear):
     bl_idname = P.get_bl_idname()
     bl_label = P.get_bl_label()
 
-    @classmethod
-    @property
+    @classproperty
     def menu_icon(cls):
         return "PREFERENCES"
 
@@ -214,8 +206,7 @@ class MakeSpring_Operator(OperatorBase, Primitive_Spring):
     bl_idname = P.get_bl_idname()
     bl_label = P.get_bl_label()
 
-    @classmethod
-    @property
+    @classproperty
     def menu_icon(cls):
         return "MOD_SCREW"
 
@@ -227,8 +218,7 @@ class MakeDeformableCube_Operator(OperatorBase, Primitive_DeformableCube):
     bl_idname = P.get_bl_idname()
     bl_label = P.get_bl_label()
 
-    @classmethod
-    @property
+    @classproperty
     def menu_icon(cls):
         return "META_CUBE"
 
@@ -240,8 +230,7 @@ class MakeCapsule_Operator(OperatorBase, Primitive_Capsule):
     bl_idname = P.get_bl_idname()
     bl_label = P.get_bl_label()
 
-    @classmethod
-    @property
+    @classproperty
     def menu_icon(cls):
         return "MESH_CAPSULE"
 
@@ -253,8 +242,7 @@ class MakeQuadSphere_Operator(OperatorBase, Primitive_QuadSphere):
     bl_idname = P.get_bl_idname()
     bl_label = P.get_bl_label()
 
-    @classmethod
-    @property
+    @classproperty
     def menu_icon(cls):
         return "META_CUBE"
 

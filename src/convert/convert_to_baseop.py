@@ -10,6 +10,7 @@ from mathutils import Matrix, Quaternion, Vector, geometry
 
 from ..aux_func import calc_aabb, get_evaluated_vertices, is_primitive_mod, mul_vert_mat
 from ..aux_math import is_uniform
+from ..aux_other import classproperty
 from ..constants import MODERN_PRIMITIVE_PREFIX
 
 
@@ -51,8 +52,7 @@ def to_4d_0(vec: Vector) -> Vector:
 
 
 class ConvertTo_BaseOperator(Operator):
-    @classmethod
-    @property
+    @classproperty
     def type_name(cls):
         return cls.type.name
 
