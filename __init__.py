@@ -44,13 +44,21 @@ modules = (
 import bpy  # noqa: F401, E402
 
 
+def call_if_hasmethod(module, method_name: str) -> None:
+    method = getattr(module, method_name, None)
+    if method is None:
+        print(f'module "{module}" has no {method_name}() method')
+    else:
+        method()
+
+
 def register():
     print("-------------ModernPrimitive::register()--------------")
     for module in modules.values():
-        module.register()
+        call_if_hasmethod(module, "register")
 
 
 def unregister():
     print("-------------ModernPrimitive::unregister()-----------")
     for module in modules.values():
-        module.unregister()
+        call_if_hasmethod(module, "unregister")
