@@ -176,11 +176,11 @@ def calc_aabb(vecs: Iterable[Vector]) -> AABB:
 
 
 def is_modern_primitive(obj: Object) -> bool:
-    if obj.type != "MESH":
+    if obj.type != "MESH" or len(obj.modifiers) == 0:
         return False
-    if len(obj.modifiers) == 0:
-        return False
-    return is_primitive_mod(get_mpr_modifier(obj.modifiers))
+    with suppress(DGModifierNotFound):
+        return is_primitive_mod(get_mpr_modifier(obj.modifiers))
+    return False
 
 
 def is_modern_primitive_specific(obj: Object, type_c: Type) -> bool:
