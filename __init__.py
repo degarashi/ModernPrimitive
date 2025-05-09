@@ -60,10 +60,13 @@ def _reload_modules(mod_names: list[str]) -> ModuleDict:
 
 def _call_if_hasmethod(module: ModuleType, method_name: str) -> None:
     method = getattr(module, method_name, None)
-    if method is None:
-        logger.warning(
-            f'Module "{getattr(module, "__name__", str(module))}" has no method "{method_name}()"'  # noqa: E501
-        )
+
+    if method is None or not callable(method):
+
+        def get_module_name() -> str:
+            return getattr(module, "__name__", str(module))
+
+        logger.warning(f'Module "{get_module_name()}" has no method "{method_name}()"')
     else:
         method()
 
