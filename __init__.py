@@ -1,17 +1,17 @@
-def import_modules(mod_name: list[str]):
+def import_modules(mod_names: list[str]):
     import importlib.util
 
     modules = {}
-    for name in mod_name:
+    for name in mod_names:
         modules[name] = importlib.import_module(f".src.{name}", package=__package__)
     return modules
 
 
-def reload_modules(mod_name: list[str]):
+def reload_modules(mod_names: list[str]):
     import importlib
 
     modules = {}
-    for name in mod_name:
+    for name in mod_names:
         modules[name] = importlib.reload(globals()[name])
     return modules
 
