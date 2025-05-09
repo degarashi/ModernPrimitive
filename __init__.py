@@ -1,8 +1,9 @@
 import importlib
 import logging
-import sys
 from types import ModuleType
 from typing import TypeAlias
+
+__all__ = ["register", "unregister"]
 
 ModuleDict: TypeAlias = dict[str, ModuleType]
 
@@ -29,33 +30,40 @@ MODULE_NAMES: list[str] = [
 ]
 
 
-def _load_module(name: str) -> ModuleType:
-    full_name: str = f".{MODULE_PREFIX}.{name}"
-    try:
-        imported_module: ModuleType = importlib.import_module(full_name, package=__package__)
-    except ImportError as e:
-        logger.error(f"Failed to import module '{full_name}': {e}")
-        raise
-    sys.modules[full_name] = imported_module
-    return imported_module
+def _make_fullname(name: str) -> str:
+    return f".{MODULE_PREFIX}.{name}"
 
 
 def _import_modules(mod_names: list[str]) -> ModuleDict:
+    logger.info("Begin importing submodules...")
+
+    def load_module(name: str) -> ModuleType:
+        full_name = _make_fullname(name)
+        try:
+            imported_module: ModuleType = importlib.import_module(
+                full_name, package=__package__
+            )
+        except ImportError as e:
+            logger.error(f"Failed to import module '{full_name}': {e}")
+            raise
+        return imported_module
+
     modules: ModuleDict = {}
     for name in mod_names:
-        modules[name] = _load_module(name)
+        logger.info(f"Importing submodule '{name}'")
+        modules[name] = load_module(name)
+    logger.info("Importing submodule Done!")
     return modules
 
 
-def _reload_modules(mod_names: list[str]) -> ModuleDict:
-    modules: ModuleDict = {}
-    for name in mod_names:
-        if name in sys.modules:
-            modules[name] = importlib.reload(sys.modules[name])
-        else:
-            logger.warning(f"Module '{name}' not found in sys.modules; re-importing.")
-            modules[name] = _load_module(name)
-    return modules
+def _reload_modules(modules: ModuleDict) -> ModuleDict:
+    logger.info("Begin reloading submodules...")
+    ret: ModuleDict = {}
+    for name, mod in modules.items():
+        logger.info(f"Reloading submodule '{name}'")
+        ret[name] = importlib.reload(mod)
+    logger.info("Reloading submodule Done!")
+    return ret
 
 
 def _call_if_hasmethod(module: ModuleType, method_name: str) -> None:
@@ -71,22 +79,24 @@ def _call_if_hasmethod(module: ModuleType, method_name: str) -> None:
         method()
 
 
+modules: ModuleDict
+_should_reload = "bpy" in locals()
+import bpy  # noqa: E402, F401
+
+
 def register():
-    logger.info("[ModernPrimitive::register()]")
+    global modules  # noqa: PLW0603
+
+    logger.info("=========== register() ===========")
+    modules = _import_modules(MODULE_NAMES) if not _should_reload else _reload_modules(modules)
+
     for module in modules.values():
         _call_if_hasmethod(module, "register")
 
 
 def unregister():
-    logger.info("[ModernPrimitive::unregister()]")
+    global modules  # noqa: PLW0602
+
+    logger.info("=========== unregister() ===========")
     for module in modules.values():
         _call_if_hasmethod(module, "unregister")
-
-
-def _should_reload() -> bool:
-    return "bpy" in locals()
-
-
-modules: ModuleDict = (
-    _import_modules(MODULE_NAMES) if not _should_reload() else _reload_modules(MODULE_NAMES)
-)
