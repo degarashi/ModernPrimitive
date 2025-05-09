@@ -1,4 +1,7 @@
 # Changelog
+## v0.0.33
+- fixed "KeyError: 'bpy_struct[key]: key "mpr_original_wireframe_state" not found'" when adding any modifier to modern-primitive object.
+
 ## v0.0.32
 - Refactoring and fixing the 'property' object has no attribute 'lower' error encountered during installation.
 
