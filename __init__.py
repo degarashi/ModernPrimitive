@@ -1,21 +1,15 @@
-def import_modules(mod_names: list[str]):
-    import importlib.util
+import importlib
+import logging
+import sys
+from types import ModuleType
+from typing import TypeAlias
 
-    modules = {}
-    for name in mod_names:
-        modules[name] = importlib.import_module(f".src.{name}", package=__package__)
-    return modules
+ModuleDict: TypeAlias = dict[str, ModuleType]
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-def reload_modules(mod_names: list[str]):
-    import importlib
-
-    modules = {}
-    for name in mod_names:
-        modules[name] = importlib.reload(globals()[name])
-    return modules
-
-
+MODULE_PREFIX = "src"
 MODULE_NAMES: list[str] = [
     "modern_primitive",
     "focus_modifier",
@@ -34,31 +28,62 @@ MODULE_NAMES: list[str] = [
     "reset_origin",
 ]
 
-modules = (
-    import_modules(MODULE_NAMES)
-    if "bpy" not in locals()
-    else reload_modules(MODULE_NAMES)
-)
+
+def _load_module(name: str) -> ModuleType:
+    full_name: str = f".{MODULE_PREFIX}.{name}"
+    try:
+        imported_module: ModuleType = importlib.import_module(full_name, package=__package__)
+    except ImportError as e:
+        logger.error(f"Failed to import module '{full_name}': {e}")
+        raise
+    sys.modules[full_name] = imported_module
+    return imported_module
 
 
-import bpy  # noqa: F401, E402
+def _import_modules(mod_names: list[str]) -> ModuleDict:
+    modules: ModuleDict = {}
+    for name in mod_names:
+        modules[name] = _load_module(name)
+    return modules
 
 
-def call_if_hasmethod(module, method_name: str) -> None:
+def _reload_modules(mod_names: list[str]) -> ModuleDict:
+    modules: ModuleDict = {}
+    for name in mod_names:
+        if name in sys.modules:
+            modules[name] = importlib.reload(sys.modules[name])
+        else:
+            logger.warning(f"Module '{name}' not found in sys.modules; re-importing.")
+            modules[name] = _load_module(name)
+    return modules
+
+
+def _call_if_hasmethod(module: ModuleType, method_name: str) -> None:
     method = getattr(module, method_name, None)
     if method is None:
-        print(f'module "{module}" has no {method_name}() method')
+        logger.warning(
+            f'Module "{getattr(module, "__name__", str(module))}" has no method "{method_name}()"'  # noqa: E501
+        )
     else:
         method()
 
 
 def register():
-    print("-------------ModernPrimitive::register()--------------")
+    logger.info("[ModernPrimitive::register()]")
     for module in modules.values():
-        call_if_hasmethod(module, "register")
+        _call_if_hasmethod(module, "register")
 
 
 def unregister():
-    print("-------------ModernPrimitive::unregister()-----------")
+    logger.info("[ModernPrimitive::unregister()]")
     for module in modules.values():
-        call_if_hasmethod(module, "unregister")
+        _call_if_hasmethod(module, "unregister")
+
+
+def _should_reload() -> bool:
+    return "bpy" in locals()
+
+
+modules: ModuleDict = (
+    _import_modules(MODULE_NAMES) if not _should_reload() else _reload_modules(MODULE_NAMES)
+)
