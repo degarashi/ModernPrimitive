@@ -1,4 +1,5 @@
 from collections.abc import Iterable
+from types import ModuleType
 from typing import Any, ClassVar, TypeVar, cast
 
 import blf
@@ -73,7 +74,7 @@ HALF_ONE = ONE / 2
 
 class Drawer:
     color: HUDColor
-    __blf: Any
+    __blf: ModuleType
     __pref: PreferencesView
     __window_size: tuple[int, int]
     __m_pers: Matrix
@@ -81,7 +82,7 @@ class Drawer:
     __system: str
     __text_dim: Vector
 
-    def __init__(self, blf: Any, context: Context, m_world: Matrix):
+    def __init__(self, blf: ModuleType, context: Context, m_world: Matrix):
         reg = context.region
         reg3d = context.region_data
 
