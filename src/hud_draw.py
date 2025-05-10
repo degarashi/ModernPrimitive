@@ -94,7 +94,6 @@ class Drawer:
         self.__m_window = reg3d.window_matrix
         self.__system = context.scene.unit_settings.system
 
-    def __enter__(self):
         scale = self.__pref.ui_scale
         blf = self.__blf
         blf.enable(FONT_ID, blf.SHADOW)
@@ -104,6 +103,7 @@ class Drawer:
         self.__text_dim = Vector(blf.dimensions(FONT_ID, "A"))
         self.__text_dim.y += 4
 
+    def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
@@ -180,11 +180,6 @@ class Drawer:
     def show_hud(self, scale: Vector) -> None:
         set_position_draw(blf, (50, 30), "ModernPrimitive:")
         set_position_draw(blf, (60, 10), f"Scale: {scale.x:.2f} {scale.y:.2f} {scale.z:.2f}")
-
-
-def make_drawer(blf: Any, context: Context, m_world: Matrix) -> Drawer:
-    drawer = Drawer(blf, context, m_world)
-    return drawer.__enter__()
 
 
 CUBE_GIZMO_POS = {
@@ -878,7 +873,7 @@ class MPR_Hud(Operator):
                 and space.region_quadviews[-1] != reg3d
             ):
                 show_hud = False
-            with make_drawer(blf, context, obj.matrix_world) as drawer:
+            with Drawer(blf, context, obj.matrix_world) as drawer:
                 if show_hud:
                     drawer.show_hud(obj.scale)
                 PROCS[typ](get_mpr_modifier(obj.modifiers), drawer, gizmo_info)
