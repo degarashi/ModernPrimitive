@@ -4,7 +4,7 @@ import blf
 from bpy.types import Area, Context, Region, SpaceView3D
 from mathutils import Color
 
-from .draw_aux import set_color as set_color_g
+from .blf_aux import set_color as set_color_g
 
 
 def get_region(context: Context, area_type: str, region_type: str) -> Region | None:
