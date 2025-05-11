@@ -1,6 +1,6 @@
 from collections.abc import Iterable
 from types import ModuleType
-from typing import Any, ClassVar, TypeVar, cast
+from typing import Any, ClassVar, cast
 
 import blf
 import bpy
@@ -804,9 +804,6 @@ def is_primitive_selected(obj: Object | None) -> bool:
         return False
     mod = get_mpr_modifier(obj.modifiers)
     return mod.show_viewport and mod.is_active
-
-
-T = TypeVar("T")
 
 
 class MPR_Hud(Operator):
