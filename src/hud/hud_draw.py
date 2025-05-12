@@ -20,10 +20,10 @@ from ..aux_func import (
 )
 from ..aux_math import make_vec3
 from ..aux_node import get_interface_values
-from ..color import HUDColor
-from ..constants import MODERN_PRIMITIVE_PREFIX, Type
 from ..blf_aux import DEFAULT_FONT_ID as FONT_ID
 from ..blf_aux import set_color, set_position_draw
+from ..color import HUDColor
+from ..constants import MODERN_PRIMITIVE_PREFIX, Type
 from ..exception import DGUnknownType
 from ..gizmo_info import GizmoInfoAr, get_gizmo_info
 
