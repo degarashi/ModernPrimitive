@@ -22,7 +22,7 @@ MODULE_NAMES: list[str] = [
     "switch_wireframe",
     "apply_scale",
     "preference",
-    "hud_draw",
+    "hud.hud_draw",
     "restore_default",
     "convert",
     "apply_mesh",

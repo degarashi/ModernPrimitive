@@ -9,23 +9,23 @@ from bpy.types import Context, Modifier, Object, Operator, PreferencesView, Spac
 from bpy.utils import register_class, unregister_class
 from mathutils import Color, Matrix, Vector
 
-from . import primitive as PR
-from . import primitive_prop as P
-from .aux_func import (
+from .. import primitive as PR
+from .. import primitive_prop as P
+from ..aux_func import (
     get_addon_preferences,
     get_evaluated_mesh,
     get_mpr_modifier,
     is_modern_primitive,
     type_from_modifier_name,
 )
-from .aux_math import make_vec3
-from .aux_node import get_interface_values
-from .color import HUDColor
-from .constants import MODERN_PRIMITIVE_PREFIX, Type
-from .blf_aux import DEFAULT_FONT_ID as FONT_ID
-from .blf_aux import set_color, set_position_draw
-from .exception import DGUnknownType
-from .gizmo_info import GizmoInfoAr, get_gizmo_info
+from ..aux_math import make_vec3
+from ..aux_node import get_interface_values
+from ..color import HUDColor
+from ..constants import MODERN_PRIMITIVE_PREFIX, Type
+from ..blf_aux import DEFAULT_FONT_ID as FONT_ID
+from ..blf_aux import set_color, set_position_draw
+from ..exception import DGUnknownType
+from ..gizmo_info import GizmoInfoAr, get_gizmo_info
 
 units = bpy.utils.units
 
