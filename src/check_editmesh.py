@@ -61,13 +61,17 @@ handler_loadpost = bpy.app.handlers.load_post
 
 
 def register() -> None:
-    handler_deps_update.append(check_editmesh)
-    handler_loadpost.append(load_handler)
+    if check_editmesh not in handler_deps_update:
+        handler_deps_update.append(check_editmesh)
+    if load_handler not in handler_loadpost:
+        handler_loadpost.append(load_handler)
 
 
 def unregister() -> None:
     # if textdrawer is draweing something, hide it now
     textdraw_warning.hide(bpy.context)
 
-    handler_deps_update.remove(check_editmesh)
-    handler_loadpost.remove(load_handler)
+    if check_editmesh in handler_deps_update:
+        handler_deps_update.remove(check_editmesh)
+    if load_handler in handler_loadpost:
+        handler_loadpost.remove(load_handler)
