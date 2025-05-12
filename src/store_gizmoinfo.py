@@ -5,7 +5,8 @@ from bpy.app.handlers import persistent
 from bpy.types import Depsgraph, Mesh, Scene
 
 from .aux_func import is_modern_primitive
-from .gizmo_info import GizmoInfoAr, get_gizmo_info as _get_gizmo_info
+from .gizmo_info import GizmoInfoAr
+from .gizmo_info import get_gizmo_info as _get_gizmo_info
 
 
 class LocalValue:
@@ -29,10 +30,16 @@ def store_gizmoinfo_handler(scene: Scene, depsgraph: Depsgraph):
         return
 
     if evaluated_obj.type == "MESH":
-        evaluated_mesh: Mesh | None = evaluated_obj.data
-        if evaluated_mesh:
-            LocalValue.gizmo_info = _get_gizmo_info(evaluated_mesh)
-            return
+        evaluated_mesh: Mesh | None = None
+        try:
+            evaluated_mesh = evaluated_obj.to_mesh(
+                preserve_all_data_layers=True, depsgraph=depsgraph
+            )
+            if evaluated_mesh:
+                LocalValue.gizmo_info = _get_gizmo_info(evaluated_mesh)
+        finally:
+            if evaluated_mesh and evaluated_mesh.users == 0:
+                evaluated_obj.to_mesh_clear()
 
 
 @persistent
