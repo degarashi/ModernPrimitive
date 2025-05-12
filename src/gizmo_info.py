@@ -79,8 +79,8 @@ def get_gizmo_info(mesh: Mesh) -> GizmoInfoAr | None:
             for i in range(len(giz_pos)):
                 ret.append(GizmoInfo(giz_pos[i], giz_normal[i], giz_type[i], giz_color[i]))
             return ret
-        raise DGGizmoInfoCantLoaded("invalid length")  # noqa: TRY003
+        raise DGGizmoInfoCantLoaded("invalid length")
     except KeyError as e:
         print(e)
-        raise DGGizmoInfoCantLoaded("no key") from e  # noqa: TRY003
-    raise DGGizmoInfoCantLoaded("unknown error")  # noqa: TRY003
+        raise DGGizmoInfoCantLoaded("no key") from e
+    raise DGGizmoInfoCantLoaded("unknown error")
