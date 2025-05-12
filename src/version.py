@@ -1,14 +1,16 @@
-import bpy
 import re
-from .exception import DGInvalidVersionNumber, DGUnknownAssetFound, DGNodeGroupNotFound
+from functools import total_ordering
+from pathlib import Path
+from collections.abc import Callable
+
+import bpy
+
 from .constants import (
-    Type,
     MODERN_PRIMITIVE_TAG,
+    Type,
     get_assets_dir,
 )
-from functools import total_ordering
-from typing import Callable
-from pathlib import Path
+from .exception import DGInvalidVersionNumber, DGNodeGroupNotFound, DGUnknownAssetFound
 
 
 @total_ordering
