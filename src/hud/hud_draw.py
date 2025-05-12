@@ -8,14 +8,13 @@ from bpy.utils import register_class, unregister_class
 
 from ..aux_func import (
     get_addon_preferences,
-    get_evaluated_mesh,
     get_mpr_modifier,
     is_modern_primitive,
     type_from_modifier_name,
 )
 from ..constants import MODERN_PRIMITIVE_PREFIX, Type
 from ..exception import DGUnknownType
-from ..gizmo_info import get_gizmo_info
+from ..store_gizmoinfo import get_gizmo_info
 from . import (
     capsule,
     cone,
@@ -110,9 +109,9 @@ class MPR_Hud(Operator):
             reg3d = context.region_data
             show_hud = True
 
-            # ------ Get Gizmo Positions ------
-            mesh = get_evaluated_mesh(context, obj)
-            gizmo_info = get_gizmo_info(mesh)
+            gizmo_info = get_gizmo_info()
+            if gizmo_info is None:
+                return
 
             QUADVIEW_NUM = 4
             # In quad view mode,
