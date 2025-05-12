@@ -5,7 +5,6 @@ from bpy.props import BoolProperty, EnumProperty
 from bpy.types import Context, Object, Operator
 from bpy.utils import register_class, unregister_class
 from idprop.types import IDPropertyArray
-from mathutils import Vector
 
 from . import primitive as P
 from .aux_func import (
