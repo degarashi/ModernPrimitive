@@ -27,6 +27,7 @@ MODULE_NAMES: list[str] = [
     "convert",
     "apply_mesh",
     "reset_origin",
+    "store_gizmoinfo",
 ]
 
 
