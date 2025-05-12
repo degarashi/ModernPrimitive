@@ -93,10 +93,6 @@ class ObjectHold:
             bpy.app.timers.register(self._on_draw_hook_async, first_interval=0.1)
 
 
-handler_deps_update = bpy.app.handlers.depsgraph_update_post
-handler_loadpost = bpy.app.handlers.load_post
-
-
 class LocalValue:
     target_obj: ClassVar[ObjectHold] = ObjectHold()
 
@@ -121,14 +117,22 @@ def load_handler(new_file: str):
     on_draw_hook(None, bpy.context)
 
 
+handler_deps_update = bpy.app.handlers.depsgraph_update_post
+handler_loadpost = bpy.app.handlers.load_post
+
+
 def register() -> None:
-    handler_deps_update.append(on_deps)
-    handler_loadpost.append(load_handler)
+    if on_deps not in handler_deps_update:
+        handler_deps_update.append(on_deps)
+    if load_handler not in handler_loadpost:
+        handler_loadpost.append(load_handler)
     # For detect modifier's active state switching
     bpy.types.TOPBAR_HT_upper_bar.append(on_draw_hook)
 
 
 def unregister() -> None:
-    handler_deps_update.remove(on_deps)
-    handler_loadpost.remove(load_handler)
+    if on_deps in handler_deps_update:
+        handler_deps_update.remove(on_deps)
+    if load_handler in handler_loadpost:
+        handler_loadpost.remove(load_handler)
     bpy.types.TOPBAR_HT_upper_bar.remove(on_draw_hook)
