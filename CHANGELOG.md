@@ -1,4 +1,10 @@
 # Changelog
+## v0.0.34
+- Addressed an issue where, during addon initialization, an error could occur in the module import section depending on the environment, causing the addon to fail to load.
+(Added log messages to be output when a module fails to load.)
+
+- Fixed an issue where the addon failed to reload properly when executing the "Reload Scripts" command in Blender.
+
 ## v0.0.33
 - fixed "KeyError: 'bpy_struct[key]: key "mpr_original_wireframe_state" not found'" when adding any modifier to modern-primitive object.
 
