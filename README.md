@@ -18,12 +18,9 @@ Shortcut key(Ctrl+Alt+X) to focus ModernPrimitive modifier (to manipulate primit
 <img src="./doc_images/focusmodifier_0.jpg" alt="" width="75%" />
 <img src="./doc_images/focus_modern_primitive_menu_0.jpg" alt="" width="75%" />
 
-Convert To Cube function <br>
-<img src="./doc_images/usage_convert_cube_0.jpg" alt="" width="35%" />
-<img src="./doc_images/usage_convert_cube_menu_0.jpg" alt="" width="50%" />
+All functions are available on the [MPR] N-Panel
 
-DeformableCube's "set origin to center" operator <br>
-<img src="./doc_images/usage_cube_origin_0.jpg" alt="" width="35%" />
+<img src="./doc_images/mpr_panel.jpg" alt="" width="75%" />
 
 # Gallery
 <img src="./doc_images/usage_cube_1.jpg" alt="" width="25%" /> <img src="./doc_images/usage_cone_1.jpg" alt="" width="25%" />
