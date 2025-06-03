@@ -32,10 +32,8 @@ All functions are available on the [MPR] N-Panel
 <img src="./doc_images/usage_deformable_cube_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_capsule_0.jpg" alt="" width="25%" />
 
 # Changelog
-## v0.0.35
-- Some refactorings.
-
-- Fixed the part where the Blender API was being called from the rendering thread (the Blender API is originally intended to be accessed from the UI thread).
+## v0.0.36
+- Fixed the bug: Gizmo visibility flag setting was not reflected when creating a new scene or launching Blender by double-clicking a file.
 
 ## Other
 [<ins>View all log</ins>](CHANGELOG.md)
