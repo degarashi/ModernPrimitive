@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 
 MODULE_PREFIX = "src"
 MODULE_NAMES: list[str] = [
+    "preference",
     "modern_primitive",
     "focus_modifier",
     "equalize_dcube_size",
@@ -21,7 +22,6 @@ MODULE_NAMES: list[str] = [
     "wireframe",
     "switch_wireframe",
     "apply_scale",
-    "preference",
     "hud.hud_draw",
     "restore_default",
     "convert",
