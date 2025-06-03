@@ -2,8 +2,9 @@ from typing import Any, ClassVar, cast
 
 import blf
 import bpy
+from bpy.app.handlers import persistent
 from bpy.props import BoolProperty
-from bpy.types import Context, Object, Operator, SpaceView3D
+from bpy.types import Context, Depsgraph, Object, Operator, Scene, SpaceView3D
 from bpy.utils import register_class, unregister_class
 
 from ..aux_func import (
@@ -137,36 +138,67 @@ class MPR_Hud(Operator):
             cls.__handle_remove(context)
         return {"FINISHED"}
 
+
+handler_deps_update = bpy.app.handlers.depsgraph_update_post
+handler_loadpost = bpy.app.handlers.load_post
+
+
+class Setting:
     # Display status of gizmo values from preferences
-    show_value_flag: ClassVar[bool | None] = None
+    pref_value: ClassVar[bool | None] = None
+
+    @classmethod
+    def _apply_from_pref_value(cls) -> None:
+        # This is a process that should be done only once when the plugin is initialized,
+        # so I will improve it later if possible.
+        if cls.pref_value is None:
+            should_show: bool = False
+            # Load show-gizmo flag from preferences
+            should_show = cls.pref_value = get_addon_preferences(bpy.context).show_gizmo_value
+            # Set the flag value to the window manager property value
+            bpy.context.window_manager.show_gizmo_values = should_show
+            bpy.ops.ui.mpr_show_hud(show=should_show)
+
+    @classmethod
+    def _on_load(cls) -> None:
+        if cls.pref_value is not None:
+            # When we reach this point, the Scene has just been initialized,
+            # so restore the previous settings to the WindowManager.
+            bpy.context.window_manager.show_gizmo_values = cls.pref_value
+        else:
+            cls._apply_from_pref_value()
+
+    @classmethod
+    def on_changed(cls, value: bool) -> None:
+        cls.pref_value = value
 
 
-# Set the gizmo value only once for the first time
-def init_gizmo_value_show() -> None:
-    # Enabled by default for now
-    bpy.ops.ui.mpr_show_hud(show=True)
+@persistent
+def on_update(scene: Scene, depsgraph: Depsgraph) -> None:
+    Setting._apply_from_pref_value()
 
-    # Do nothing if the flag value is not set due to some mistake
-    if MPR_Hud.show_value_flag is None:
-        pass
-    else:
-        # Set gizmo value display according to preferences value
-        bpy.ops.ui.mpr_show_hud(show=MPR_Hud.show_value_flag)
 
-        # Set the flag value to the window manager property value
-        bpy.context.window_manager.show_gizmo_values = MPR_Hud.show_value_flag
+@persistent
+def on_load(new_file: str) -> None:
+    Setting._on_load()
 
 
 def register() -> None:
-    # show-gizmo flag from preferences
-    MPR_Hud.show_value_flag = get_addon_preferences(bpy.context).show_gizmo_value
-
     register_class(MPR_Hud)
-    # This means not calling the operator now,
-    # but after initialization is complete, but there may be a better way.
-    bpy.app.timers.register(init_gizmo_value_show, first_interval=0)
+
+    # Registering handlers
+    if on_update not in handler_deps_update:
+        handler_deps_update.append(on_update)
+    if on_load not in handler_loadpost:
+        handler_loadpost.append(on_load)
 
 
 def unregister() -> None:
+    # UnRegistering handlers
+    if on_load in handler_loadpost:
+        handler_loadpost.remove(on_load)
+    if on_update in handler_deps_update:
+        handler_deps_update.remove(on_update)
+
     MPR_Hud.cleanup()
     unregister_class(MPR_Hud)

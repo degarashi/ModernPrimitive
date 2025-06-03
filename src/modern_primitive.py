@@ -4,6 +4,7 @@ from bpy.types import Context, Menu, bpy_struct
 from . import aux_func
 from . import make_primitive as dg_ops
 from .constants import MODERN_PRIMITIVE_PREFIX
+from .hud.hud_draw import Setting as HUDSetting
 
 
 class VIEW3D_MT_mesh_modern_prim(Menu):
@@ -54,6 +55,7 @@ def gizmo_props(self, context: Context):
 def update_show_gizmo_values(self, context: Context) -> None:
     """Function called when the Gizmo value display flag is toggled"""
     should_show = context.window_manager.show_gizmo_values
+    HUDSetting.on_changed(should_show)
     bpy.ops.ui.mpr_show_hud(show=should_show)
 
 
