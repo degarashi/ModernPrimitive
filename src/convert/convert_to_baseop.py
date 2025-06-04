@@ -8,9 +8,9 @@ from bpy.props import BoolProperty, EnumProperty, StringProperty
 from bpy.types import Context, Event, Object, Operator
 from mathutils import Matrix, Quaternion, Vector, geometry
 
-from ..aux_func import calc_aabb, get_evaluated_vertices, is_primitive_mod, mul_vert_mat
+from ..aux_func import calc_aabb, get_evaluated_mesh, is_primitive_mod, mul_vert_mat
 from ..aux_math import is_uniform
-from ..aux_other import classproperty
+from ..aux_other import classproperty, make_bmesh
 from ..constants import MODERN_PRIMITIVE_PREFIX
 
 
@@ -228,55 +228,58 @@ class ConvertTo_BaseOperator(Operator):
     def _handle_obj(self, context: Context, obj: Object, err_typ: str) -> None:
         # Acquiring all the vertices of the object,
         #   it may be heavy, so there is room for improvement.
-        verts = get_evaluated_vertices(context, obj)
+        mesh = get_evaluated_mesh(context, obj)
+        with make_bmesh(mesh, False, False) as bm:
+            verts = [v.co for v in bm.verts]
 
-        # If the number of vertices is less than 2, conversion is not possible.
-        MIN_VERTS = 2
-        if len(verts) < MIN_VERTS:
-            self._report_error(err_typ, obj, "it's number of vertices is less than 2")
-            return
+            # If the number of vertices is less than 2, conversion is not possible.
+            MIN_VERTS = 2
+            if len(verts) < MIN_VERTS:
+                self._report_error(err_typ, obj, "it's number of vertices is less than 2")
+                return
 
-        # Quotanion for rotating the main axis to the Z axis
-        pre_rot: Quaternion
-        should_flip: bool = False
-        # _handle Proc method handles the Z axis as height,
-        #   so convert it in a timely manner.
-        match self.main_axis:
-            case "Auto":
-                ret = self._handle_auto_axis(verts, obj, err_typ)
-                if ret is None:
-                    return
-                pre_rot, should_flip = cast(tuple[Quaternion, bool], ret)
-            case "X":
-                # -90 degrees rotation around the Y axis
-                pre_rot = Quaternion(((0, 1, 0)), math.radians(-90))
-            case "Y":
-                # 90 degrees around the X-axis
-                pre_rot = Quaternion((1, 0, 0), math.radians(90))
-            case "Z":
-                # Do nothing
-                pre_rot = Quaternion()
-        # invert axis if flag set
-        if self.invert_main_axis:
-            should_flip = not should_flip
+            # Quotanion for rotating the main axis to the Z axis
+            pre_rot: Quaternion
+            should_flip: bool = False
+            # _handle Proc method handles the Z axis as height,
+            #   so convert it in a timely manner.
+            match self.main_axis:
+                case "Auto":
+                    ret = self._handle_auto_axis(verts, obj, err_typ)
+                    if ret is None:
+                        return
+                    pre_rot, should_flip = cast(tuple[Quaternion, bool], ret)
+                case "X":
+                    # -90 degrees rotation around the Y axis
+                    pre_rot = Quaternion(((0, 1, 0)), math.radians(-90))
+                case "Y":
+                    # 90 degrees around the X-axis
+                    pre_rot = Quaternion((1, 0, 0), math.radians(90))
+                case "Z":
+                    # Do nothing
+                    pre_rot = Quaternion()
 
-        if should_flip:
-            pre_rot.rotate(Quaternion((0, 1, 0), math.radians(180)))
-        mat_rot90 = pre_rot.to_matrix()
+            # invert axis if flag set
+            if self.invert_main_axis:
+                should_flip = not should_flip
 
-        # get bound_box info (size, average)
-        # Bounding box when the z-axis is the main axis
-        verts = mul_vert_mat(verts, mat_rot90)
-        bbox = BBox(verts)
-        new_obj, offset = self._handle_proc(context, bbox, verts)
-        new_obj.name = obj.name + self.postfix
+            if should_flip:
+                pre_rot.rotate(Quaternion((0, 1, 0), math.radians(180)))
+            mat_rot90 = pre_rot.to_matrix()
 
-        new_obj.matrix_world = (
-            obj.matrix_world
-            @ pre_rot.inverted().to_matrix().to_4x4()
-            @ Matrix.Translation(bbox.center)
-            @ Matrix.Translation(offset)
-        )
+            # get bound_box info (size, average)
+            # Bounding box when the z-axis is the main axis
+            verts = mul_vert_mat(verts, mat_rot90)
+            bbox = BBox(verts)
+            new_obj, offset = self._handle_proc(context, bbox, verts)
+            new_obj.name = obj.name + self.postfix
+
+            new_obj.matrix_world = (
+                obj.matrix_world
+                @ pre_rot.inverted().to_matrix().to_4x4()
+                @ Matrix.Translation(bbox.center)
+                @ Matrix.Translation(offset)
+            )
 
         # copy materials
         if self.copy_material and obj.data.materials:
