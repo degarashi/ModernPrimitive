@@ -110,14 +110,9 @@ class ConvertTo_BaseOperator(Operator):
         sel = context.selected_objects
         if len(sel) == 0:
             return False
-        for obj in sel:
-            if obj is None or obj.type != "MESH":
-                return False
-        return True
+        return all(not (obj is None or obj.type != "MESH") for obj in sel)
 
-    def _handle_proc(
-        self, context: Context, verts: Sequence[Vector]
-    ) -> tuple[Object, Vector]:
+    def _handle_proc(self, context: Context, verts: Sequence[Vector]) -> tuple[Object, Vector]:
         raise NotImplementedError("This method should be implemented by subclass")
 
     def _handle_obj(self, context: Context, obj: Object, err_typ: str) -> None:
@@ -126,7 +121,8 @@ class ConvertTo_BaseOperator(Operator):
         verts = get_evaluated_vertices(context, obj)
 
         # If the number of vertices is less than 2, conversion is not possible.
-        if len(verts) < 2:
+        MIN_VERTS = 2
+        if len(verts) < MIN_VERTS:
             self._report_error(err_typ, obj, "it's number of vertices is less than 2")
             return
 
@@ -144,8 +140,7 @@ class ConvertTo_BaseOperator(Operator):
                     self._report_error(
                         err_typ,
                         obj,
-                        "it didn't have a uniform scaling value.\n"
-                        "Try set axis manually.",  # noqa: E501
+                        "it didn't have a uniform scaling value.\n" "Try set axis manually.",
                     )
                     return
                 axis = _auto_axis(verts)
@@ -165,6 +160,7 @@ class ConvertTo_BaseOperator(Operator):
                 verts_xy = mul_vert_mat(verts, rot.to_matrix())
                 verts_xy = [v.xy for v in verts_xy]
 
+                MIN_LENGTH_SQ = 1e-12
                 # calc 2D convex
                 convex_hull_idx = geometry.convex_hull_2d(verts_xy)
                 verts_2d = [verts_xy[convex_hull_idx[0]]]
@@ -172,12 +168,13 @@ class ConvertTo_BaseOperator(Operator):
                 for idx in convex_hull_idx[1:]:
                     pos = verts_xy[idx]
                     # Omit the vertices of almost the same position
-                    if (prev_pos - pos).length_squared < 1e-12:
+                    if (prev_pos - pos).length_squared < MIN_LENGTH_SQ:
                         continue
                     prev_pos = pos
                     verts_2d.append(pos)
 
-                if len(verts_2d) < 2:
+                MIN_VERTS_2D = 2
+                if len(verts_2d) < MIN_VERTS_2D:
                     self._report_error(
                         err_typ,
                         obj,
@@ -263,11 +260,10 @@ class ConvertTo_BaseOperator(Operator):
         )
 
         # copy materials
-        if self.copy_material:
-            if obj.data.materials:
-                new_obj.data.materials.clear()
-                for m in obj.data.materials:
-                    new_obj.data.materials.append(m)
+        if self.copy_material and obj.data.materials:
+            new_obj.data.materials.clear()
+            for m in obj.data.materials:
+                new_obj.data.materials.append(m)
 
         # copy modifiers
         if self.copy_modifier:
@@ -278,9 +274,7 @@ class ConvertTo_BaseOperator(Operator):
                 m_dst = new_obj.modifiers.new(m_src.name, m_src.type)
 
                 # collect names of writable properties
-                props = [
-                    p.identifier for p in m_src.bl_rna.properties if not p.is_readonly
-                ]
+                props = [p.identifier for p in m_src.bl_rna.properties if not p.is_readonly]
 
                 # copy properties
                 for prop in props:
