@@ -15,6 +15,11 @@ from ..constants import MODERN_PRIMITIVE_PREFIX
 
 
 class BBox:
+    min: Vector
+    max: Vector
+    size: Vector
+    center: Vector
+
     def __init__(self, vert: Iterable[Vector]):
         (self.min, self.max) = calc_aabb(vert)
         self.size = self.max - self.min
