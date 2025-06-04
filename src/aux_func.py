@@ -268,13 +268,6 @@ def get_evaluated_mesh(context: Context, obj: Object) -> Mesh:
     return mesh
 
 
-# Acquire vertices of the applied modifier, etc.
-def get_evaluated_vertices(context: Context, obj: Object) -> list[Vector]:
-    mesh = get_evaluated_mesh(context, obj)
-    verts: list[Vector] = [v.co for v in cast(MeshVertex, mesh.vertices)]
-    return verts
-
-
 def mul_vert_mat(verts: Iterable[Vector], mat: Matrix) -> list[Vector]:
     return [(mat @ v).to_3d() for v in verts]
 
