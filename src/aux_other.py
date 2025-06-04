@@ -34,3 +34,9 @@ def get_tomesh(obj: Object):
         yield obj.to_mesh()
     finally:
         obj.to_mesh_clear()
+
+
+@contextmanager
+def get_bmesh(obj: Object, update_mesh: bool = True, recalc_normals: bool = True):
+    with get_tomesh(obj) as mesh, make_bmesh(mesh, update_mesh, recalc_normals) as bm:
+        yield bm
