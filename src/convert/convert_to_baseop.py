@@ -225,6 +225,22 @@ class ConvertTo_BaseOperator(Operator):
             should_flip = True
         return (pre_rot, should_flip)
 
+    def _make_primitive(
+        self, verts: Sequence[Vector], pre_rot: Quaternion, context: Context, obj: Object
+    ) -> Object:
+        verts = mul_vert_mat(verts, pre_rot.to_matrix())
+        bbox = BBox(verts)
+        new_obj, offset = self._handle_proc(context, bbox, verts)
+        new_obj.name = obj.name + self.postfix
+
+        new_obj.matrix_world = (
+            obj.matrix_world
+            @ pre_rot.inverted().to_matrix().to_4x4()
+            @ Matrix.Translation(bbox.center)
+            @ Matrix.Translation(offset)
+        )
+        return new_obj
+
     def _handle_obj(self, context: Context, obj: Object, err_typ: str) -> None:
         # Acquiring all the vertices of the object,
         #   it may be heavy, so there is room for improvement.
@@ -265,21 +281,10 @@ class ConvertTo_BaseOperator(Operator):
 
             if should_flip:
                 pre_rot.rotate(Quaternion((0, 1, 0), math.radians(180)))
-            mat_rot90 = pre_rot.to_matrix()
 
             # get bound_box info (size, average)
             # Bounding box when the z-axis is the main axis
-            verts = mul_vert_mat(verts, mat_rot90)
-            bbox = BBox(verts)
-            new_obj, offset = self._handle_proc(context, bbox, verts)
-            new_obj.name = obj.name + self.postfix
-
-            new_obj.matrix_world = (
-                obj.matrix_world
-                @ pre_rot.inverted().to_matrix().to_4x4()
-                @ Matrix.Translation(bbox.center)
-                @ Matrix.Translation(offset)
-            )
+            new_obj = self._make_primitive(verts, pre_rot, context, obj)
 
         # copy materials
         if self.copy_material and obj.data.materials:
