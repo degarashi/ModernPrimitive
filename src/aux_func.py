@@ -154,6 +154,9 @@ def load_primitive_from_asset(type_c: Type, context: Context, set_rot: bool) -> 
 
 
 class AABB:
+    min_v: Vector
+    max_v: Vector
+
     def __init__(self, minv: Vector, maxv: Vector):
         self.min_v = minv
         self.max_v = maxv
