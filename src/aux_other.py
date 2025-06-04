@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 
 import bmesh
-from bpy.types import Mesh
+from bpy.types import Mesh, Object
 
 
 class classproperty:
@@ -26,3 +26,11 @@ def make_bmesh(mesh: Mesh, update_mesh: bool = True, recalc_normals: bool = True
             bm.to_mesh(mesh)
             mesh.update()
         bm.free()
+
+
+@contextmanager
+def get_tomesh(obj: Object):
+    try:
+        yield obj.to_mesh()
+    finally:
+        obj.to_mesh_clear()
