@@ -241,7 +241,9 @@ class ConvertTo_BaseOperator(Operator):
         )
         return new_obj
 
-    def _handle_obj(self, context: Context, obj: Object, err_typ: str) -> None:
+    def _make_axis_and_primitive(
+        self, context: Context, obj: Object, err_typ: str
+    ) -> Object | None:
         # Acquiring all the vertices of the object,
         #   it may be heavy, so there is room for improvement.
         mesh = get_evaluated_mesh(context, obj)
@@ -252,7 +254,7 @@ class ConvertTo_BaseOperator(Operator):
             MIN_VERTS = 2
             if len(verts) < MIN_VERTS:
                 self._report_error(err_typ, obj, "it's number of vertices is less than 2")
-                return
+                return None
 
             # Quotanion for rotating the main axis to the Z axis
             pre_rot: Quaternion
@@ -263,7 +265,7 @@ class ConvertTo_BaseOperator(Operator):
                 case "Auto":
                     ret = self._handle_auto_axis(verts, obj, err_typ)
                     if ret is None:
-                        return
+                        return None
                     pre_rot, should_flip = cast(tuple[Quaternion, bool], ret)
                 case "X":
                     # -90 degrees rotation around the Y axis
@@ -284,7 +286,12 @@ class ConvertTo_BaseOperator(Operator):
 
             # get bound_box info (size, average)
             # Bounding box when the z-axis is the main axis
-            new_obj = self._make_primitive(verts, pre_rot, context, obj)
+            return self._make_primitive(verts, pre_rot, context, obj)
+
+    def _handle_obj(self, context: Context, obj: Object, err_typ: str) -> None:
+        new_obj = self._make_axis_and_primitive(context, obj, err_typ)
+        if new_obj is None:
+            return
 
         # copy materials
         if self.copy_material and obj.data.materials:
