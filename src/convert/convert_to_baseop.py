@@ -115,7 +115,9 @@ class ConvertTo_BaseOperator(Operator):
         sel = context.selected_objects
         if len(sel) == 0:
             return False
-        return all(not (obj is None or obj.type != "MESH") for obj in sel)
+        return all(
+            not (obj is None or obj.mode != "OBJECT" or obj.type != "MESH") for obj in sel
+        )
 
     def _handle_proc(self, context: Context, verts: Sequence[Vector]) -> tuple[Object, Vector]:
         raise NotImplementedError("This method should be implemented by subclass")
