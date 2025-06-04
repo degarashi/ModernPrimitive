@@ -8,9 +8,9 @@ from bpy.props import BoolProperty, EnumProperty, StringProperty
 from bpy.types import Context, Event, Object, Operator
 from mathutils import Matrix, Quaternion, Vector, geometry
 
-from ..aux_func import calc_aabb, get_evaluated_mesh, is_primitive_mod, mul_vert_mat
+from ..aux_func import calc_aabb, get_evaluated_obj, is_primitive_mod, mul_vert_mat
 from ..aux_math import is_uniform
-from ..aux_other import classproperty, make_bmesh
+from ..aux_other import classproperty, get_bmesh
 from ..constants import MODERN_PRIMITIVE_PREFIX
 from ..exception import DGException
 
@@ -244,8 +244,8 @@ class ConvertTo_BaseOperator(Operator):
     def _make_axis_and_primitive(self, context: Context, obj: Object) -> Object:
         # Acquiring all the vertices of the object,
         #   it may be heavy, so there is room for improvement.
-        mesh = get_evaluated_mesh(context, obj)
-        with make_bmesh(mesh, False, False) as bm:
+        eval_obj = get_evaluated_obj(context, obj)
+        with get_bmesh(eval_obj, False, False) as bm:
             verts = [v.co for v in bm.verts]
 
             # If the number of vertices is less than 2, conversion is not possible.

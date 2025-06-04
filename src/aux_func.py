@@ -19,6 +19,7 @@ from bpy.types import (
 )
 from mathutils import Matrix, Vector
 
+from .aux_other import get_tomesh
 from .constants import (
     ASSET_DIR_NAME,
     MODERN_PRIMITIVE_PREFIX,
@@ -261,11 +262,9 @@ def copy_rotation(dst: Object, src: Object) -> None:
     dst.rotation_euler = src.rotation_euler
 
 
-def get_evaluated_mesh(context: Context, obj: Object) -> Mesh:
+def get_evaluated_obj(context: Context, obj: Object) -> Object:
     depsgraph = context.evaluated_depsgraph_get()
-    eval_obj = obj.evaluated_get(depsgraph)
-    mesh: Mesh = eval_obj.to_mesh()
-    return mesh
+    return obj.evaluated_get(depsgraph)
 
 
 def mul_vert_mat(verts: Iterable[Vector], mat: Matrix) -> list[Vector]:
