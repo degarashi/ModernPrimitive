@@ -12,6 +12,7 @@ from ..aux_func import calc_aabb, get_evaluated_mesh, is_primitive_mod, mul_vert
 from ..aux_math import is_uniform
 from ..aux_other import classproperty, make_bmesh
 from ..constants import MODERN_PRIMITIVE_PREFIX
+from ..exception import DGException
 
 
 class BBox:
@@ -28,6 +29,11 @@ class BBox:
     def __str__(self) -> str:
         return f"BBox(min={self.min}, max={self.max},\
 size={self.size}, center={self.center})"
+
+
+class CantConvertException(DGException):
+    def __init__(self, reason: str):
+        super().__init__(reason)
 
 
 def _auto_axis(pts: Iterable[Iterable[float]]) -> tuple[Vector, Vector, Vector]:
@@ -123,8 +129,8 @@ class ConvertTo_BaseOperator(Operator):
         raise NotImplementedError("This method should be implemented by subclass")
 
     def _handle_auto_axis(
-        self, verts: Sequence[Vector], obj: Object, err_typ: str
-    ) -> tuple[Quaternion, bool] | None:
+        self, verts: Sequence[Vector], obj: Object
+    ) -> tuple[Quaternion, bool]:
         pre_rot: Quaternion
         should_flip: bool = False
 
@@ -132,12 +138,9 @@ class ConvertTo_BaseOperator(Operator):
         #   an error will be made if the scale value is not uniform
         #        at this time.
         if not is_uniform(obj.scale):
-            self._report_error(
-                err_typ,
-                obj,
-                "it didn't have a uniform scaling value.\n" "Try set axis manually.",
+            raise CantConvertException(
+                "it didn't have a uniform scaling value.\nTry set axis manually."
             )
-            return None
 
         axis = _auto_axis(verts)
         m = Matrix(
@@ -171,12 +174,9 @@ class ConvertTo_BaseOperator(Operator):
 
         MIN_VERTS_2D = 2
         if len(verts_2d) < MIN_VERTS_2D:
-            self._report_error(
-                err_typ,
-                obj,
-                "error occurred by calculation when determining the conversion axis automatically",  # noqa: E501
+            raise CantConvertException(
+                "error occurred by calculation when determining the conversion axis automatically"  # noqa: E501
             )
-            return None
 
         mat_rot90 = Matrix.Rotation(math.radians(90), 3, Vector((0, 0, 1)))
         best_normal: Vector
@@ -241,9 +241,7 @@ class ConvertTo_BaseOperator(Operator):
         )
         return new_obj
 
-    def _make_axis_and_primitive(
-        self, context: Context, obj: Object, err_typ: str
-    ) -> Object | None:
+    def _make_axis_and_primitive(self, context: Context, obj: Object) -> Object:
         # Acquiring all the vertices of the object,
         #   it may be heavy, so there is room for improvement.
         mesh = get_evaluated_mesh(context, obj)
@@ -253,8 +251,7 @@ class ConvertTo_BaseOperator(Operator):
             # If the number of vertices is less than 2, conversion is not possible.
             MIN_VERTS = 2
             if len(verts) < MIN_VERTS:
-                self._report_error(err_typ, obj, "it's number of vertices is less than 2")
-                return None
+                raise CantConvertException("it's number of vertices is less than 2")
 
             # Quotanion for rotating the main axis to the Z axis
             pre_rot: Quaternion
@@ -263,10 +260,7 @@ class ConvertTo_BaseOperator(Operator):
             #   so convert it in a timely manner.
             match self.main_axis:
                 case "Auto":
-                    ret = self._handle_auto_axis(verts, obj, err_typ)
-                    if ret is None:
-                        return None
-                    pre_rot, should_flip = cast(tuple[Quaternion, bool], ret)
+                    pre_rot, should_flip = self._handle_auto_axis(verts, obj)
                 case "X":
                     # -90 degrees rotation around the Y axis
                     pre_rot = Quaternion(((0, 1, 0)), math.radians(-90))
@@ -289,8 +283,10 @@ class ConvertTo_BaseOperator(Operator):
             return self._make_primitive(verts, pre_rot, context, obj)
 
     def _handle_obj(self, context: Context, obj: Object, err_typ: str) -> None:
-        new_obj = self._make_axis_and_primitive(context, obj, err_typ)
-        if new_obj is None:
+        try:
+            new_obj = self._make_axis_and_primitive(context, obj)
+        except CantConvertException as e:
+            self._report_error(err_typ, obj, str(e))
             return
 
         # copy materials
