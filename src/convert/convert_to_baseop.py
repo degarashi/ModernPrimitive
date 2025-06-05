@@ -9,26 +9,10 @@ from bpy.types import Context, Event, Object, Operator
 from mathutils import Matrix, Quaternion, Vector, geometry
 
 from ..aux_func import get_evaluated_obj, is_primitive_mod, mul_vert_mat
-from ..aux_math import calc_aabb, is_uniform
+from ..aux_math import BBox, is_uniform
 from ..aux_other import classproperty, get_bmesh
 from ..constants import MODERN_PRIMITIVE_PREFIX
 from ..exception import DGException
-
-
-class BBox:
-    min: Vector
-    max: Vector
-    size: Vector
-    center: Vector
-
-    def __init__(self, vert: Iterable[Vector]):
-        (self.min, self.max) = calc_aabb(vert)
-        self.size = self.max - self.min
-        self.center = (self.min + self.max) / 2
-
-    def __str__(self) -> str:
-        return f"BBox(min={self.min}, max={self.max},\
-size={self.size}, center={self.center})"
 
 
 class CantConvertException(DGException):

@@ -104,3 +104,19 @@ def calc_aabb(vecs: Iterable[Vector]) -> AABB:
             max_v[i] = max(max_v[i], pt2[i])
 
     return AABB(min_v, max_v)
+
+
+class BBox:
+    min: Vector
+    max: Vector
+    size: Vector
+    center: Vector
+
+    def __init__(self, vert: Iterable[Vector]):
+        (self.min, self.max) = calc_aabb(vert)
+        self.size = self.max - self.min
+        self.center = (self.min + self.max) / 2
+
+    def __str__(self) -> str:
+        return f"BBox(min={self.min}, max={self.max},\
+size={self.size}, center={self.center})"
