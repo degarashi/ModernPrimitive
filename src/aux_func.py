@@ -1,4 +1,3 @@
-import sys
 from collections.abc import Iterable
 from contextlib import suppress
 from typing import cast
@@ -152,31 +151,6 @@ def load_primitive_from_asset(type_c: Type, context: Context, set_rot: bool) -> 
     if set_rot:
         obj.rotation_euler = cur.rotation_euler
     return obj
-
-
-class AABB:
-    min_v: Vector
-    max_v: Vector
-
-    def __init__(self, minv: Vector, maxv: Vector):
-        self.min_v = minv
-        self.max_v = maxv
-
-    def __getitem__(self, index: int) -> Vector:
-        return (self.min_v, self.max_v)[index]
-
-
-def calc_aabb(vecs: Iterable[Vector]) -> AABB:
-    L = sys.float_info.max
-    min_v = Vector((L, L, L))
-    max_v = Vector((-L, -L, -L))
-    for pt in vecs:
-        pt2 = Vector(pt)
-        for i in range(3):
-            min_v[i] = min(min_v[i], pt2[i])
-            max_v[i] = max(max_v[i], pt2[i])
-
-    return AABB(min_v, max_v)
 
 
 def is_modern_primitive(obj: Object) -> bool:
