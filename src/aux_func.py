@@ -1,13 +1,10 @@
 from collections.abc import Iterable
 from contextlib import suppress
-from typing import cast
 
 import bpy
 from bpy.types import (
     AddonPreferences,
     Context,
-    Mesh,
-    MeshVertex,
     Modifier,
     NodeGroup,
     NodesModifier,
@@ -18,7 +15,6 @@ from bpy.types import (
 )
 from mathutils import Matrix, Vector
 
-from .aux_other import get_tomesh
 from .constants import (
     ASSET_DIR_NAME,
     MODERN_PRIMITIVE_PREFIX,
