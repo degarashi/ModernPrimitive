@@ -2,7 +2,7 @@ from collections.abc import Callable
 
 from . import primitive_prop as P
 from .util.aux_func import node_group_name
-from .aux_other import classproperty
+from .util.aux_other import classproperty
 from .constants import MODERN_PRIMITIVE_PREFIX, Type
 
 

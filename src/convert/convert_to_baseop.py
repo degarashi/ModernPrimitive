@@ -12,7 +12,7 @@ from mathutils import Matrix, Quaternion, Vector, geometry
 
 from ..util.aux_func import get_evaluated_obj, is_primitive_mod, mul_vert_mat
 from ..util.aux_math import BBox, is_uniform
-from ..aux_other import classproperty, get_bmesh
+from ..util.aux_other import classproperty, get_bmesh
 from ..constants import MODERN_PRIMITIVE_PREFIX
 from ..exception import DGException
 from .common_func import calc_fittest_axis
