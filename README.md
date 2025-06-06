@@ -32,8 +32,8 @@ All functions are available on the [MPR] N-Panel
 <img src="./doc_images/usage_deformable_cube_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_capsule_0.jpg" alt="" width="25%" />
 
 # Changelog
-## v0.0.36
-- Fixed the bug: Gizmo visibility flag setting was not reflected when creating a new scene or launching Blender by double-clicking a file.
+## v0.0.37
+- Improved the "Convert to Primitive" operator: When the axis is set to Auto, primitives are generated in a direction that better fits the shape.
 
 ## Other
 [<ins>View all log</ins>](CHANGELOG.md)

@@ -1,4 +1,7 @@
 # Changelog
+## v0.0.36
+- Fixed the bug: Gizmo visibility flag setting was not reflected when creating a new scene or launching Blender by double-clicking a file.
+
 ## v0.0.35
 - Some refactorings.
 
