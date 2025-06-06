@@ -7,7 +7,7 @@ from bpy.utils import register_class, unregister_class
 from idprop.types import IDPropertyArray
 
 from . import primitive as P
-from .aux_func import (
+from .util.aux_func import (
     get_blend_file_path,
     get_mpr_modifier,
     get_selected_primitive,

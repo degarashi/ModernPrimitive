@@ -12,7 +12,7 @@ from bpy.types import (
     Operator,
 )
 
-from .aux_func import (
+from .util.aux_func import (
     is_modern_primitive,
     is_primitive_mod,
     make_primitive_property_name,

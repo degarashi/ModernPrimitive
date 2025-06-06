@@ -1,7 +1,7 @@
 import bpy
 from bpy.types import Context, Menu, bpy_struct
 
-from . import aux_func
+from .util import aux_func
 from . import make_primitive as dg_ops
 from .constants import MODERN_PRIMITIVE_PREFIX
 from .hud.hud_draw import Setting as HUDSetting

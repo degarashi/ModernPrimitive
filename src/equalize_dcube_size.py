@@ -6,7 +6,7 @@ from bpy.props import BoolProperty
 from bpy.types import Context, Object, Operator
 from mathutils import Vector
 
-from .aux_func import (
+from .util.aux_func import (
     BackupSelection,
     get_mpr_modifier,
     is_modern_primitive_specific,

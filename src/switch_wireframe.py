@@ -1,7 +1,7 @@
 from bpy.types import Operator, Context
 from bpy.utils import register_class, unregister_class
 from .constants import MODERN_PRIMITIVE_PREFIX
-from .aux_func import get_active_and_selected_primitive
+from .util.aux_func import get_active_and_selected_primitive
 from .wireframe import ENTRY_NAME as Wireframe_EntryName
 
 

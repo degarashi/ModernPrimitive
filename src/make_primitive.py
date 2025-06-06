@@ -7,7 +7,7 @@ from bpy.props import BoolProperty, FloatProperty
 from bpy.types import Context, Operator, SpaceView3D, UILayout, bpy_struct
 from mathutils import Vector
 
-from .aux_func import (
+from .util.aux_func import (
     get_addon_preferences,
     get_mpr_modifier,
     get_view3d_pos,

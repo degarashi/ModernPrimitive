@@ -4,7 +4,7 @@ from bpy.types import Context, Panel
 
 from .apply_mesh import ApplyMesh_Operator
 from .apply_scale import ApplyScale_Operator
-from .aux_func import (
+from .util.aux_func import (
     get_active_and_selected_primitive,
     is_mpr_enabled,
     register_class,

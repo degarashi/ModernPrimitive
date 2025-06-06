@@ -4,7 +4,7 @@ import bpy
 from bpy.app.handlers import persistent
 from bpy.types import Context, Object, Scene
 
-from .aux_func import is_modern_primitive
+from .util.aux_func import is_modern_primitive
 from .color import HUDColor
 from .text import TextDrawer
 

@@ -7,7 +7,7 @@ from bpy.props import BoolProperty
 from bpy.types import Context, Depsgraph, Object, Operator, Scene, SpaceView3D
 from bpy.utils import register_class, unregister_class
 
-from ..aux_func import (
+from ..util.aux_func import (
     get_addon_preferences,
     get_mpr_modifier,
     is_modern_primitive,

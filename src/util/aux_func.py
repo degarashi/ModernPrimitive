@@ -15,7 +15,7 @@ from bpy.types import (
 )
 from mathutils import Matrix, Vector
 
-from .constants import (
+from ..constants import (
     ASSET_DIR_NAME,
     MODERN_PRIMITIVE_PREFIX,
     MODERN_PRIMITIVE_TAG,
@@ -23,14 +23,14 @@ from .constants import (
     get_addon_dir,
     get_addon_name,
 )
-from .exception import (
+from ..exception import (
     DGFileNotFound,
     DGInvalidVersionNumber,
     DGModifierNotFound,
     DGObjectNotFound,
     DGUnknownType,
 )
-from .version import VersionInt, get_primitive_version
+from ..version import VersionInt, get_primitive_version
 
 
 def get_mpr_modifier(mods: ObjectModifiers) -> NodesModifier:

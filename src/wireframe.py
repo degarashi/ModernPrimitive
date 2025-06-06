@@ -4,7 +4,7 @@ import bpy
 from bpy.app.handlers import persistent
 from bpy.types import Context, Object, Scene
 
-from .aux_func import is_primitive_mod, make_primitive_property_name, obj_is_alive
+from .util.aux_func import is_primitive_mod, make_primitive_property_name, obj_is_alive
 
 # Entry name to save the original wireframe state
 # (before the wireframe is forcibly displayed by the add-on)

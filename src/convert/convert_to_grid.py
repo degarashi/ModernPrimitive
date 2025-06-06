@@ -9,7 +9,7 @@ from bpy.types import (
 from mathutils import Vector
 
 from .. import primitive_prop as prop
-from ..aux_func import (
+from ..util.aux_func import (
     get_mpr_modifier,
     get_object_just_added,
 )

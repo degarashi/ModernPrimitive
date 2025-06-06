@@ -4,7 +4,7 @@ import bpy
 from bpy.types import Context, Object, Operator
 from bpy.utils import register_class, unregister_class
 
-from .aux_func import disable_modifier, get_mpr_modifier, get_selected_primitive, is_mpr_enabled
+from .util.aux_func import disable_modifier, get_mpr_modifier, get_selected_primitive, is_mpr_enabled
 from .constants import MODERN_PRIMITIVE_PREFIX
 
 

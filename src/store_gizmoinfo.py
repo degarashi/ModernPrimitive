@@ -4,7 +4,7 @@ import bpy
 from bpy.app.handlers import persistent
 from bpy.types import Depsgraph, Mesh, Scene
 
-from .aux_func import is_modern_primitive
+from .util.aux_func import is_modern_primitive
 from .gizmo_info import GizmoInfoAr
 from .gizmo_info import get_gizmo_info as _get_gizmo_info
 
