@@ -2,8 +2,10 @@ import math
 from collections.abc import Iterable, Sequence
 from typing import ClassVar, cast
 
+import bmesh
 import bpy
 import numpy as np
+from bmesh.types import BMesh
 from bpy.props import BoolProperty, EnumProperty, StringProperty
 from bpy.types import Context, Event, Object, Operator
 from mathutils import Matrix, Quaternion, Vector, geometry
@@ -13,11 +15,40 @@ from ..aux_math import BBox, is_uniform
 from ..aux_other import classproperty, get_bmesh
 from ..constants import MODERN_PRIMITIVE_PREFIX
 from ..exception import DGException
+from .common_func import calc_fittest_axis
+from .common_type import IndexConvOPT
+
+
+def vector_conv(source: Vector, index_conv: IndexConvOPT = None) -> Vector:
+    if index_conv is None:
+        return source.copy()
+    return Vector(source[index_conv[i]] for i in range(3))
+
+
+def index_to_mat(index_conv: IndexConvOPT) -> Matrix:
+    if index_conv is None:
+        index_conv = (0, 1, 2)
+
+    COLUMN_N = 3
+    row0 = tuple(1 if index_conv[0] == i else 0 for i in range(COLUMN_N))
+    row1 = tuple(1 if index_conv[1] == i else 0 for i in range(COLUMN_N))
+    row2 = tuple(1 if index_conv[2] == i else 0 for i in range(COLUMN_N))
+    return Matrix((row0, row1, row2))
 
 
 class CantConvertException(DGException):
     def __init__(self, reason: str):
         super().__init__(reason)
+
+
+def calc_volume(bm: BMesh) -> float:
+    volume: float = 0.0
+    bmesh.ops.triangulate(bm, faces=bm.faces[:])
+    for face in bm.faces:
+        v0, v1, v2 = (v.co for v in face.verts)
+        volume += v0.dot(v1.cross(v2)) / 6.0
+
+    return abs(volume)
 
 
 def _auto_axis(pts: Iterable[Iterable[float]]) -> tuple[Vector, Vector, Vector]:
@@ -75,7 +106,6 @@ class ConvertTo_BaseOperator(Operator):
         ),
     )
     invert_main_axis: BoolProperty(name="Invert", default=False)
-    treat_as_short: BoolProperty(name="Treat As Short", default=True)
     postfix: StringProperty(name="postfix", default="_converted")
     copy_modifier: BoolProperty(name="Copy Modifiers", default=True)
     copy_material: BoolProperty(name="Copy Material", default=True)
@@ -87,8 +117,6 @@ class ConvertTo_BaseOperator(Operator):
         layout.prop(self, "apply_scale")
         box = layout.box()
         box.prop(self, "main_axis")
-        if self.main_axis == "Auto":
-            box.prop(self, "treat_as_short")
         box.prop(self, "invert_main_axis")
         layout.prop(self, "postfix")
 
@@ -113,7 +141,10 @@ class ConvertTo_BaseOperator(Operator):
         raise NotImplementedError("This method should be implemented by subclass")
 
     def _handle_auto_axis(
-        self, verts: Sequence[Vector], obj: Object
+        self,
+        verts: Sequence[Vector],
+        obj: Object,
+        bm: BMesh,
     ) -> tuple[Quaternion, bool]:
         pre_rot: Quaternion
         should_flip: bool = False
@@ -185,20 +216,29 @@ class ConvertTo_BaseOperator(Operator):
         # Treat as the Y-axis
         y_axis = best_normal
         # X-axis is found by taking the cross product of y_axis and z_axis
-        x_axis = y_axis.cross(z_axis)
+        x_axis: Vector = y_axis.cross(z_axis)
 
-        # If there is a flag to handle the short side as an Z axis
-        #   replace the axis here.
-        if self.treat_as_short:
-            z_axis, y_axis = y_axis, z_axis
-            # flip X-axis
-            x_axis *= -1
+        # <z, x, y at this point in order of longest>
 
+        # Convert once with the z-axis as the longest (no offset adjustment)
         m = Matrix(
             (
                 to_4d_0(x_axis),
                 to_4d_0(y_axis),
                 to_4d_0(z_axis),
+                (0, 0, 0, 1),
+            )
+        )
+        verts2 = mul_vert_mat(verts, m)
+        axis_idx = calc_fittest_axis(self.SizeType, BBox(verts2), verts2, calc_volume(bm))
+        axis3 = (x_axis, y_axis, z_axis)
+        new_axis = tuple(axis3[idx] for idx in axis_idx)
+
+        m = Matrix(
+            (
+                to_4d_0(new_axis[0]),
+                to_4d_0(new_axis[1]),
+                to_4d_0(new_axis[2]),
                 (0, 0, 0, 1),
             )
         )
@@ -244,7 +284,7 @@ class ConvertTo_BaseOperator(Operator):
             #   so convert it in a timely manner.
             match self.main_axis:
                 case "Auto":
-                    pre_rot, should_flip = self._handle_auto_axis(verts, obj)
+                    pre_rot, should_flip = self._handle_auto_axis(verts, obj, bm)
                 case "X":
                     # -90 degrees rotation around the Y axis
                     pre_rot = Quaternion(((0, 1, 0)), math.radians(-90))

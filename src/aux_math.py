@@ -120,3 +120,7 @@ class BBox:
     def __str__(self) -> str:
         return f"BBox(min={self.min}, max={self.max},\
 size={self.size}, center={self.center})"
+
+
+def calc_sizediff(s0: Vector, s1: Vector) -> float:
+    return sum(abs(p[0] - p[1]) for p in zip(s0, s1, strict=False))
