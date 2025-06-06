@@ -2,16 +2,16 @@ from typing import ClassVar
 
 from bpy.types import Context, Panel
 
-from .apply_mesh import ApplyMesh_Operator
-from .apply_scale import ApplyScale_Operator
-from .util.aux_func import (
+from ..apply_mesh import ApplyMesh_Operator
+from ..apply_scale import ApplyScale_Operator
+from ..util.aux_func import (
     get_active_and_selected_primitive,
     is_mpr_enabled,
     register_class,
     unregister_class,
 )
-from .constants import MODERN_PRIMITIVE_CATEGORY
-from .convert import (
+from ..constants import MODERN_PRIMITIVE_CATEGORY
+from ..convert import (
     ConvertToCapsule_Operator,
     ConvertToCone_Operator,
     ConvertToCube_Operator,
@@ -21,13 +21,13 @@ from .convert import (
     ConvertToTorus_Operator,
     ConvertToTube_Operator,
 )
-from .equalize_dcube_size import Equalize_DCube_Operator
-from .focus_modifier import FocusModifier_Operator
-from .make_primitive import OPS_GROUPS, make_operator_to_layout
-from .reset_origin import ResetOrigin_Operator
-from .restore_default import RestoreDefault_Operator
-from .switch_wireframe import SwitchWireframe
-from .wireframe import ENTRY_NAME as Wireframe_EntryName
+from ..equalize_dcube_size import Equalize_DCube_Operator
+from ..focus_modifier import FocusModifier_Operator
+from ..make_primitive import OPS_GROUPS, make_operator_to_layout
+from ..reset_origin import ResetOrigin_Operator
+from ..restore_default import RestoreDefault_Operator
+from ..switch_wireframe import SwitchWireframe
+from ..wireframe import ENTRY_NAME as Wireframe_EntryName
 
 
 class MPR_PT_Base(Panel):
