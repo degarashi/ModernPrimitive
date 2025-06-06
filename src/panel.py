@@ -123,7 +123,7 @@ class MPR_PT_Main(Panel):
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_category = MODERN_PRIMITIVE_CATEGORY
-    bl_context = ".objectmode"
+    bl_context = "objectmode"
 
     def __focus_panel(self) -> None:
         layout = self.layout
