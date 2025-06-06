@@ -6,7 +6,7 @@ import bpy
 from bpy.types import Context, PreferencesView
 from mathutils import Color, Matrix, Vector
 
-from ..aux_math import make_vec3
+from ..util.aux_math import make_vec3
 from ..blf_aux import DEFAULT_FONT_ID as FONT_ID
 from ..blf_aux import set_color, set_position_draw
 from ..color import HUDColor

@@ -11,7 +11,7 @@ from bpy.types import Context, Event, Object, Operator
 from mathutils import Matrix, Quaternion, Vector, geometry
 
 from ..util.aux_func import get_evaluated_obj, is_primitive_mod, mul_vert_mat
-from ..aux_math import BBox, is_uniform
+from ..util.aux_math import BBox, is_uniform
 from ..aux_other import classproperty, get_bmesh
 from ..constants import MODERN_PRIMITIVE_PREFIX
 from ..exception import DGException

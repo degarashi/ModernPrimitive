@@ -12,7 +12,7 @@ from .util.aux_func import (
     is_modern_primitive_specific,
     is_mpr_enabled,
 )
-from .aux_math import MinMax
+from .util.aux_math import MinMax
 from .aux_node import get_interface_value, set_interface_value
 from .constants import MODERN_PRIMITIVE_PREFIX, Type
 from .primitive_prop import get_max, get_min

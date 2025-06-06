@@ -6,7 +6,7 @@ from bpy.utils import register_class, unregister_class
 from mathutils import Vector
 
 from .util.aux_func import get_mpr_modifier, get_selected_primitive
-from .aux_math import MinMax
+from .util.aux_math import MinMax
 from .aux_node import get_interface_value
 from .constants import MODERN_PRIMITIVE_PREFIX
 from .primitive_prop import CornerRatio

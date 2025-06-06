@@ -3,7 +3,7 @@ from typing import TypeAlias
 
 from mathutils import Vector
 
-from ..aux_math import BBox
+from ..util.aux_math import BBox
 
 IndexConv: TypeAlias = tuple[int, int, int]
 IndexConvOPT: TypeAlias = IndexConv | None

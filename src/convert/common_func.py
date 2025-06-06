@@ -4,7 +4,7 @@ from typing import cast
 
 from mathutils import Vector
 
-from ..aux_math import BBox, calc_sizediff
+from ..util.aux_math import BBox, calc_sizediff
 from .common_type import IndexConv, SizeBase
 
 # Try three patterns and use the one with the most matching volume.
