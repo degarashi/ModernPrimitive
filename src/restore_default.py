@@ -13,7 +13,7 @@ from .util.aux_func import (
     get_selected_primitive,
     type_from_modifier_name,
 )
-from .aux_node import get_interface_values, set_interface_values
+from .util.aux_node import get_interface_values, set_interface_values
 from .constants import MODERN_PRIMITIVE_PREFIX, Type
 from .primitive_prop import Prop, PropType, prop_from_name
 

@@ -15,7 +15,7 @@ from .util.aux_func import (
     register_class,
     unregister_class,
 )
-from .aux_node import set_interface_value
+from .util.aux_node import set_interface_value
 from .aux_other import classproperty
 from .exception import DGFileNotFound, DGObjectNotFound
 from .primitive import (

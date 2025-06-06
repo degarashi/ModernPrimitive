@@ -10,7 +10,7 @@ from mathutils import Quaternion, Vector
 from . import primitive_prop as prop
 from .util.aux_func import get_mpr_modifier, get_selected_primitive
 from .util.aux_math import is_close, is_uniform
-from .aux_node import (
+from .util.aux_node import (
     get_interface_value,
     modify_interface_value,
     set_interface_value,

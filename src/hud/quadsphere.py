@@ -3,7 +3,7 @@ from mathutils import Vector
 
 from .. import primitive as PR
 from .. import primitive_prop as P
-from ..aux_node import get_interface_values
+from ..util.aux_node import get_interface_values
 from ..gizmo_info import GizmoInfoAr
 from .drawer import Drawer
 from .icosphere import SPHERE_GIZMO_POS

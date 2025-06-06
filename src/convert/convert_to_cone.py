@@ -8,7 +8,7 @@ from mathutils import Vector
 
 from .. import primitive_prop as prop
 from ..util.aux_func import get_mpr_modifier, get_object_just_added
-from ..aux_node import set_interface_values
+from ..util.aux_node import set_interface_values
 from ..constants import MIN_RADIUS, Type
 from .common_type import SizeBase
 from .convert_to_baseop import BBox, ConvertTo_BaseOperator, IndexConvOPT, index_to_mat

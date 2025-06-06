@@ -13,7 +13,7 @@ from .util.aux_func import (
     is_mpr_enabled,
 )
 from .util.aux_math import MinMax
-from .aux_node import get_interface_value, set_interface_value
+from .util.aux_node import get_interface_value, set_interface_value
 from .constants import MODERN_PRIMITIVE_PREFIX, Type
 from .primitive_prop import get_max, get_min
 from .reset_origin import ResetOrigin_Operator
