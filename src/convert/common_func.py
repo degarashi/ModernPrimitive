@@ -37,7 +37,6 @@ def calc_fittest_axis(
         vol_diff = abs(size.calc_volume() - target_vol)
         sz_diff = calc_sizediff(size.calc_size(), vector_conv(bbox.size, idx_conv))
         diff = vol_diff * VOLUME_DIFF_COEFF + sz_diff * SIZE_DIFF_COEFF
-        print(vol_diff, sz_diff, diff)
         if best_diff > diff:
             best_diff = diff
             result = idx_conv
