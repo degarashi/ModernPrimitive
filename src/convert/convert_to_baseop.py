@@ -313,29 +313,32 @@ class ConvertTo_BaseOperator(Operator):
             self._report_error(err_typ, obj, str(e))
             return
 
-        # copy materials
-        if self.copy_material and obj.data.materials:
-            new_obj.data.materials.clear()
-            for m in obj.data.materials:
-                new_obj.data.materials.append(m)
+        with context.temp_override(
+            active_object=new_obj, object=new_obj, selected_objects=[new_obj]
+        ):
+            # copy materials
+            if self.copy_material and obj.data.materials:
+                new_obj.data.materials.clear()
+                for m in obj.data.materials:
+                    new_obj.data.materials.append(m)
 
-        # copy modifiers
-        if self.copy_modifier:
-            for m_src in obj.modifiers:
-                if is_primitive_mod(m_src):
-                    continue
+            # copy modifiers
+            if self.copy_modifier:
+                for m_src in obj.modifiers:
+                    if is_primitive_mod(m_src):
+                        continue
 
-                m_dst = new_obj.modifiers.new(m_src.name, m_src.type)
+                    m_dst = new_obj.modifiers.new(m_src.name, m_src.type)
 
-                # collect names of writable properties
-                props = [p.identifier for p in m_src.bl_rna.properties if not p.is_readonly]
+                    # collect names of writable properties
+                    props = [p.identifier for p in m_src.bl_rna.properties if not p.is_readonly]
 
-                # copy properties
-                for prop in props:
-                    setattr(m_dst, prop, getattr(m_src, prop))
+                    # copy properties
+                    for prop in props:
+                        setattr(m_dst, prop, getattr(m_src, prop))
 
-        if self.apply_scale:
-            bpy.ops.object.mpr_apply_scale(strict=False)
+            if self.apply_scale:
+                bpy.ops.object.mpr_apply_scale(strict=False)
 
         if not self.keep_original:
             bpy.data.objects.remove(obj)
