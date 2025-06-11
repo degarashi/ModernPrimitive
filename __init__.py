@@ -28,6 +28,7 @@ MODULE_NAMES: list[str] = [
     "apply_mesh",
     "reset_origin",
     "store_gizmoinfo",
+    "extract_primitive",
 ]
 
 
