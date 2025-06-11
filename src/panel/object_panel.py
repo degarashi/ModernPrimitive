@@ -4,12 +4,6 @@ from bpy.types import Context, Panel
 
 from ..apply_mesh import ApplyMesh_Operator
 from ..apply_scale import ApplyScale_Operator
-from ..util.aux_func import (
-    get_active_and_selected_primitive,
-    is_mpr_enabled,
-    register_class,
-    unregister_class,
-)
 from ..constants import MODERN_PRIMITIVE_CATEGORY
 from ..convert import (
     ConvertToCapsule_Operator,
@@ -22,11 +16,18 @@ from ..convert import (
     ConvertToTube_Operator,
 )
 from ..equalize_dcube_size import Equalize_DCube_Operator
+from ..extract_primitive import ExtractPrimitive_Operator
 from ..focus_modifier import FocusModifier_Operator
 from ..make_primitive import OPS_GROUPS, make_operator_to_layout
 from ..reset_origin import ResetOrigin_Operator
 from ..restore_default import RestoreDefault_Operator
 from ..switch_wireframe import SwitchWireframe
+from ..util.aux_func import (
+    get_active_and_selected_primitive,
+    is_mpr_enabled,
+    register_class,
+    unregister_class,
+)
 from ..wireframe import ENTRY_NAME as Wireframe_EntryName
 
 
@@ -117,6 +118,50 @@ class MPR_PT_Convert(MPR_PT_Base):
         grid.operator(ConvertToCapsule_Operator.bl_idname, text="Capsule")
 
 
+class MPR_PT_Extract(MPR_PT_Base):
+    bl_idname = "MPR_PT_Extract"
+    bl_parent_id = "MPR_PT_Main"
+    bl_label = "Extract (Beta)"
+
+    def draw(self, context: Context) -> None:
+        lo = self.layout
+        lo.label(text="Extract Polygons to")
+        box = lo.box()
+        box.label(text="(SHIFT: Keep Original Polygons)")
+        grid = box.grid_flow(columns=3, row_major=True)
+
+        idname = ExtractPrimitive_Operator.bl_idname
+        b = grid.operator(idname, text="Cube")
+        b.primitive_type = "Cube"
+        b = grid.operator(idname, text="D-Cube")
+        b.primitive_type = "DCube"
+        b = grid.operator(idname, text="Grid")
+        b.primitive_type = "Grid"
+        b = grid.operator(idname, text="UV Sphere")
+        b.primitive_type = "UV Sphere"
+        b = grid.operator(idname, text="ICO Sphere")
+        b.primitive_type = "ICO Sphere"
+        b = grid.operator(idname, text="Quad Sphere")
+        b.primitive_type = "Quad Sphere"
+        b = grid.operator(idname, text="Cylinder")
+        b.primitive_type = "Cylinder"
+        b = grid.operator(idname, text="Cone")
+        b.primitive_type = "Cone"
+        b = grid.operator(idname, text="Torus")
+        b.primitive_type = "Torus"
+        b = grid.operator(idname, text="Tube")
+        b.primitive_type = "Tube"
+        b = grid.operator(idname, text="Capsule")
+        b.primitive_type = "Capsule"
+
+        # Notes
+        box2 = box.box()
+        box2.label(text="Current Limitations:")
+        box2.label(text="- Make sure to select the polygons in Edit Mode")
+        box2.label(text="- You can select only one region per object")
+        box2.label(text="- You cannot execute the operator directly from Edit Mode")
+
+
 class MPR_PT_Main(Panel):
     bl_idname = "MPR_PT_Main"
     bl_label = "Modern Primitive"
@@ -173,6 +218,7 @@ CLASS: tuple[type, ...] = (
     MPR_PT_Convert,
     MPR_PT_Create,
     MPR_PT_Restore,
+    MPR_PT_Extract,
 )
 
 
