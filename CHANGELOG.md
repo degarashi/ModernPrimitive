@@ -1,4 +1,7 @@
 # Changelog
+## v0.0.37
+- Improved the "Convert to Primitive" operator: When the axis is set to Auto, primitives are generated in a direction that better fits the shape.
+
 ## v0.0.36
 - Fixed the bug: Gizmo visibility flag setting was not reflected when creating a new scene or launching Blender by double-clicking a file.
 
