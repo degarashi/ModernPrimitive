@@ -1,4 +1,8 @@
 # Changelog
+## v0.0.38
+- Added a feature to select mesh polygons in Edit Mode and convert them into ModernPrimitive shapes.
+<img src="./doc_images/extract_primitive0.jpg" alt="" width="25%" /> <img src="./doc_images/extract_primitive1.jpg" alt="" width="50%" /> <img src="./doc_images/extract_primitive2.jpg" alt="" width="50%" />
+
 ## v0.0.37
 - Improved the "Convert to Primitive" operator: When the axis is set to Auto, primitives are generated in a direction that better fits the shape.
 
