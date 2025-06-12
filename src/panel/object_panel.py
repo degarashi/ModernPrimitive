@@ -159,7 +159,6 @@ class MPR_PT_Extract(MPR_PT_Base):
         box2.label(text="Current Limitations:")
         box2.label(text="- Make sure to select the polygons in Edit Mode")
         box2.label(text="- You can select only one region per object")
-        box2.label(text="- You cannot execute the operator directly from Edit Mode")
 
 
 class MPR_PT_Main(Panel):
