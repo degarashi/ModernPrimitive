@@ -269,7 +269,7 @@ class ConvertTo_BaseOperator(Operator):
         # Acquiring all the vertices of the object,
         #   it may be heavy, so there is room for improvement.
         eval_obj = get_evaluated_obj(context, obj)
-        with get_bmesh(eval_obj, False, False) as bm:
+        with get_bmesh(eval_obj, False, False, False) as bm:
             verts = [v.co for v in bm.verts]
 
             # If the number of vertices is less than 2, conversion is not possible.

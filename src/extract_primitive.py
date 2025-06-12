@@ -102,7 +102,7 @@ class ExtractPrimitive_Operator(Operator):
     @classmethod
     def poll(cls, context: Context | None) -> bool:
         # For now, only object mode is supported
-        if context.mode != "OBJECT":
+        if context.mode not in ("OBJECT", "EDIT_MESH"):
             return False
         # All selected objects are mesh?
         return all(obj.type == "MESH" for obj in context.selected_objects)
@@ -147,7 +147,7 @@ class ExtractPrimitive_Operator(Operator):
         return new_obj
 
     def _make_convex(self, obj: Object) -> Object:
-        with make_bmesh(obj.data) as bm:
+        with make_bmesh(obj.data, False) as bm:
             selected_faces = [f for f in bm.faces if f.select]
             if len(selected_faces) == 0:
                 raise DGInvalidInput("no selected faces")
@@ -191,6 +191,9 @@ class ExtractPrimitive_Operator(Operator):
 
     def execute(self, context: Context | None) -> set[str]:
         new_objs: list[Object] = []
+
+        if context.mode != "OBJECT":
+            bpy.ops.object.mode_set(mode="OBJECT")
 
         # If we don't update explicitly,
         # object.location and object.matrix world may be different
