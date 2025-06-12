@@ -1,8 +1,12 @@
 from types import ModuleType
 
 from . import object_panel
+from . import edit_panel
 
-MODULES: tuple[ModuleType, ...] = (object_panel,)
+MODULES: tuple[ModuleType, ...] = (
+    object_panel,
+    edit_panel,
+)
 
 
 def register() -> None:
