@@ -1,4 +1,7 @@
 # Changelog
+## v0.0.39
+- Enabled the ExtractPrimitive operator to be usable in Edit Mode as well.
+
 ## v0.0.38
 - Added a feature to select mesh polygons in Edit Mode and convert them into ModernPrimitive shapes.
 <img src="./doc_images/extract_primitive0.jpg" alt="" width="25%" /> <img src="./doc_images/extract_primitive1.jpg" alt="" width="50%" /> <img src="./doc_images/extract_primitive2.jpg" alt="" width="50%" />
