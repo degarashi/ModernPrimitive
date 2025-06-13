@@ -4,7 +4,7 @@ from typing import ClassVar
 import bmesh
 import bpy
 from bmesh.types import BMFace
-from bpy.props import BoolProperty, EnumProperty
+from bpy.props import BoolProperty, EnumProperty, StringProperty
 from bpy.types import Context, Event, Object, Operator
 from bpy.utils import register_class, unregister_class
 
@@ -35,7 +35,9 @@ from .convert import (
 )
 from .convert.convert_to_baseop import ConvertTo_BaseOperator
 from .exception import DGException, DGInvalidInput
+from .util.aux_func import get_object_just_added
 from .util.aux_other import make_bmesh
+from .util.union_find import UnionFind
 
 
 def _get_ops(op: type[ConvertTo_BaseOperator]) -> Callable[[...], None]:
@@ -91,6 +93,10 @@ class ExtractPrimitive_Operator(Operator):
         name="Fill Hole",
         default=True,
     )
+    postfix: StringProperty(
+        name="Postfix",
+        default="_extracted",
+    )
 
     def draw(self, context: Context) -> None:
         lo = self.layout
@@ -98,6 +104,7 @@ class ExtractPrimitive_Operator(Operator):
         lo.prop(self, "keep_original_mesh")
         if not self.keep_original_mesh:
             lo.prop(self, "fill_hole")
+        lo.prop(self, "postfix")
 
     @classmethod
     def poll(cls, context: Context | None) -> bool:
@@ -140,52 +147,77 @@ class ExtractPrimitive_Operator(Operator):
         new_mesh.update()
 
         # Add as a new object
-        new_obj = bpy.data.objects.new(obj.name + "_extract", new_mesh)
+        new_obj = bpy.data.objects.new(obj.name, new_mesh)
 
         # Place in the same position as the original
         new_obj.matrix_world = obj.matrix_world
         return new_obj
 
-    def _make_convex(self, obj: Object) -> Object:
+    def _make_convex(self, obj: Object) -> list[Object]:
+        ret: list[Object] = []
         with make_bmesh(obj.data, False) as bm:
             selected_faces = [f for f in bm.faces if f.select]
             if len(selected_faces) == 0:
                 raise DGInvalidInput("no selected faces")
 
-            new_obj = self._make_convex_from_faces(selected_faces, obj)
+            uf_face: list[BMFace] = []
+            faceidx_to_ufidx: dict[int, int] = {}
 
-            # Delete original polygons (if needed)
-            if not self.keep_original_mesh:
-                if self.fill_hole:
-                    # Store the edges associated with the face to reselect edges before deleting
-                    related_edges = {e for f in selected_faces for e in f.edges}
+            for idx, f in enumerate(selected_faces):
+                uf_face.append(f)
+                faceidx_to_ufidx[f.index] = idx
 
-                # Delete Faces
-                bmesh.ops.delete(bm, geom=selected_faces, context="FACES")
+            # Grouping with union-find algorithm
+            uf = UnionFind(len(uf_face))
+            for f in uf_face:
+                for e in f.edges:
+                    for f2 in e.link_faces:
+                        if not f2.select:
+                            continue
+                        if f == f2:
+                            continue
+                        uf.connect(faceidx_to_ufidx[f.index], faceidx_to_ufidx[f2.index])
 
-                if self.fill_hole:
-                    # After deletion, select the edges used for the original face
-                    for e in bm.edges:
-                        # Select only non-manifold edges
-                        e.select_set(e in related_edges and not e.is_manifold)
-                    # Fill the face
-                    bmesh.ops.holes_fill(bm, edges=[e for e in bm.edges if e.select], sides=0)
+            groups = uf.get_groups()
+            for g in groups:
+                group_faces = [uf_face[ufid] for ufid in g]
+                new_obj = self._make_convex_from_faces(group_faces, obj)
 
-            return new_obj
+                # Delete original polygons (if needed)
+                if not self.keep_original_mesh:
+                    if self.fill_hole:
+                        # Store the edges
+                        # associated with the face to reselect edges before deleting
+                        related_edges = {e for f in group_faces for e in f.edges}
+
+                    # Delete Faces
+                    bmesh.ops.delete(bm, geom=group_faces, context="FACES")
+
+                    if self.fill_hole:
+                        # After deletion, select the edges used for the original face
+                        for e in bm.edges:
+                            # Select only non-manifold edges
+                            e.select_set(e in related_edges and not e.is_manifold)
+                        # Fill the face
+                        bmesh.ops.holes_fill(
+                            bm, edges=[e for e in bm.edges if e.select], sides=0
+                        )
+                ret.append(new_obj)
+        return ret
 
     def _make_primitive(self, context: Context, convex: Object) -> Object:
         # Postfix something appropriately
-        prev_name = convex.name
-        POSTFIX = "__make_primitive_postfix"
+        # prev_name = convex.name
         with context.temp_override(
             active_object=convex, object=convex, selected_objects=[convex]
         ):
             # Crash if we don't leave the source
             proc = PROC[self.primitive_type]
-            proc(keep_original=True, postfix=POSTFIX)
+            proc(keep_original=True, postfix=self.postfix)
 
             try:
-                bpy.data.objects[prev_name + POSTFIX]
+                return get_object_just_added(context)
+                # return bpy.data.objects[prev_name + self.postfix]
             except KeyError as e:
                 raise DGConvertFailed() from e
 
@@ -200,18 +232,24 @@ class ExtractPrimitive_Operator(Operator):
         context.view_layer.update()
         for obj in context.selected_objects:
             try:
-                convex = self._make_convex(obj)
-                context.collection.objects.link(convex)
+                convex_s = self._make_convex(obj)
+                for c in convex_s:
+                    context.collection.objects.link(c)
 
-                new_obj = self._make_primitive(context, convex)
-                new_objs.append(new_obj)
+                    new_obj = self._make_primitive(context, c)
+                    new_objs.append(new_obj)
 
-                bpy.data.objects.remove(convex)
+                    bpy.data.objects.remove(c)
 
             except DGInvalidInput as e:
                 print(e)
             except DGConvertFailed:
                 print("Convert failed")
+
+        bpy.ops.object.select_all(action="DESELECT")
+        print(new_objs)
+        for obj in new_objs:
+            obj.select_set(True)
 
         self.report({"INFO"}, f"{len(new_objs)} Object(s) Converted.")
         return {"FINISHED"}
