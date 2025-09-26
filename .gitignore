@@ -11,3 +11,6 @@ wheels/
 
 # for "neovide --wsl"
 nul
+
+# for activate environment
+activate_env.bat
