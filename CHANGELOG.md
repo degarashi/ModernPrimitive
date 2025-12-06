@@ -1,4 +1,7 @@
 # Changelog
+## v0.0.40
+- The ExtractPrimitive operator now supports multi-region selection.
+
 ## v0.0.39
 - Enabled the ExtractPrimitive operator to be usable in Edit Mode as well.
 

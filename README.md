@@ -32,8 +32,8 @@ All functions are available on the [MPR] N-Panel
 <img src="./doc_images/usage_deformable_cube_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_capsule_0.jpg" alt="" width="25%" />
 
 # Changelog
-## v0.0.40
-- The ExtractPrimitive operator now supports multi-region selection.
+## v0.0.41
+- Added snapping functionality to primitives
 
 ## Other
 [<ins>View all log</ins>](CHANGELOG.md)
