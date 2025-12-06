@@ -34,6 +34,7 @@ All functions are available on the [MPR] N-Panel
 # Changelog
 ## v0.0.41
 - Added snapping functionality to primitives
+<img src="./doc_images/snapping_0.jpg" alt="" width="50%" />
 
 ## Other
 [<ins>View all log</ins>](CHANGELOG.md)
