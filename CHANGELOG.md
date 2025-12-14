@@ -1,4 +1,8 @@
 # Changelog
+## v0.0.41
+- Added snapping functionality to primitives
+<img src="./doc_images/snapping_0.jpg" alt="" width="50%" />
+
 ## v0.0.40
 - The ExtractPrimitive operator now supports multi-region selection.
 

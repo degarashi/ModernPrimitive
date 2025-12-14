@@ -32,9 +32,8 @@ All functions are available on the [MPR] N-Panel
 <img src="./doc_images/usage_deformable_cube_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_capsule_0.jpg" alt="" width="25%" />
 
 # Changelog
-## v0.0.41
-- Added snapping functionality to primitives
-<img src="./doc_images/snapping_0.jpg" alt="" width="50%" />
+## v0.0.42
+- Fixed an issue where the Unit Scale setting in the Scene was not applied to gizmo numeric display.
 
 ## Other
 [<ins>View all log</ins>](CHANGELOG.md)
