@@ -64,6 +64,7 @@ class Drawer:
     __m_window: Matrix
     __system: str
     __text_dim: Vector
+    __scale: Vector
 
     def __init__(self, blf: ModuleType, context: Context, m_world: Matrix):
         reg = context.region
