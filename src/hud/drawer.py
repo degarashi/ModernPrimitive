@@ -65,6 +65,7 @@ class Drawer:
     __system: str
     __text_dim: Vector
     __scale: Vector
+    __unit_scale: float
 
     def __init__(self, blf: ModuleType, context: Context, m_world: Matrix):
         reg = context.region
@@ -78,6 +79,7 @@ class Drawer:
         self.__scale = m_world.to_scale()
         self.__m_window = reg3d.window_matrix
         self.__system = context.scene.unit_settings.system
+        self.__unit_scale = context.scene.unit_settings.scale_length
 
         scale = self.__pref.ui_scale
         blf = self.__blf
@@ -155,10 +157,12 @@ class Drawer:
         return f"[{val}]"
 
     def unit_dist(self, val: float, prec: int = 3) -> str:
+        # Apply scene unit scale explicitly
+        scaled_val = val * self.__unit_scale
         return units.to_string(
             self.__system,
             units.categories.LENGTH,
-            val,
+            scaled_val,
             precision=prec,
         )
 
