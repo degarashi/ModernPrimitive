@@ -56,7 +56,6 @@ MaxX = Prop("Max X", float, {PT.Size, PT.Width})
 MaxY = Prop("Max Y", float, {PT.Size, PT.Width})
 MaxZ = Prop("Max Z", float, {PT.Size, PT.Height})
 
-
 Height = Prop("Height", float, {PT.Size, PT.Height})
 
 Radius = Prop("Radius", float, {PT.Size})
@@ -99,6 +98,22 @@ Rotations = Prop("Rotations", float, {PT.Other})
 
 CornerRatio = Prop("Corner Ratio", Vector, {PT.Other})
 
+
+# -- Snapping Flag --
+def _make_snapping_name(name: str) -> str:
+    return f"Enable {name} Snapping"
+
+
+SnapHeight = Prop(_make_snapping_name("Height"), bool, {})
+SnapRadius = Prop(_make_snapping_name("Radius"), bool, {})
+SnapCircleDivision = Prop(_make_snapping_name("Circle-Division"), bool, {})
+SnapCapDivision = Prop(_make_snapping_name("Cap-Division"), bool, {})
+SnapSideDivision = Prop(_make_snapping_name("Side-Division"), bool, {})
+SnapFillDivision = Prop(_make_snapping_name("Fill-Division"), bool, {})
+SnapTopRadius = Prop(_make_snapping_name("Top-Radius"), bool, {})
+SnapBottomRadius = Prop(_make_snapping_name("Bottom-Radius"), bool, {})
+# ----
+
 PROP_LIST: list[Prop] = [
     Size,
     SizeX,
@@ -140,6 +155,11 @@ PROP_LIST: list[Prop] = [
     InnerCircleRadius,
     InnerCircleDivision,
     Rotations,
+    SnapHeight,
+    SnapRadius,
+    SnapCircleDivision,
+    SnapCapDivision,
+    SnapSideDivision,
 ]
 PROP_MAP: dict[str, Prop] = {}
 
