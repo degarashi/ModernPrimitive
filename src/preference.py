@@ -22,12 +22,21 @@ class Preference(AddonPreferences):
     show_gizmo_value: BoolProperty(name="Show Gizmo Value", default=True)
     # ------
 
+    # --- N-Panel Option ---
+    show_npanel: BoolProperty(
+        name="Show N-Panel",
+        description="Toggle N-Panel visibility",
+        default=True,
+    )
+    # ------
+
     def __box_create(self, layout: UILayout) -> None:
         box = layout.box()
         box.label(text="Make option (Default)")
         box.prop(self, "make_cursors_rot")
         box.prop(self, "make_appropriate_size")
         box.prop(self, "make_smooth_shading")
+        box.prop(self, "show_npanel")
 
     def __box_gizmo(self, layout: UILayout) -> None:
         box = layout.box()
