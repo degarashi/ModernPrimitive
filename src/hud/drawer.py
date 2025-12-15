@@ -16,6 +16,7 @@ units = bpy.utils.units
 ONE = Vector((1, 1))
 ZERO = Vector((0, 0))
 HALF_ONE = ONE / 2
+ADJUSTED_DISPLAY_STR = "{} ({})"
 
 
 def tf_posvec(mat: Matrix, pos: Vector) -> Vector:
@@ -168,6 +169,59 @@ class Drawer:
             str: The formatted text representation of the division number.
         """
         return f"[{val}]"
+
+    @staticmethod
+    def format_adjusted_str(input_str: str, adjusted_str: str) -> str:
+        """
+        Format input and adjusted strings into display string
+
+        Args:
+            input_val (str): Input string
+            adjusted (str): Adjusted string
+
+        Returns:
+            str: Display string
+        """
+        return ADJUSTED_DISPLAY_STR.format(adjusted_str, input_str)
+
+    def format_adjusted_unit_dist(
+        self, input_val: float, adjusted: float, prec: int = 3
+    ) -> str:
+        """
+        Format adjusted unit distance string
+
+        Args:
+            input_val (float): Input distance value
+            adjusted (float): Adjusted distance value
+            prec (int, optional): Precision. Defaults to 3.
+
+        Returns:
+            str: Display string
+        """
+        return self.format_adjusted_str(
+            self.unit_dist(input_val, prec), self.unit_dist(adjusted, prec)
+        )
+
+    def format_unit_or_adjusted_dist(
+        self, input_val: float, adjusted: float, enable: bool, prec: int = 3
+    ) -> str:
+        """
+        Format unit distance with optional adjustment
+
+        Args:
+            input_val (float): Input distance value
+            adjusted (float): Adjusted distance value
+            enable (bool): Enable adjustment flag
+            prec (int, optional): Precision. Defaults to 3.
+
+        Returns:
+            str: Display string
+        """
+        return (
+            self.format_adjusted_unit_dist(input_val, adjusted, prec)
+            if enable
+            else self.unit_dist(input_val, prec)
+        )
 
     def unit_dist(self, val: float, prec: int = 3) -> str:
         # Apply scene unit scale explicitly
