@@ -1,4 +1,7 @@
 # Changelog
+## v0.0.42
+- Fixed an issue where the Unit Scale setting in the Scene was not applied to gizmo numeric display.
+
 ## v0.0.41
 - Added snapping functionality to primitives
 <img src="./doc_images/snapping_0.jpg" alt="" width="50%" />
