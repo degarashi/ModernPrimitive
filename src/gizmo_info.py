@@ -25,6 +25,7 @@ class GizmoInfo(NamedTuple):
     normal: Vector
     type: GizmoType
     color_type: GizmoColor
+    actual_value: Vector
 
     def get_color(self, hud_color: HUDColor) -> Color:
         match self.color_type:
@@ -73,11 +74,16 @@ def get_gizmo_info(mesh: Mesh) -> GizmoInfoAr | None:
         giz_type = load("Gizmo Type", lambda x: GizmoType(x.value))
         giz_normal = load("Gizmo Normal", get_vec)
         giz_color = load("Gizmo Color", lambda x: GizmoColor(x.value))
+        giz_actual = load("Actual Value", lambda v: v.value)
 
         if len(giz_pos) == len(giz_type) == len(giz_normal):
             ret: GizmoInfoAr = []
             for i in range(len(giz_pos)):
-                ret.append(GizmoInfo(giz_pos[i], giz_normal[i], giz_type[i], giz_color[i]))
+                ret.append(
+                    GizmoInfo(
+                        giz_pos[i], giz_normal[i], giz_type[i], giz_color[i], giz_actual[i]
+                    )
+                )
             return ret
         raise DGGizmoInfoCantLoaded("invalid length")
     except KeyError as e:
