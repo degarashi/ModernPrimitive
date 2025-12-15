@@ -24,6 +24,7 @@ from ..restore_default import RestoreDefault_Operator
 from ..switch_wireframe import SwitchWireframe
 from ..util.aux_func import (
     get_active_and_selected_primitive,
+    get_addon_preferences,
     is_mpr_enabled,
     register_class,
     unregister_class,
@@ -168,6 +169,11 @@ class MPR_PT_Main(Panel):
     bl_region_type = "UI"
     bl_category = MODERN_PRIMITIVE_CATEGORY
     bl_context = "objectmode"
+
+    @classmethod
+    def poll(cls, ctx: Context):
+        prefs = get_addon_preferences(ctx)
+        return prefs.show_npanel
 
     def __focus_panel(self) -> None:
         layout = self.layout
