@@ -133,3 +133,6 @@ def get_primitive_version(type_p: Type) -> VersionInt:
     if not _is_version_num_loaded():
         _prepare_version_num()
     return _version_num[type_p.value - 1]
+
+
+SNAPPING_CAPABLE = VersionInt(20)
