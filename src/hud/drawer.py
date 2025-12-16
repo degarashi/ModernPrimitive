@@ -154,6 +154,18 @@ class Drawer:
         )
 
     def div_text(self, val: int) -> str:
+        """
+        Convert the input division number into display text.
+
+        This function transforms the given division number into a string
+        representation for display purposes.
+
+        Args:
+            val (int): The division number to be converted.
+
+        Returns:
+            str: The formatted text representation of the division number.
+        """
         return f"[{val}]"
 
     def unit_dist(self, val: float, prec: int = 3) -> str:
