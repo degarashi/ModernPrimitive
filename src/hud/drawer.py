@@ -171,6 +171,18 @@ class Drawer:
         return f"[{val}]"
 
     @staticmethod
+    def format_adjusted_div(input_val: int, adjusted: int) -> str:
+        return Drawer.div_text(Drawer.format_adjusted_str(input_val, adjusted))
+
+    @staticmethod
+    def format_div_or_adjusted(input_val: int, adjusted: int, enable: bool) -> str:
+        return (
+            Drawer.format_adjusted_div(input_val, adjusted)
+            if enable
+            else Drawer.div_text(input_val)
+        )
+
+    @staticmethod
     def format_adjusted_str(input_str: str, adjusted_str: str) -> str:
         """
         Format input and adjusted strings into display string
