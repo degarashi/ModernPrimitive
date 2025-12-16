@@ -153,7 +153,8 @@ class Drawer:
             msg1,
         )
 
-    def div_text(self, val: int) -> str:
+    @staticmethod
+    def div_text(val: int) -> str:
         """
         Convert the input division number into display text.
 
