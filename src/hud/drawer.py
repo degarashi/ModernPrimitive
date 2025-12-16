@@ -224,7 +224,16 @@ class Drawer:
         )
 
     def unit_dist(self, val: float, prec: int = 3) -> str:
-        # Apply scene unit scale explicitly
+        """
+        Convert distance to string with scene unit scale
+
+        Args:
+            val (float): Distance value
+            prec (int, optional): Precision. Defaults to 3.
+
+        Returns:
+            str: Unit distance string
+        """
         scaled_val = val * self.__unit_scale
         return units.to_string(
             self.__system,
