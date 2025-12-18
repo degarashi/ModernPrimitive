@@ -20,12 +20,18 @@ class GizmoColor(Enum):
     Z = 4
 
 
+# Failsafe value used when attribute does not exist in older primitive versions (<0020)
+FAILSAFE_ACTUAL_VALUE = 0.0
+
+
 class GizmoInfo(NamedTuple):
     position: Vector
     normal: Vector
     type: GizmoType
     color_type: GizmoColor
-    actual_value: Vector
+    # If primitive version is older (<0020) and attribute value does not exist,
+    # actual_value will be set to FAILSAFE_ACTUAL_VALUE
+    actual_value: float
 
     def get_color(self, hud_color: HUDColor) -> Color:
         match self.color_type:
@@ -53,14 +59,23 @@ class DGGizmoInfoCantLoaded(DGException):
 def get_gizmo_info(mesh: Mesh) -> GizmoInfoAr | None:
     MAX_ATTRIBUTES = 20
     try:
-
+        # Generic attribute loader function.
+        # Retrieves Mesh attribute by name and converts values using reader function.
+        # Returns Empty-List if attribute does not exist or domain is not POINT.
+        # Reads sequentially up to MAX_ATTRIBUTES items.
         def load(name: str, reader: Callable) -> list[Any]:
             ret: list[T] = []
-            # If the required information is not provided, return None
-            attr = mesh.attributes[name]
+            try:
+                attr = mesh.attributes[name]
+            except KeyError:
+                # The "Actual Value" attribute does not exist in older versions of primitive,
+                # so return empty
+                return ret
             if attr.domain != "POINT":
-                return None
+                return ret
 
+            # Read attribute data sequentially and append to list.
+            # Stop processing once MAX_ATTRIBUTES is reached.
             for i, data in enumerate(attr.data):
                 ret.append(reader(data))
                 if i == MAX_ATTRIBUTES - 1:
@@ -76,16 +91,18 @@ def get_gizmo_info(mesh: Mesh) -> GizmoInfoAr | None:
         giz_color = load("Gizmo Color", lambda x: GizmoColor(x.value))
         giz_actual = load("Actual Value", lambda v: v.value)
 
-        if len(giz_pos) == len(giz_type) == len(giz_normal):
+        # Ensure all required attributes have equal length
+        if len(giz_pos) == len(giz_type) == len(giz_normal) == len(giz_color):
             ret: GizmoInfoAr = []
             for i in range(len(giz_pos)):
+                actual_val: float = (
+                    giz_actual[i] if i < len(giz_actual) else FAILSAFE_ACTUAL_VALUE
+                )
                 ret.append(
-                    GizmoInfo(
-                        giz_pos[i], giz_normal[i], giz_type[i], giz_color[i], giz_actual[i]
-                    )
+                    GizmoInfo(giz_pos[i], giz_normal[i], giz_type[i], giz_color[i], actual_val)
                 )
             return ret
-        raise DGGizmoInfoCantLoaded("invalid length")
+        raise DGGizmoInfoCantLoaded("invalid attribute length")
     except KeyError as e:
         print(e)
         raise DGGizmoInfoCantLoaded("no key") from e
