@@ -1,4 +1,7 @@
 # Changelog
+## v0.0.43
+- N-panel can now be hidden by setting preferences.
+
 ## v0.0.42
 - Fixed an issue where the Unit Scale setting in the Scene was not applied to gizmo numeric display.
 

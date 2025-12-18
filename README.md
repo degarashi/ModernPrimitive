@@ -32,8 +32,12 @@ All functions are available on the [MPR] N-Panel
 <img src="./doc_images/usage_deformable_cube_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_capsule_0.jpg" alt="" width="25%" />
 
 # Changelog
-## v0.0.43
-- N-panel can now be hidden by setting preferences.
+## v0.0.44
+- Snap value is now displayed on the hud<br>
+Adjusted-value (Actual-value)
+<img src="./doc_images/snap_value0.jpg" alt="" width="50%" />
+Note: This feature only works if the Primitive is the latest version (with the Modifier name ending in a number of 0020 or higher).
+In older Primitives, display issues may occur.
 
 ## Other
 [<ins>View all log</ins>](CHANGELOG.md)
