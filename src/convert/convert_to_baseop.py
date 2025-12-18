@@ -10,6 +10,7 @@ from bpy.props import BoolProperty, EnumProperty, StringProperty
 from bpy.types import Context, Event, Object, Operator
 from mathutils import Matrix, Quaternion, Vector, geometry
 
+from ..util.aux_node import copy_geometry_node_params
 from ..util.aux_func import get_evaluated_obj, is_primitive_mod, mul_vert_mat
 from ..util.aux_math import BBox, is_uniform
 from ..util.aux_other import classproperty, get_bmesh
@@ -314,38 +315,59 @@ class ConvertTo_BaseOperator(Operator):
             self._report_error(err_typ, obj, str(e))
             return
 
-        # Temporarily set the newly created object as active,
-        # so that subsequent operations (copying materials,
-        # copying modifiers, applying scale) can be executed correctly
-        with context.temp_override(
-            active_object=new_obj, object=new_obj, selected_objects=[new_obj]
-        ):
-            # copy materials
-            if self.copy_material and obj.data.materials:
-                new_obj.data.materials.clear()
-                for m in obj.data.materials:
-                    new_obj.data.materials.append(m)
+        if self.keep_original:
+            # Temporarily set newly created object as active,
+            # so subsequent operations (copying materials,
+            # copying modifiers, applying scale) can be executed correctly
+            with context.temp_override(
+                active_object=new_obj, object=new_obj, selected_objects=[new_obj]
+            ):
+                # copy materials
+                if self.copy_material and obj.data.materials:
+                    new_obj.data.materials.clear()
+                    for m in obj.data.materials:
+                        new_obj.data.materials.append(m)
 
-            # copy modifiers (except mpr-modifier)
-            if self.copy_modifier:
-                for m_src in obj.modifiers:
-                    if is_primitive_mod(m_src):
-                        continue
+                # copy modifiers (except mpr-modifier)
+                if self.copy_modifier:
+                    for m_src in obj.modifiers:
+                        if is_primitive_mod(m_src):
+                            continue
 
-                    m_dst = new_obj.modifiers.new(m_src.name, m_src.type)
+                        m_dst = new_obj.modifiers.new(m_src.name, m_src.type)
 
-                    # collect names of writable properties
-                    props = [p.identifier for p in m_src.bl_rna.properties if not p.is_readonly]
+                        # collect names of writable properties
+                        props = [
+                            p.identifier for p in m_src.bl_rna.properties if not p.is_readonly
+                        ]
 
-                    # copy properties
-                    for prop in props:
-                        setattr(m_dst, prop, getattr(m_src, prop))
+                        # copy properties
+                        for prop in props:
+                            setattr(m_dst, prop, getattr(m_src, prop))
 
-            if self.apply_scale:
-                bpy.ops.object.mpr_apply_scale(strict=False)
+                if self.apply_scale:
+                    bpy.ops.object.mpr_apply_scale(strict=False)
+        else:
+            # Copy new_obj contents (mesh, modifier, material, scale, position, rotation) into obj
+            tmp_objdata = obj.data
+            obj.data = new_obj.data
+            bpy.data.meshes.remove(tmp_objdata)
 
-        if not self.keep_original:
-            bpy.data.objects.remove(obj)
+            # MPR base assets have no Material settings, so do not copy materials
+
+            # MPR base assets have only one MPR modifier, so copy that
+            for m_src in new_obj.modifiers:
+                if is_primitive_mod(m_src):
+                    m_dst = obj.modifiers.new(m_src.name, m_src.type)
+                    m_dst.node_group = m_src.node_group
+                    copy_geometry_node_params(m_dst, m_src)
+
+            obj.location = new_obj.location
+            obj.rotation_euler = new_obj.rotation_euler
+            obj.scale = new_obj.scale
+
+            # Delete temporary object after use
+            bpy.data.objects.remove(new_obj)
 
     def _report_error(self, err_typ: str, obj: Object, msg: str) -> None:
         self.report({err_typ}, f'Couldn\'t convert "{obj.name}" because {msg}')
