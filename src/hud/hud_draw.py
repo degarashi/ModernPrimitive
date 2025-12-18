@@ -1,21 +1,23 @@
-from typing import Any, ClassVar, cast
+from collections.abc import Callable
+from typing import ClassVar, cast, TypeAlias
 
 import blf
 import bpy
 from bpy.app.handlers import persistent
 from bpy.props import BoolProperty
-from bpy.types import Context, Depsgraph, Object, Operator, Scene, SpaceView3D
+from bpy.types import Context, Depsgraph, NodesModifier, Object, Operator, Scene, SpaceView3D
 from bpy.utils import register_class, unregister_class
 
+from ..constants import MODERN_PRIMITIVE_PREFIX, Type
+from ..exception import DGUnknownType
+from ..store_gizmoinfo import get_gizmo_info
 from ..util.aux_func import (
     get_addon_preferences,
     get_mpr_modifier,
     is_modern_primitive,
     type_from_modifier_name,
 )
-from ..constants import MODERN_PRIMITIVE_PREFIX, Type
-from ..exception import DGUnknownType
-from ..store_gizmoinfo import get_gizmo_info
+from ..version import SNAPPING_CAPABLE, TypeAndVersion
 from . import (
     capsule,
     cone,
@@ -32,8 +34,10 @@ from . import (
     uvsphere,
 )
 from .drawer import Drawer
+from ..gizmo_info import GizmoInfoAr
 
-PROCS: dict[Type, Any] = {
+HudProc: TypeAlias = Callable[[NodesModifier, Drawer, GizmoInfoAr, bool], None]
+PROCS: dict[Type, HudProc] = {
     Type.Capsule: capsule.draw_hud,
     Type.Cone: cone.draw_hud,
     Type.Cube: cube.draw_hud,
@@ -125,7 +129,13 @@ class MPR_Hud(Operator):
             with Drawer(blf, context, obj.matrix_world) as drawer:
                 if show_hud:
                     drawer.show_hud(obj.scale)
-                PROCS[typ](get_mpr_modifier(obj.modifiers), drawer, gizmo_info)
+
+                mod = get_mpr_modifier(obj.modifiers)
+                typ_ver = TypeAndVersion.get_type_and_version(mod.node_group.name)
+                if typ_ver is None:
+                    return
+                is_snap_capable = typ_ver.version >= SNAPPING_CAPABLE
+                PROCS[typ](mod, drawer, gizmo_info, is_snap_capable)
 
         except DGUnknownType:
             pass
