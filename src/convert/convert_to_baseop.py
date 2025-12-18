@@ -353,6 +353,11 @@ class ConvertTo_BaseOperator(Operator):
             obj.data = new_obj.data
             bpy.data.meshes.remove(tmp_objdata)
 
+            # make obj selected
+            bpy.ops.object.select_all(action="DESELECT")
+            obj.select_set(True)
+            context.view_layer.objects.active = obj
+
             # MPR base assets have no Material settings, so do not copy materials
 
             # MPR base assets have only one MPR modifier, so copy that
