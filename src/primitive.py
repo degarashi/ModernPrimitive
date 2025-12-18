@@ -41,6 +41,20 @@ class Primitive:
         return ret
 
     @classmethod
+    def get_snap_param_names(cls) -> list[str]:
+        ret = []
+        for p in cls.snap_param:
+            ret.append(p.name)
+        return ret
+
+    @classmethod
+    def get_empty_snap_params(cls) -> dict[str, bool]:
+        ret = {}
+        for p in cls.snap_param:
+            ret[p.name] = False
+        return ret
+
+    @classmethod
     def get_param_if(cls, chk: Callable[[P.Prop], bool]) -> tuple[P.Prop]:
         return tuple(p for p in cls.param if chk(p))
 
@@ -58,6 +72,10 @@ class Primitive_Cube(Primitive):
         P.DivisionZ,
         P.GlobalDivision,
     )
+    snap_param: tuple[P.Prop] = (
+        P.SnapSize,
+        P.SnapDivision,
+    )
 
 
 class Primitive_Cone(Primitive):
@@ -70,6 +88,14 @@ class Primitive_Cone(Primitive):
         P.BottomRadius,
         P.Height,
     )
+    snap_param: tuple[P.Prop] = (
+        P.SnapTopRadius,
+        P.SnapBottomRadius,
+        P.SnapHeight,
+        P.SnapSideDivision,
+        P.SnapFillDivision,
+        P.SnapCircleDivision,
+    )
 
 
 class Primitive_Grid(Primitive):
@@ -81,6 +107,10 @@ class Primitive_Grid(Primitive):
         P.DivisionY,
         P.GlobalDivision,
     )
+    snap_param: tuple[P.Prop] = (
+        P.SnapSize,
+        P.SnapDivision,
+    )
 
 
 class Primitive_Torus(Primitive):
@@ -90,6 +120,12 @@ class Primitive_Torus(Primitive):
         P.RingRadius,
         P.DivisionRing,
         P.DivisionCircle,
+    )
+    snap_param: tuple[P.Prop] = (
+        P.SnapRadius,
+        P.SnapRingRadius,
+        P.SnapRingDivision,
+        P.SnapCircleDivision,
     )
 
 
@@ -102,11 +138,27 @@ class Primitive_Cylinder(Primitive):
         P.DivisionSide,
         P.DivisionFill,
     )
+    snap_param: tuple[P.Prop] = (
+        P.SnapRadius,
+        P.SnapHeight,
+        P.SnapCircleDivision,
+        P.SnapSideDivision,
+        P.SnapFillDivision,
+    )
 
 
 class Primitive_UVSphere(Primitive):
     type = Type.UVSphere
-    param: tuple[P.Prop] = (P.Radius, P.DivisionRing, P.DivisionCircle)
+    param: tuple[P.Prop] = (
+        P.Radius,
+        P.DivisionRing,
+        P.DivisionCircle,
+    )
+    snap_param: tuple[P.Prop] = (
+        P.SnapRadius,
+        P.SnapRingDivision,
+        P.SnapCircleDivision,
+    )
 
 
 class Primitive_ICOSphere(Primitive):
@@ -115,6 +167,7 @@ class Primitive_ICOSphere(Primitive):
         P.Radius,
         P.Subdivision,
     )
+    snap_param: tuple[P.Prop] = (P.SnapRadius,)
 
 
 class Primitive_Tube(Primitive):
@@ -125,6 +178,13 @@ class Primitive_Tube(Primitive):
         P.DivisionSide,
         P.OuterRadius,
         P.InnerRadius,
+    )
+    snap_param: tuple[P.Prop] = (
+        P.SnapCircleDivision,
+        P.SnapHeight,
+        P.SnapSideDivision,
+        P.SnapOuterRadius,
+        P.SnapInnerRadius,
     )
 
 
@@ -141,6 +201,17 @@ class Primitive_Gear(Primitive):
         P.FilletRadius,
         P.Height,
     )
+    snap_param: tuple[P.Prop] = (
+        P.SnapNumBlades,
+        P.SnapInnerRadius,
+        P.SnapOuterRadius,
+        P.SnapTwist,
+        P.SnapInnerCircleDivision,
+        P.SnapInnerCircleRadius,
+        P.SnapFilletCount,
+        P.SnapFilletRadius,
+        P.SnapHeight,
+    )
 
 
 class Primitive_Spring(Primitive):
@@ -154,6 +225,15 @@ class Primitive_Spring(Primitive):
         P.DivisionRing,
         P.RingRadius,
     )
+    snap_param: tuple[P.Prop] = (
+        P.SnapCircleDivision,
+        P.SnapRotations,
+        P.SnapBottomRadius,
+        P.SnapTopRadius,
+        P.SnapHeight,
+        P.SnapRingDivision,
+        P.SnapRingRadius,
+    )
 
 
 class Primitive_DeformableCube(Primitive):
@@ -166,6 +246,7 @@ class Primitive_DeformableCube(Primitive):
         P.MinZ,
         P.MaxZ,
     )
+    snap_param: tuple[P.Prop] = (P.SnapSize,)
 
 
 class Primitive_Capsule(Primitive):
@@ -177,11 +258,22 @@ class Primitive_Capsule(Primitive):
         P.Height,
         P.Radius,
     )
+    snap_param: tuple[P.Prop] = (
+        P.SnapHeight,
+        P.SnapRadius,
+        P.SnapCircleDivision,
+        P.SnapCapDivision,
+        P.SnapSideDivision,
+    )
 
 
 class Primitive_QuadSphere(Primitive):
     type = Type.QuadSphere
-    param: tuple[P.Prop] = (P.Subdivision, P.Radius)
+    param: tuple[P.Prop] = (
+        P.Subdivision,
+        P.Radius,
+    )
+    snap_param: tuple[P.Prop] = (P.SnapRadius,)
 
 
 TYPE_TO_PRIMITIVE: dict[Type, type[Primitive]] = {
