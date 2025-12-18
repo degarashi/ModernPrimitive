@@ -24,6 +24,20 @@ def find_interface_name(node_group: NodeGroup, name: str) -> str:
     raise KeyError(name)
 
 
+def copy_geometry_node_params(mod_dst: NodesModifier, mod_src: NodesModifier) -> None:
+    def enum_group_input(node_group: NodeGroup) -> list[str]:
+        ret = []
+        gi = find_group_input(node_group)
+        for o in gi.outputs:
+            if o.identifier.startswith("_") or o.type == "GEOMETRY":
+                continue
+            ret.append(o.identifier)
+        return ret
+
+    for sock_name in enum_group_input(mod_src.node_group):
+        mod_dst[sock_name] = mod_src[sock_name]
+
+
 def set_interface_value(mod: NodesModifier, data: tuple[str, Any]) -> None:
     sock_name = find_interface_name(mod.node_group, data[0])
     mod[sock_name] = data[1]
