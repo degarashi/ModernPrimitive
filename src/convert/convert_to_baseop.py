@@ -308,11 +308,15 @@ class ConvertTo_BaseOperator(Operator):
 
     def _handle_obj(self, context: Context, obj: Object, err_typ: str) -> None:
         try:
+            # Create primitive based on obj
             new_obj = self._make_axis_and_primitive(context, obj)
         except CantConvertException as e:
             self._report_error(err_typ, obj, str(e))
             return
 
+        # Temporarily set the newly created object as active,
+        # so that subsequent operations (copying materials,
+        # copying modifiers, applying scale) can be executed correctly
         with context.temp_override(
             active_object=new_obj, object=new_obj, selected_objects=[new_obj]
         ):
@@ -322,7 +326,7 @@ class ConvertTo_BaseOperator(Operator):
                 for m in obj.data.materials:
                     new_obj.data.materials.append(m)
 
-            # copy modifiers
+            # copy modifiers (except mpr-modifier)
             if self.copy_modifier:
                 for m_src in obj.modifiers:
                     if is_primitive_mod(m_src):
