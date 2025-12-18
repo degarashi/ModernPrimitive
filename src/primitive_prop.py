@@ -104,14 +104,31 @@ def _make_snapping_name(name: str) -> str:
     return f"Enable {name} Snapping"
 
 
-SnapHeight = Prop(_make_snapping_name("Height"), bool, {})
-SnapRadius = Prop(_make_snapping_name("Radius"), bool, {})
-SnapCircleDivision = Prop(_make_snapping_name("Circle-Division"), bool, {})
-SnapCapDivision = Prop(_make_snapping_name("Cap-Division"), bool, {})
-SnapSideDivision = Prop(_make_snapping_name("Side-Division"), bool, {})
-SnapFillDivision = Prop(_make_snapping_name("Fill-Division"), bool, {})
-SnapTopRadius = Prop(_make_snapping_name("Top-Radius"), bool, {})
-SnapBottomRadius = Prop(_make_snapping_name("Bottom-Radius"), bool, {})
+def _make_snapping_prop(name: str) -> Prop:
+    return Prop(_make_snapping_name(name), bool, {})
+
+
+SnapHeight = _make_snapping_prop("Height")
+SnapRadius = _make_snapping_prop("Radius")
+SnapCircleDivision = _make_snapping_prop("Circle-Division")
+SnapCapDivision = _make_snapping_prop("Cap-Division")
+SnapSideDivision = _make_snapping_prop("Side-Division")
+SnapFillDivision = _make_snapping_prop("Fill-Division")
+SnapTopRadius = _make_snapping_prop("Top-Radius")
+SnapBottomRadius = _make_snapping_prop("Bottom-Radius")
+SnapSize = _make_snapping_prop("Size")
+SnapDivision = _make_snapping_prop("Division")
+SnapNumBlades = _make_snapping_prop("Num Blades")
+SnapInnerRadius = _make_snapping_prop("Inner Radius")
+SnapOuterRadius = _make_snapping_prop("Outer Radius")
+SnapTwist = _make_snapping_prop("Twist")
+SnapInnerCircleDivision = _make_snapping_prop("InnerCircle Division")
+SnapInnerCircleRadius = _make_snapping_prop("InnerCircle Radius")
+SnapFilletCount = _make_snapping_prop("Fillet Count")
+SnapFilletRadius = _make_snapping_prop("Fillet Radius")
+SnapRotations = _make_snapping_prop("Rotations")
+SnapRingDivision = _make_snapping_prop("Ring-Division")
+SnapRingRadius = _make_snapping_prop("Ring Radius")
 # ----
 
 PROP_LIST: list[Prop] = [
@@ -160,6 +177,22 @@ PROP_LIST: list[Prop] = [
     SnapCircleDivision,
     SnapCapDivision,
     SnapSideDivision,
+    SnapFillDivision,
+    SnapTopRadius,
+    SnapBottomRadius,
+    SnapSize,
+    SnapDivision,
+    SnapNumBlades,
+    SnapInnerRadius,
+    SnapOuterRadius,
+    SnapTwist,
+    SnapInnerCircleDivision,
+    SnapInnerCircleRadius,
+    SnapFilletCount,
+    SnapFilletRadius,
+    SnapRotations,
+    SnapRingDivision,
+    SnapRingRadius,
 ]
 PROP_MAP: dict[str, Prop] = {}
 
