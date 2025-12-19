@@ -7,7 +7,7 @@ import bpy
 import numpy as np
 from bmesh.types import BMesh
 from bpy.props import BoolProperty, EnumProperty, StringProperty
-from bpy.types import Context, Event, Object, Operator
+from bpy.types import Context, Event, Object, Operator, Mesh
 from mathutils import Matrix, Quaternion, Vector, geometry
 
 from ..util.aux_node import copy_geometry_node_params
@@ -349,9 +349,10 @@ class ConvertTo_BaseOperator(Operator):
                     bpy.ops.object.mpr_apply_scale(strict=False)
         else:
             # Copy new_obj contents (mesh, modifier, material, scale, position, rotation) into obj
-            tmp_objdata = obj.data
+            old_mesh = cast(Mesh, obj.data)
             obj.data = new_obj.data
-            bpy.data.meshes.remove(tmp_objdata)
+            if old_mesh.users == 0:
+                bpy.data.meshes.remove(old_mesh)
 
             # make obj selected
             bpy.ops.object.select_all(action="DESELECT")
