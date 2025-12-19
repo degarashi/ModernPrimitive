@@ -1,4 +1,7 @@
 # Changelog
+## v0.0.45
+- When converting a mesh to a primitive, the previous approach was to create a new object and then delete the original one, but now the object is reused. This ensures correct behavior even when the object is involved in Boolean operations.
+
 ## v0.0.44
 - Snap value is now displayed on the hud<br>
 Adjusted-value (Actual-value)
