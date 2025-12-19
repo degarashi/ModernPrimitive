@@ -360,12 +360,18 @@ class ConvertTo_BaseOperator(Operator):
 
             # MPR base assets have no Material settings, so do not copy materials
 
+            # --- Modifier ---
+            # First, remove all modifiers of obj
+            for m in obj.modifiers:
+                obj.modifiers.remove(m)
+
             # MPR base assets have only one MPR modifier, so copy that
             for m_src in new_obj.modifiers:
                 if is_primitive_mod(m_src):
                     m_dst = obj.modifiers.new(m_src.name, m_src.type)
                     m_dst.node_group = m_src.node_group
                     copy_geometry_node_params(m_dst, m_src)
+            # ------
 
             obj.location = new_obj.location
             obj.rotation_euler = new_obj.rotation_euler
