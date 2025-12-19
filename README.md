@@ -32,12 +32,8 @@ All functions are available on the [MPR] N-Panel
 <img src="./doc_images/usage_deformable_cube_0.jpg" alt="" width="25%" /> <img src="./doc_images/usage_capsule_0.jpg" alt="" width="25%" />
 
 # Changelog
-## v0.0.44
-- Snap value is now displayed on the hud<br>
-Adjusted-value (Actual-value)
-<img src="./doc_images/snap_value0.jpg" alt="" width="50%" />
-Note: This feature only works if the Primitive is the latest version (with the Modifier name ending in a number of 0020 or higher).
-In older Primitives, display issues may occur.
+## v0.0.45
+- When converting a mesh to a primitive, the previous approach was to create a new object and then delete the original one, but now the object is reused. This ensures correct behavior even when the object is involved in Boolean operations.
 
 ## Other
 [<ins>View all log</ins>](CHANGELOG.md)
