@@ -58,12 +58,12 @@ def _auto_axis(pts: Iterable[Iterable[float]]) -> tuple[Vector, Vector, Vector]:
     # Data standardization
     mean_coords = pts_np.mean(axis=0)
     pts_np = pts_np - mean_coords
-    # calc Convariance matrix
+    # calc Covariance matrix
     cov = np.cov(pts_np, rowvar=False)
 
     # Eigen values and Eigen vectors
     eigval, eigvec = np.linalg.eigh(cov)
-    # Sorting the unique vec in descending order
+    # Sorting the eigenvectors in descending orde
     eigvec = eigvec[:, eigval.argsort()[::-1]]
 
     a0 = Vector(eigvec[:, 0])
@@ -278,7 +278,7 @@ class ConvertTo_BaseOperator(Operator):
             if len(verts) < MIN_VERTS:
                 raise CantConvertException("it's number of vertices is less than 2")
 
-            # Quotanion for rotating the main axis to the Z axis
+            # Quaternion for rotating the main axis to the Z axis
             pre_rot: Quaternion
             should_flip: bool = False
             # _handle Proc method handles the Z axis as height,
