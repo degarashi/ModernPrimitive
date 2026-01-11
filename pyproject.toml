@@ -1,6 +1,6 @@
 [project]
 name = "ModernPrimitive"
-version = "0.0.46"
+version = "0.0.47"
 description = "ModernPrimitive Blender-Addon"
 authors = [
     { name = "Degarashi", email = "degarasu@gmail.com" }
