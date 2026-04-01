@@ -4,8 +4,13 @@ import bpy
 from bpy.types import Context, Object, Operator
 from bpy.utils import register_class, unregister_class
 
-from .util.aux_func import disable_modifier, get_mpr_modifier, get_selected_primitive, is_mpr_enabled
 from .constants import MODERN_PRIMITIVE_PREFIX
+from .util.aux_func import (
+    disable_modifier,
+    get_mpr_modifier,
+    get_selected_primitive,
+    is_mpr_enabled,
+)
 
 
 class ApplyMesh_Operator(Operator):
@@ -25,18 +30,20 @@ class ApplyMesh_Operator(Operator):
 
     @staticmethod
     def __apply_mesh(obj: Object, context: Context) -> bool:
+        # Check if the MPR modifier is enabled on the object
         if not is_mpr_enabled(obj.modifiers):
             return False
-        new_obj = obj.copy()
+
+        tmp_obj = obj.copy()
 
         # Copy only modifier 0 (MPR)
-        for i in range(len(new_obj.modifiers)-1, 0, -1):
-            new_obj.modifiers.remove(new_obj.modifiers[i])
+        for i in range(len(tmp_obj.modifiers) - 1, 0, -1):
+            tmp_obj.modifiers.remove(tmp_obj.modifiers[i])
 
-        context.collection.objects.link(new_obj)
+        context.collection.objects.link(tmp_obj)
 
         deps = context.evaluated_depsgraph_get()
-        eval_obj = new_obj.evaluated_get(deps)
+        eval_obj = tmp_obj.evaluated_get(deps)
         mesh = bpy.data.meshes.new_from_object(eval_obj)
 
         mesh_name = obj.data.name
@@ -46,7 +53,7 @@ class ApplyMesh_Operator(Operator):
 
         mpr_mod = get_mpr_modifier(obj.modifiers)
         disable_modifier(mpr_mod)
-        bpy.data.objects.remove(new_obj)
+        bpy.data.objects.remove(tmp_obj)
         return True
 
     def execute(self, context: Context | None) -> set[str]:
