@@ -13,13 +13,7 @@ from .util.aux_func import (
 )
 
 
-class ApplyMesh_Operator(Operator):
-    """
-    Apply MPR modifier to mesh and disable modifier
-    """
-
-    bl_idname = f"object.{MODERN_PRIMITIVE_PREFIX}_apply_mesh"
-    bl_label = "Apply MPR-Geometry node to Mesh"
+class ApplyMesh_Base(Operator):
     bl_options: ClassVar[set[str]] = {"REGISTER", "UNDO"}
 
     @classmethod
@@ -28,8 +22,28 @@ class ApplyMesh_Operator(Operator):
             return False
         return len(get_selected_primitive(context)) > 0
 
-    @staticmethod
-    def __apply_mesh(obj: Object, context: Context) -> bool:
+    def execute(self, context: Context) -> set[str]:
+        sel = get_selected_primitive(context)
+        apply_count = 0
+        for obj in sel:
+            apply_count += 1 if self._apply_mesh(obj, context) else 0
+        apply_count_str = str(apply_count) if apply_count > 0 else "no"
+        self.report(
+            {"INFO"}, f"Apply MPR-Modifier to Mesh: {apply_count_str} object(s) applied."
+        )
+
+        return {"FINISHED"}
+
+
+class ApplyMesh_Operator(ApplyMesh_Base):
+    """
+    Apply MPR modifier to mesh and disable modifier
+    """
+
+    bl_idname = f"object.{MODERN_PRIMITIVE_PREFIX}_apply_mesh"
+    bl_label = "Apply MPR-Geometry node to Mesh"
+
+    def _apply_mesh(self, obj: Object, context: Context) -> bool:
         # Check if the MPR modifier is enabled on the object
         if not is_mpr_enabled(obj.modifiers):
             return False
@@ -56,22 +70,41 @@ class ApplyMesh_Operator(Operator):
         bpy.data.objects.remove(tmp_obj)
         return True
 
-    def execute(self, context: Context) -> set[str]:
-        sel = get_selected_primitive(context)
-        apply_count = 0
-        for obj in sel:
-            apply_count += 1 if self.__class__.__apply_mesh(obj, context) else 0
-        apply_count_str = str(apply_count) if apply_count > 0 else "no"
-        self.report(
-            {"INFO"}, f"Apply MPR-Modifier to Mesh: {apply_count_str} object(s) applied."
-        )
 
-        return {"FINISHED"}
+class ApplyAndRemoveMesh_Operator(ApplyMesh_Base):
+    """
+    Apply MPR modifier to mesh and remove modifier
+    """
+
+    bl_idname = f"object.{MODERN_PRIMITIVE_PREFIX}_apply_and_remove_mesh"
+    bl_label = "Apply and Remove MPR-Geometry node"
+
+    def _apply_mesh(self, obj: Object, context: Context) -> bool:
+        if not is_mpr_enabled(obj.modifiers):
+            return False
+
+        mpr_mod = get_mpr_modifier(obj.modifiers)
+        if not mpr_mod:
+            return False
+
+        original_active = context.view_layer.objects.active
+        context.view_layer.objects.active = obj
+
+        try:
+            bpy.ops.object.modifier_apply(modifier=mpr_mod.name)
+            return True
+        except Exception as e:
+            self.report({"INFO"}, f"Failed to apply modifier: {e}")
+            return False
+        finally:
+            context.view_layer.objects.active = original_active
 
 
 def register() -> None:
     register_class(ApplyMesh_Operator)
+    register_class(ApplyAndRemoveMesh_Operator)
 
 
 def unregister() -> None:
     unregister_class(ApplyMesh_Operator)
+    unregister_class(ApplyAndRemoveMesh_Operator)

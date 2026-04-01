@@ -2,7 +2,7 @@ from typing import ClassVar
 
 from bpy.types import Context, Panel
 
-from ..apply_mesh import ApplyMesh_Operator
+from ..apply_mesh import ApplyMesh_Operator, ApplyAndRemoveMesh_Operator
 from ..apply_scale import ApplyScale_Operator
 from ..constants import MODERN_PRIMITIVE_CATEGORY
 from ..convert import (
@@ -187,7 +187,10 @@ class MPR_PT_Main(Panel):
     def __apply_mesh_panel(self) -> None:
         box = self.layout.box()
         box.label(text="Apply Mesh")
-        box.operator(ApplyMesh_Operator.bl_idname, text="Apply MPR-Modifier to Mesh")
+        box.operator(ApplyMesh_Operator.bl_idname, text="Apply MPR-Modifier (hold MPR)")
+        box.operator(
+            ApplyAndRemoveMesh_Operator.bl_idname, text="Apply and remove MPR-Modifier"
+        )
 
     def __viewport_display_panel(self, ctx: Context) -> None:
         box = self.layout.box()
