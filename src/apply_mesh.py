@@ -23,7 +23,7 @@ class ApplyMesh_Operator(Operator):
     bl_options: ClassVar[set[str]] = {"REGISTER", "UNDO"}
 
     @classmethod
-    def poll(cls, context: Context | None) -> bool:
+    def poll(cls, context: Context) -> bool:
         if context is None:
             return False
         return len(get_selected_primitive(context)) > 0
@@ -56,7 +56,7 @@ class ApplyMesh_Operator(Operator):
         bpy.data.objects.remove(tmp_obj)
         return True
 
-    def execute(self, context: Context | None) -> set[str]:
+    def execute(self, context: Context) -> set[str]:
         sel = get_selected_primitive(context)
         apply_count = 0
         for obj in sel:
