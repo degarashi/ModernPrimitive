@@ -15,11 +15,13 @@ from .exception import DGInvalidVersionNumber, DGNodeGroupNotFound, DGUnknownAss
 
 @total_ordering
 class VersionInt:
-    MAX_DIGITS = 4
-    MAX_NUMBER = pow(10, MAX_DIGITS) - 1
-    RE_DIGITS = re.compile(r".*_(\d{4})$")
+    MAX_DIGITS: int = 4
+    MAX_NUMBER: int = pow(10, MAX_DIGITS) - 1
+    RE_DIGITS: re.Pattern[str] = re.compile(r".*_(\d{4})$")
 
-    def __init__(self, num: int):
+    num: int
+
+    def __init__(self, num: int) -> None:
         self.num = num
         if num < 0 or num > self.MAX_NUMBER:
             raise DGInvalidVersionNumber(num)
@@ -28,9 +30,16 @@ class VersionInt:
         return f"Version({str(self.num).zfill(self.MAX_DIGITS)})"
 
     def __eq__(self, other) -> bool:
+        if not isinstance(other, VersionInt):
+            return NotImplemented
         return self.num == other.num
 
+    def __hash__(self) -> int:
+        return hash(self.num)
+
     def __ge__(self, other) -> bool:
+        if not isinstance(other, VersionInt):
+            return NotImplemented
         return self.num >= other.num
 
     # Read MAX_DIGITS of numbers at the end of the string
@@ -38,7 +47,7 @@ class VersionInt:
     def get_version_from_string(cls, v_str: str):
         res = cls.RE_DIGITS.match(v_str)
         if res is not None:
-            return VersionInt(int(res.group(1)))
+            return cls(int(res.group(1)))
         raise DGInvalidVersionNumber(-1)
 
 
@@ -47,11 +56,22 @@ _version_num: list[VersionInt] = []
 
 # A set of primitive type and version number
 class TypeAndVersion:
-    RE_TYPE_AND_DIGIT = re.compile(r"(\w+)(_.+)$")
+    RE_TYPE_AND_DIGIT: re.Pattern[str] = re.compile(r"(\w+)(_.+)$")
 
-    def __init__(self, typ: Type, ver: VersionInt):
+    type: Type
+    version: VersionInt
+
+    def __init__(self, typ: Type, ver: VersionInt) -> None:
         self.type = typ
         self.version = ver
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, TypeAndVersion):
+            return NotImplemented
+        return self.type == other.type and self.version == other.version
+
+    def __hash__(self) -> int:
+        return hash((self.type, self.version))
 
     # Extract the primitive type + version number
     # from the node group name (returns none if it cannot be identified)
@@ -62,7 +82,7 @@ class TypeAndVersion:
             res = cls.RE_TYPE_AND_DIGIT.match(s_name)
             if res is not None:
                 try:
-                    return TypeAndVersion(
+                    return cls(
                         Type[res.group(1)],
                         VersionInt.get_version_from_string(res.group(2)),
                     )
