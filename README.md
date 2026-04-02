@@ -16,6 +16,8 @@ All primitives are built with Geometry Nodes, allowing for non-destructive editi
 ### Interactive Workflow
 - **In-Viewport Gizmos**: Adjust parameters like radius, height, and divisions directly in the 3D view.
 - **HUD (Heads-Up Display)**: Real-time display of parameter values and snapping information.
+- **Modal Edit (`Ctrl + Shift + C`)**: Enter a modal mode to adjust parameters using keyboard shortcuts (e.g., `S` for Size, `H` for Height), numeric input, and mouse wheel.
+<img src="./doc_images/modal_edit.jpg" alt="Modal Edit" width="50%" />
 - **Focus Modifier (`Ctrl + Alt + X`)**: Instantly select and focus the Modern Primitive modifier for quick adjustments.
 - **Snapping**: Precise control over primitive parameters with snapping support.
 
@@ -60,3 +62,4 @@ See [CHANGELOG.md](CHANGELOG.md) for full history.
 
 ## Author
 Degarashi ([@degarashi](https://github.com/degarashi))
+ps://github.com/degarashi))
