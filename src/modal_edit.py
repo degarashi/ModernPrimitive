@@ -106,19 +106,6 @@ class MPR_OT_modal_edit(Operator):
     bl_label = "Modal Edit Modern Primitive"
     bl_options: ClassVar[set[str]] = {"REGISTER", "UNDO"}
 
-    def __init__(self):
-        self._obj = None
-        self._mod = None
-        self._params = None
-        self._initial_values = None
-        self._input_str = ""
-        self._mode = ""
-        self._text_drawer = None
-        self._modes = []
-        self._mode_to_prop = {}
-        self._key_to_modes = {}
-        self._primitive_name = ""
-
     @classmethod
     def poll(cls, context: Context | None) -> bool:
         if context is None:
