@@ -1,3 +1,4 @@
+from collections.abc import Callable
 from typing import Any
 
 import blf
@@ -25,15 +26,48 @@ def get_region(context: Context, area_type: str, region_type: str) -> Region | N
     return region
 
 
+def default_draw_func(context: Context, font_id: int, text: str, color: Color) -> None:
+    region = get_region(context, "VIEW_3D", "WINDOW")
+    if region is None:
+        return
+
+    blf.enable(font_id, blf.WORD_WRAP)
+    blf.word_wrap(font_id, 1024)
+    blf.enable(font_id, blf.SHADOW)
+    blf.shadow_offset(font_id, 1, -1)
+    blf.size(font_id, 20)
+
+    lines = text.split("\n")
+    line_height = 25
+    margin_x = 160
+    margin_y = 120
+    start_y = region.height - margin_y
+
+    for i, line in enumerate(lines):
+        current_y = start_y - (i * line_height)
+        set_color_g(blf, color)
+        blf.position(font_id, margin_x, current_y, 0)
+        blf.draw(font_id, line)
+
+    blf.disable(font_id, blf.WORD_WRAP)
+    blf.disable(font_id, blf.SHADOW)
+
+
 class TextDrawer:
     __text: str
     __handle: Any | None
     __color: Color
+    __draw_func: Callable[[Context, int, str, Color], None]
 
-    def __init__(self, msg: str):
+    def __init__(
+        self,
+        msg: str,
+        draw_func: Callable[[Context, int, str, Color], None] | None = None,
+    ):
         self.__text = msg
         self.__handle = None
         self.__color = Color((1, 1, 1))
+        self.__draw_func = draw_func or default_draw_func
 
     def is_running(self) -> bool:
         return self.__handle is not None
@@ -66,19 +100,5 @@ class TextDrawer:
             self.show(context)
 
     def _draw(self, context: Context) -> None:
-        region = get_region(context, "VIEW_3D", "WINDOW")
-        if region is not None:
-            font_id: int = 0
-            blf.enable(font_id, blf.WORD_WRAP)
-            blf.word_wrap(font_id, 1024)
-            blf.enable(font_id, blf.SHADOW)
-            blf.shadow_offset(font_id, 1, -1)
-
-            set_color_g(blf, self.__color)
-            blf.size(font_id, 20)
-            w, h = blf.dimensions(font_id, self.__text)
-            blf.position(font_id, region.width / 2 - w / 2, region.height - 120, 0)
-            blf.draw(font_id, self.__text)
-
-            blf.disable(font_id, blf.WORD_WRAP)
-            blf.disable(font_id, blf.SHADOW)
+        font_id: int = 0
+        self.__draw_func(context, font_id, self.__text, self.__color)
