@@ -56,16 +56,14 @@ def get_interface_value(mod: NodesModifier, name: str) -> Any:
     return mod[sock_name]
 
 
-def get_interface_values(mod: NodesModifier, data: Iterable[str]) -> dict[str, Any]:
+def get_interface_values(mod: NodesModifier, data_names: Iterable[str]) -> dict[str, Any]:
     ret: dict[str, Any] = {}
-    for d in data:
+    for d in data_names:
         ret[d] = get_interface_value(mod, d)
     return ret
 
 
-def modify_interface_value(
-    mod: NodesModifier, ent: str, proc: Callable[[Any], Any]
-) -> None:
+def modify_interface_value(mod: NodesModifier, ent: str, proc: Callable[[Any], Any]) -> None:
     value = proc(get_interface_value(mod, ent))
     set_interface_value(mod, (ent, value))
 
