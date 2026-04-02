@@ -19,6 +19,7 @@ from ..equalize_dcube_size import Equalize_DCube_Operator
 from ..extract_primitive import ExtractPrimitive_Operator
 from ..focus_modifier import FocusModifier_Operator
 from ..make_primitive import OPS_GROUPS, make_operator_to_layout
+from ..modal_edit import MPR_OT_modal_edit
 from ..reset_origin import ResetOrigin_Operator
 from ..restore_default import RestoreDefault_Operator
 from ..switch_wireframe import SwitchWireframe
@@ -213,8 +214,15 @@ class MPR_PT_Main(Panel):
         btn = row.operator(ApplyScale_Operator.bl_idname, text="Scale (Strict Mode)")
         btn.strict = True
 
+    def __modal_edit_panel(self, ctx: Context) -> None:
+        if MPR_OT_modal_edit.poll(ctx):
+            box = self.layout.box()
+            box.label(text="Edit")
+            box.operator(MPR_OT_modal_edit.bl_idname, text="Modal Edit")
+
     def draw(self, ctx: Context) -> None:
         self.__focus_panel()
+        self.__modal_edit_panel(ctx)
         self.__dcube_panel()
         self.__apply_mesh_panel()
         self.__viewport_display_panel(ctx)
