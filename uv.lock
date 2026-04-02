@@ -123,7 +123,7 @@ wheels = [
 
 [[package]]
 name = "modernprimitive"
-version = "0.0.47"
+version = "0.0.48"
 source = { editable = "." }
 
 [package.dev-dependencies]
