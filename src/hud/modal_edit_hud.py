@@ -21,6 +21,9 @@ class ModalEditHUD:
     VALUE_WIDTH: ClassVar[int] = 340
     HIGHLIGHT_COLOR: ClassVar[tuple[float, float, float, float]] = (1.0, 0.5, 0.0, 1.0)
 
+    # Threshold to determine if the 'parts' list contains an initial value (3rd element)
+    INITIAL_VALUE_INDEX: ClassVar[int] = 2
+
     def __call__(self, context: Context, font_id: int, text: str, color: Color) -> None:
         region = get_region(context, "VIEW_3D", "WINDOW")
         if region is None:
@@ -65,10 +68,11 @@ class ModalEditHUD:
                     blf.draw(font_id, value_part)
 
                 # --- Initial Value (Right-aligned layout) ---
-                if len(parts) > 2:
+                if len(parts) > self.INITIAL_VALUE_INDEX:
                     init_part = parts[2].strip()
 
-                    # Get text dimensions and offset from the specified position to the left (right-alignment)
+                    # Get text dimensions and offset from
+                    # the specified position to the left (right-alignment)
                     text_width, _ = blf.dimensions(font_id, init_part)
                     blf.position(font_id, initial_val_x - text_width, current_y, 0)
                     blf.draw(font_id, init_part)
