@@ -23,6 +23,46 @@ from .util.aux_node import (
 )
 
 
+PROP_TO_SNAP_NAME: dict[str, str] = {
+    "Size": "Enable Size Snapping",
+    "Size X": "Enable Size Snapping",
+    "Size Y": "Enable Size Snapping",
+    "Size Z": "Enable Size Snapping",
+    "Min X": "Enable Size Snapping",
+    "Min Y": "Enable Size Snapping",
+    "Min Z": "Enable Size Snapping",
+    "Max X": "Enable Size Snapping",
+    "Max Y": "Enable Size Snapping",
+    "Max Z": "Enable Size Snapping",
+    "Division X": "Enable Division Snapping",
+    "Division Y": "Enable Division Snapping",
+    "Division Z": "Enable Division Snapping",
+    "Global Division": "Enable Division Snapping",
+    "Height": "Enable Height Snapping",
+    "Radius": "Enable Radius Snapping",
+    "Top Radius": "Enable Top-Radius Snapping",
+    "Bottom Radius": "Enable Bottom-Radius Snapping",
+    "Ring Radius": "Enable Ring Radius Snapping",
+    "Outer Radius": "Enable Outer Radius Snapping",
+    "Inner Radius": "Enable Inner Radius Snapping",
+    "Div Circle": "Enable Circle-Division Snapping",
+    "Div Side": "Enable Side-Division Snapping",
+    "Div Fill": "Enable Fill-Division Snapping",
+    "Div Ring": "Enable Ring-Division Snapping",
+    "Div Cap": "Enable Cap-Division Snapping",
+    "Num Blades": "Enable Num Blades Snapping",
+    "Twist": "Enable Twist Snapping",
+    "InnerCircle Division": "Enable InnerCircle Division Snapping",
+    "InnerCircle Radius": "Enable InnerCircle Radius Snapping",
+    "Fillet Count": "Enable Fillet Count Snapping",
+    "Fillet Radius": "Enable Fillet Radius Snapping",
+    "Rotations": "Enable Rotations Snapping",
+}
+
+
+SEPARATOR_WIDTH = 50
+
+
 def expand_idarray(val: Any) -> Any:
     if isinstance(val, IDPropertyArray):
         return val.to_list()
@@ -88,6 +128,7 @@ class MPR_OT_modal_edit(Operator):
     _obj: bpy.types.Object | None
     _mod: bpy.types.Modifier | None
     _params: set[str] | None
+    _snap_params: list[str] | None
     _initial_values: dict[str, any] | None
     _input_str: str
     _mode: str
@@ -128,7 +169,7 @@ class MPR_OT_modal_edit(Operator):
 
                 # Individual components
                 for i, axis in enumerate(["X", "Y", "Z"]):
-                    name_comp = "{0} {1}".format(prop.name, axis)
+                    name_comp = f"{prop.name} {axis}"
                     prop_modes.append(name_comp)
                     self._mode_to_prop[name_comp] = (prop, i)
             else:
@@ -204,8 +245,14 @@ class MPR_OT_modal_edit(Operator):
                     self._input_str = self._input_str[:-1]
                     self._update_value(context)
                 else:
-                    # 💡 If Backspace is pressed with no text input, reset to default (value at start of editing)
+                    # If Backspace is pressed with no text input, reset to default (value at start of editing)
                     self._reset_current_property(context)
+
+            # Handle snapping toggle
+            elif event.type == "S" and event.shift:
+                if self._toggle_snapping(context):
+                    self._update_text()
+                    return {"RUNNING_MODAL"}
 
             # Handle mode switching via keyboard
             else:
@@ -230,12 +277,14 @@ class MPR_OT_modal_edit(Operator):
         primitive_class = TYPE_TO_PRIMITIVE[type_c]
         self._primitive_name = primitive_class.type_name
         self._params = primitive_class.get_param_names()
+        self._snap_params = primitive_class.get_snap_param_names()
 
         # Initialize modes dynamically from primitive parameters
         self._init_modes(primitive_class)
 
         # Save initial values for cancellation
-        self._initial_values = get_interface_values(self._mod, self._params)
+        all_params = list(self._params) + self._snap_params
+        self._initial_values = get_interface_values(self._mod, all_params)
         for val in self._initial_values:
             self._initial_values[val] = expand_idarray(self._initial_values[val])
 
@@ -263,7 +312,7 @@ class MPR_OT_modal_edit(Operator):
             self._text_drawer.hide(context)
 
     def _reset_current_property(self, context: Context) -> None:
-        """💡 Reset the currently selected property to its value at the start of editing"""
+        """Reset the currently selected property to its value at the start of editing"""
         if not self._initial_values:
             return
 
@@ -287,6 +336,18 @@ class MPR_OT_modal_edit(Operator):
             set_interface_value(self._mod, (prop.name, initial_val))
 
         update_node_interface(self._mod, context)
+
+    def _toggle_snapping(self, context: Context) -> bool:
+        """Toggle the snapping flag for the current property"""
+        prop, _ = self._mode_to_prop[self._mode]
+        snap_name = PROP_TO_SNAP_NAME.get(prop.name)
+
+        if snap_name and snap_name in self._snap_params:
+            current_val = get_interface_value(self._mod, snap_name)
+            set_interface_value(self._mod, (snap_name, not current_val))
+            update_node_interface(self._mod, context)
+            return True
+        return False
 
     def _update_value(self, context: Context) -> None:
         if not self._input_str or self._input_str in {"-", "."}:
@@ -324,10 +385,12 @@ class MPR_OT_modal_edit(Operator):
 
     def _update_text(self) -> None:
         vals = get_interface_values(self._mod, self._params)
-        msg = "MPR Modal Edit ({0})\n".format(self._primitive_name)
+        msg = f"MPR Modal Edit ({self._primitive_name})\n"
         current_input = self._input_str if self._input_str else "-"
-        msg += "Mode: {0} | Input: {1}\n".format(self._mode, current_input)
-        msg += "---------------------------------\n"
+        msg += f"Mode: {self._mode} | Input: {current_input}\n"
+        msg += "-" * SEPARATOR_WIDTH + "\n"
+        msg += f"{'Property':<32} | {'Value':<26} | {'Initial':>40}\n"
+        msg += "-" * SEPARATOR_WIDTH + "\n"
 
         # Dynamically build property list for display
         displayed_props = set()
@@ -339,42 +402,52 @@ class MPR_OT_modal_edit(Operator):
             prefix = "▶ " if self._mode == mode_name else "  "
             val = vals[prop.name]
 
-            # 💡 Get initial value
+            # Get initial value
             init_val = self._initial_values.get(prop.name) if self._initial_values else None
+
+            # Snapping status
+            snap_name = PROP_TO_SNAP_NAME.get(prop.name)
+            snap_status = ""
+            if snap_name and snap_name in self._snap_params:
+                is_snap = get_interface_value(self._mod, snap_name)
+                snap_status = " [S]" if is_snap else " [ ]"
+
+            label = ""
+            curr_val_str = ""
+            init_val_str = ""
 
             if prop.type == Vector:
                 vec = expand_idarray(val)
                 init_vec = expand_idarray(init_val) if init_val is not None else vec
 
                 if idx is None:
-                    msg += "{0}{1} (All) | {2:.3f}, {3:.3f}, {4:.3f} ({5:.3f}, {6:.3f}, {7:.3f})\n".format(
-                        prefix,
-                        prop.name,
-                        vec[0],
-                        vec[1],
-                        vec[2],
-                        init_vec[0],
-                        init_vec[1],
-                        init_vec[2],
-                    )
+                    label = f"{prefix}{prop.name}{snap_status} (All)"
+                    curr_val_str = f"{vec[0]:.3f}, {vec[1]:.3f}, {vec[2]:.3f}"
+                    init_val_str = f"({init_vec[0]:.3f}, {init_vec[1]:.3f}, {init_vec[2]:.3f})"
                 else:
                     axis_name = ["X", "Y", "Z"][idx]
-                    msg += "{0}  {1} {2} | {3:.3f} ({4:.3f})\n".format(
-                        prefix, prop.name, axis_name, vec[idx], init_vec[idx]
-                    )
+                    label = f"{prefix}  {prop.name} {axis_name}{snap_status}"
+                    curr_val_str = f"{vec[idx]:.3f}"
+                    init_val_str = f"({init_vec[idx]:.3f})"
             elif prop.type == int:
                 init_i = init_val if init_val is not None else val
-                msg += "{0}{1} | {2} ({3})\n".format(prefix, prop.name, val, init_i)
+                label = f"{prefix}{prop.name}{snap_status}"
+                curr_val_str = f"{val}"
+                init_val_str = f"({init_i})"
             elif prop.type == float:
                 init_f = init_val if init_val is not None else val
-                msg += "{0}{1} | {2:.3f} ({3:.3f})\n".format(prefix, prop.name, val, init_f)
+                label = f"{prefix}{prop.name}{snap_status}"
+                curr_val_str = f"{val:.3f}"
+                init_val_str = f"({init_f:.3f})"
 
+            # Aligned formatting: Label(32) | Current Value(26) | Initial Value(26, Right-aligned)
+            msg += f"{label:<32} | {curr_val_str:<26} | {init_val_str:>40}\n"
             if idx is None or idx == 2:
                 displayed_props.add(prop.name)
 
-        msg += "---------------------------------\n"
-        shortcut_info = " ".join(["[{0}]".format(k) for k in sorted(self._key_to_modes.keys())])
-        msg += "{0} [Tab:Next]\n".format(shortcut_info)
+        msg += "-" * SEPARATOR_WIDTH + "\n"
+        shortcut_info = " ".join([f"[{k}]" for k in sorted(self._key_to_modes.keys())])
+        msg += f"{shortcut_info} [Tab:Next] [Shift+S:Snap]\n"
         msg += "[L-Click/Enter:Confirm] [R-Click/Esc:Cancel] [BS:Reset]"
         self._text_drawer.set_text(msg)
 
