@@ -14,3 +14,6 @@ nul
 
 # for activate environment
 activate_env.bat
+
+# Blender backup files
+*.blend1
