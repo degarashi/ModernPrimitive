@@ -51,6 +51,7 @@ You can also use the **MPR tab** in the N-panel for quick access.
 
 ### 3. Shortcut
 - **`Ctrl + Alt + X`**: Focus the Modern Primitive modifier. Pressing it again will unfocus/toggle.
+- **`Ctrl + Shift + C`**: Start Modal Edit.
 
 ## Gallery
 <img src="./doc_images/usage_cube_1.jpg" alt="" width="24%" /> <img src="./doc_images/usage_cone_1.jpg" alt="" width="24%" /> <img src="./doc_images/usage_cylinder_2.jpg" alt="" width="24%" /> <img src="./doc_images/usage_grid_1.jpg" alt="" width="24%" />
