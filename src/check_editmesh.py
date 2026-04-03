@@ -1,14 +1,45 @@
 from collections.abc import Iterable
 
+import blf
 import bpy
 from bpy.app.handlers import persistent
-from bpy.types import Context, Object, Scene
+from bpy.types import Area, Context, Object, Region, Scene
+from mathutils import Color
 
+from .blf_aux import set_color as set_color_g
 from .util.aux_func import is_modern_primitive
 from .color import HUDColor
-from .text import TextDrawer
+from .text import TextDrawer, get_region
 
-textdraw_warning = TextDrawer("")
+
+def default_draw_func(context: Context, font_id: int, text: str, color: Color) -> None:
+    region = get_region(context, "VIEW_3D", "WINDOW")
+    if region is None:
+        return
+
+    blf.enable(font_id, blf.WORD_WRAP)
+    blf.word_wrap(font_id, 1024)
+    blf.enable(font_id, blf.SHADOW)
+    blf.shadow_offset(font_id, 1, -1)
+    blf.size(font_id, 20)
+
+    lines = text.split("\n")
+    line_height = 25
+    margin_x = 160
+    margin_y = 120
+    start_y = region.height - margin_y
+
+    for i, line in enumerate(lines):
+        current_y = start_y - (i * line_height)
+        set_color_g(blf, color)
+        blf.position(font_id, margin_x, current_y, 0)
+        blf.draw(font_id, line)
+
+    blf.disable(font_id, blf.WORD_WRAP)
+    blf.disable(font_id, blf.SHADOW)
+
+
+textdraw_warning = TextDrawer("", draw_func=default_draw_func)
 
 
 def make_warning_message(objs: Iterable[Object]) -> str:
