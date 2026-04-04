@@ -185,7 +185,11 @@ def is_modern_primitive_specific(obj: Object, type_c: Type) -> bool:
 
 
 def get_blend_file_path_by_type(type_c: Type, is_relative: bool) -> str:
-    rel_path = f"{ASSET_DIR_NAME}/{type_c.name.lower()}.blend"
+    return get_blend_file_path(type_c.name, is_relative)
+
+
+def get_blend_file_path(file_name: str, is_relative: bool) -> str:
+    rel_path = f"{ASSET_DIR_NAME}/{file_name.lower()}.blend"
     if is_relative:
         return rel_path
     addon_dir = get_addon_dir()
