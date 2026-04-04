@@ -20,6 +20,7 @@ from ..constants import (
     ASSET_DIR_NAME,
     MODERN_PRIMITIVE_PREFIX,
     MODERN_PRIMITIVE_TAG,
+    MODERN_PRIMITIVE_CATEGORY,
     Type,
     get_addon_dir,
     get_addon_name,
@@ -213,6 +214,10 @@ def type_from_modifier_name(name: str) -> Type:
 
 def modifier_name(type_c: Type) -> str:
     return f"{MODERN_PRIMITIVE_TAG}{type_c.name}"
+
+
+def material_name(mat_name: str) -> str:
+    return f"[{MODERN_PRIMITIVE_CATEGORY}]{mat_name}"
 
 
 def is_primitive_mod(mod: Modifier) -> bool:
