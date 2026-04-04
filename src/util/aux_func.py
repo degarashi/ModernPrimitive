@@ -1,5 +1,6 @@
 from collections.abc import Iterable
 from contextlib import suppress
+from pathlib import Path
 
 import bpy
 from bpy.types import (
@@ -79,17 +80,36 @@ def get_object_just_added(context: Context) -> Object:
     return context.view_layer.objects.selected[0]
 
 
+def append_datablock_from_asset(file_path: Path, folder_name: str, datablock_name: str) -> None:
+    """Append a data block in the specified folder from an external .blend file.
+
+    Args:
+        file_path (Path): Path object to the .blend file.
+        folder_name (str): Name of the folder to load from (e.g., "Object",
+          "Material").
+        datablock_name (str): Name of the data block.
+    """
+    directory = str(file_path / folder_name)
+    filepath = str(file_path / folder_name / datablock_name)
+
+    bpy.ops.wm.append(
+        filepath=filepath,
+        directory=directory,
+        filename=datablock_name,
+        link=False,
+    )
+
+
 def append_object_from_asset(type_c: Type, context: Context) -> Object:
     obj_name = type_c.name
-    file_path = get_blend_file_path(type_c, False)
+    # The existing get_blend_file_path may return a str, so cast to Path to ensure safety
+    file_path = Path(get_blend_file_path(type_c, False))
     if not file_path.exists():
         raise DGFileNotFound(file_path)
 
-    bpy.ops.wm.append(
-        filepath=str(file_path / "Object" / obj_name),
-        directory=str(file_path / "Object"),
-        filename=obj_name,
-    )
+    # Call the common function
+    append_datablock_from_asset(file_path, "Object", obj_name)
+
     try:
         return get_object_just_added(context)
     except IndexError as e:
