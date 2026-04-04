@@ -102,8 +102,9 @@ def append_datablock_from_asset(file_path: Path, folder_name: str, datablock_nam
 
 def append_object_from_asset(type_c: Type, context: Context) -> Object:
     obj_name = type_c.name
-    # The existing get_blend_file_path may return a str, so cast to Path to ensure safety
-    file_path = Path(get_blend_file_path(type_c, False))
+    # The existing get_blend_file_path_by_type may return a str,
+    #   so cast to Path to ensure safety
+    file_path = Path(get_blend_file_path_by_type(type_c, False))
     if not file_path.exists():
         raise DGFileNotFound(file_path)
 
@@ -183,7 +184,7 @@ def is_modern_primitive_specific(obj: Object, type_c: Type) -> bool:
     return get_mpr_modifier(obj.modifiers).name == modifier_name(type_c)
 
 
-def get_blend_file_path(type_c: Type, is_relative: bool) -> str:
+def get_blend_file_path_by_type(type_c: Type, is_relative: bool) -> str:
     rel_path = f"{ASSET_DIR_NAME}/{type_c.name.lower()}.blend"
     if is_relative:
         return rel_path

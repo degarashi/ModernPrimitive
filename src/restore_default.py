@@ -8,7 +8,7 @@ from idprop.types import IDPropertyArray
 
 from . import primitive as P
 from .util.aux_func import (
-    get_blend_file_path,
+    get_blend_file_path_by_type,
     get_mpr_modifier,
     get_selected_primitive,
     type_from_modifier_name,
@@ -103,7 +103,7 @@ def expand_idarray(val: Any) -> Any:
 
 def get_default_value(typ: Type) -> dict[Prop, Any]:
     if typ not in _default_value:
-        path = get_blend_file_path(typ, False)
+        path = get_blend_file_path_by_type(typ, False)
         with bpy.data.libraries.load(str(path)) as (data_from, data_to):
             data_to.objects = [str(typ.name)]
 
