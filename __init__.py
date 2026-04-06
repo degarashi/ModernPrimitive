@@ -30,6 +30,8 @@ MODULE_NAMES: list[str] = [
     "store_gizmoinfo",
     "extract_primitive",
     "modal_edit",
+    "apply_material",
+    "material_prop",
 ]
 
 
