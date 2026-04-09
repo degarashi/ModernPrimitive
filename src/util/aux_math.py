@@ -70,7 +70,7 @@ def calc_from_to_rotation(from_vec: Vector, to_vec: Vector) -> Quaternion:
         THRESHOLD = 0.9
         ortho_vec = Vector((1, 0, 0)) if abs(from_vec.x) < THRESHOLD else Vector((0, 1, 0))
         axis = from_vec.cross(ortho_vec).normalized()
-        return Quaternion(axis, math.pi)  # π (180度) 回転
+        return Quaternion(axis, math.pi)  # 180 degree rotation
 
     axis = from_vec.cross(to_vec)
     if math.isclose(axis.length, 0):
