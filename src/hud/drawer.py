@@ -258,11 +258,11 @@ class Drawer:
 
     def show_hud(self, scale: Vector) -> None:
         set_color(self.__blf, HUDColor.WHITE)
-        set_position_draw(self.__blf, (50, 30), "ModernPrimitive:")
+        set_position_draw(self.__blf, (50, 60), "ModernPrimitive:")
 
         if any(abs(s - 1.0) > self.SCALE_THRESHOLD for s in scale):
             set_color(self.__blf, Color((1.0, 0.5, 0.0)))
 
         set_position_draw(
-            self.__blf, (60, 10), f"Scale: {scale.x:.2f} {scale.y:.2f} {scale.z:.2f}"
+            self.__blf, (60, 40), f"Scale: {scale.x:.2f} {scale.y:.2f} {scale.z:.2f}"
         )
