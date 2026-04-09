@@ -27,7 +27,7 @@ class ResetOrigin_Operator(Operator):
     def proc_obj(cls, obj: Object) -> None:
         box = MinMax.from_obj_bb(obj)
 
-        # Pivot座標を取得
+        # Get pivot coordinates
         mod = get_mpr_modifier(obj.modifiers)
         diff = Vector()
         with suppress(KeyError):
