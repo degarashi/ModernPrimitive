@@ -216,6 +216,19 @@ class MPR_PT_Material(MPR_PT_Base):
                         col.prop(grid_settings, key, text=param_info.name)
 
 
+class MPR_PT_ApplyMesh(MPR_PT_Base):
+    bl_idname = "MPR_PT_ApplyMesh"
+    bl_parent_id = "MPR_PT_Main"
+    bl_label = "Apply Mesh"
+
+    def draw(self, _: Context) -> None:
+        layout = self.layout
+        layout.operator(ApplyMesh_Operator.bl_idname, text="Apply MPR-Modifier (hold MPR)")
+        layout.operator(
+            ApplyAndRemoveMesh_Operator.bl_idname, text="Apply and remove MPR-Modifier"
+        )
+
+
 class MPR_PT_Main(Panel):
     bl_idname = "MPR_PT_Main"
     bl_label = "Modern Primitive"
@@ -237,14 +250,6 @@ class MPR_PT_Main(Panel):
         box = self.layout.box()
         box.label(text="D-Cube:")
         box.operator(Equalize_DCube_Operator.bl_idname, text="Equalize Size")
-
-    def __apply_mesh_panel(self) -> None:
-        box = self.layout.box()
-        box.label(text="Apply Mesh")
-        box.operator(ApplyMesh_Operator.bl_idname, text="Apply MPR-Modifier (hold MPR)")
-        box.operator(
-            ApplyAndRemoveMesh_Operator.bl_idname, text="Apply and remove MPR-Modifier"
-        )
 
     def __viewport_display_panel(self, ctx: Context) -> None:
         box = self.layout.box()
@@ -277,7 +282,6 @@ class MPR_PT_Main(Panel):
         self.__focus_panel()
         self.__modal_edit_panel(ctx)
         self.__dcube_panel()
-        self.__apply_mesh_panel()
         self.__viewport_display_panel(ctx)
         self.__apply_panel()
 
@@ -289,6 +293,7 @@ CLASS: tuple[type, ...] = (
     MPR_PT_Restore,
     MPR_PT_Extract,
     MPR_PT_Material,
+    MPR_PT_ApplyMesh,
 )
 
 
