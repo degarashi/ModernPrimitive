@@ -298,7 +298,7 @@ class MPR_OT_modal_edit(Operator):
         self._snap_params = primitive_class.get_snap_param_names()
 
         # Add Smooth and Smooth Angle if they exist in the geometry node group
-        for name in ["Smooth", "Smooth Angle"]:
+        for name in [P.Smooth.name, P.SmoothAngle.name]:
             try:
                 find_interface_name(self._mod.node_group, name)
                 self._params.add(name)
@@ -415,7 +415,7 @@ class MPR_OT_modal_edit(Operator):
             set_interface_value(self._mod, (prop.name, val_int))
 
         elif prop.type is float:
-            if prop.name == "Smooth Angle":
+            if prop.has_tag(P.PT.Smooth):
                 # Convert degree input to radians for the engine
                 val = math.radians(val)
             else:
@@ -490,7 +490,7 @@ class MPR_OT_modal_edit(Operator):
                 init_f = init_val if init_val is not None else val
                 label = f"{prefix}{prop.name}{snap_status}"
 
-                if prop.name == "Smooth Angle":
+                if prop.has_tag(P.PT.Smooth):
                     # Display as Degrees
                     curr_val_str = f"{math.degrees(val):.2f}°"
                     init_val_str = f"({math.degrees(init_f):.2f}°)"
