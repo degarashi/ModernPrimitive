@@ -16,6 +16,7 @@ from .util.aux_func import (
     type_from_modifier_name,
 )
 from .util.aux_node import (
+    find_interface_name,
     get_interface_value,
     get_interface_values,
     set_interface_value,
@@ -61,6 +62,9 @@ PROP_TO_SNAP_NAME: dict[str, str] = {
 
 
 SEPARATOR_WIDTH = 50
+INDEX_X = 0
+INDEX_Y = 1
+INDEX_Z = 2
 
 
 def expand_idarray(val: Any) -> Any:
@@ -79,6 +83,7 @@ def get_prop_shortcuts(prop_name: str) -> list[str]:
         "SIZE": "S",
         "HEIGHT": "H",
         "WIDTH": "W",
+        "SMOOTH": "W",
         " X": "X",
         " Y": "Y",
         " Z": "Z",
@@ -159,9 +164,19 @@ class MPR_OT_modal_edit(Operator):
         self._mode_to_prop = {}
         self._key_to_modes = {}
 
-        for prop in primitive_class.get_params():
+        params = list(primitive_class.get_params())
+        # Add Smooth and Smooth Angle if they exist in GN but not in class params
+        for p in [P.Smooth, P.SmoothAngle]:
+            if p.name not in [pr.name for pr in params]:
+                try:
+                    find_interface_name(self._mod.node_group, p.name)
+                    params.append(p)
+                except KeyError:
+                    pass
+
+        for prop in params:
             prop_modes = []
-            if prop.type == Vector:
+            if prop.type is Vector:
                 # All components
                 name_all = prop.name
                 prop_modes.append(name_all)
@@ -245,12 +260,19 @@ class MPR_OT_modal_edit(Operator):
                     self._input_str = self._input_str[:-1]
                     self._update_value(context)
                 else:
-                    # If Backspace is pressed with no text input, reset to default (value at start of editing)
+                    # If Backspace is pressed with no text input,
+                    # reset to default (value at start of editing)
                     self._reset_current_property(context)
 
             # Handle snapping toggle
             elif event.type == "S" and event.shift:
                 if self._toggle_snapping(context):
+                    self._update_text()
+                    return {"RUNNING_MODAL"}
+
+            # Handle Smooth toggle
+            elif event.type == "W":
+                if self._toggle_smooth(context):
                     self._update_text()
                     return {"RUNNING_MODAL"}
 
@@ -278,6 +300,14 @@ class MPR_OT_modal_edit(Operator):
         self._primitive_name = primitive_class.type_name
         self._params = primitive_class.get_param_names()
         self._snap_params = primitive_class.get_snap_param_names()
+
+        # Add Smooth and Smooth Angle if they exist in the geometry node group
+        for name in ["Smooth", "Smooth Angle"]:
+            try:
+                find_interface_name(self._mod.node_group, name)
+                self._params.add(name)
+            except KeyError:
+                pass
 
         # Initialize modes dynamically from primitive parameters
         self._init_modes(primitive_class)
@@ -322,7 +352,7 @@ class MPR_OT_modal_edit(Operator):
         if initial_val is None:
             return
 
-        if prop.type == Vector:
+        if prop.type is Vector:
             if idx is None:
                 # Reset all axes
                 set_interface_value(self._mod, (prop.name, tuple(initial_val)))
@@ -349,6 +379,20 @@ class MPR_OT_modal_edit(Operator):
             return True
         return False
 
+    def _toggle_smooth(self, context: Context) -> bool:
+        """Toggle the smooth shading flag"""
+        try:
+            current_val = get_interface_value(self._mod, "Smooth")
+            set_interface_value(self._mod, ("Smooth", not current_val))
+            update_node_interface(self._mod, context)
+
+            # Switch mode to Smooth if it's available
+            if "Smooth" in self._modes:
+                self._mode = "Smooth"
+            return True
+        except KeyError:
+            return False
+
     def _update_value(self, context: Context) -> None:
         if not self._input_str or self._input_str in {"-", "."}:
             return
@@ -360,7 +404,7 @@ class MPR_OT_modal_edit(Operator):
 
         prop, idx = self._mode_to_prop[self._mode]
 
-        if prop.type == Vector:
+        if prop.type is Vector:
             current_val = list(expand_idarray(get_interface_value(self._mod, prop.name)))
             if idx is None:
                 new_val = [max(0.001, val)] * 3
@@ -369,17 +413,17 @@ class MPR_OT_modal_edit(Operator):
                 new_val = current_val
             set_interface_value(self._mod, (prop.name, tuple(new_val)))
 
-        elif prop.type == int:
+        elif prop.type is int:
             val_int = int(val)
             val_int = max(1, min(100, val_int))
             set_interface_value(self._mod, (prop.name, val_int))
 
-        elif prop.type == float:
-            if "DIV" in prop.name.upper():
-                val = max(0.001, min(100.0, val))
-            else:
-                val = max(0.001, val)
+        elif prop.type is float:
+            val = max(0.001, min(100.0, val)) if "DIV" in prop.name.upper() else max(0.001, val)
             set_interface_value(self._mod, (prop.name, val))
+
+        elif prop.type is bool:
+            set_interface_value(self._mod, (prop.name, val > 0))
 
         update_node_interface(self._mod, context)
 
@@ -416,38 +460,48 @@ class MPR_OT_modal_edit(Operator):
             curr_val_str = ""
             init_val_str = ""
 
-            if prop.type == Vector:
+            if prop.type is Vector:
                 vec = expand_idarray(val)
                 init_vec = expand_idarray(init_val) if init_val is not None else vec
 
                 if idx is None:
                     label = f"{prefix}{prop.name}{snap_status} (All)"
-                    curr_val_str = f"{vec[0]:.3f}, {vec[1]:.3f}, {vec[2]:.3f}"
-                    init_val_str = f"({init_vec[0]:.3f}, {init_vec[1]:.3f}, {init_vec[2]:.3f})"
+                    curr_val_str = f"{vec[INDEX_X]:.3f}, {vec[INDEX_Y]:.3f}, {vec[INDEX_Z]:.3f}"
+                    init_val_str = (
+                        f"({init_vec[INDEX_X]:.3f}, "
+                        f"{init_vec[INDEX_Y]:.3f}, "
+                        f"{init_vec[INDEX_Z]:.3f})"
+                    )
                 else:
                     axis_name = ["X", "Y", "Z"][idx]
                     label = f"{prefix}  {prop.name} {axis_name}{snap_status}"
                     curr_val_str = f"{vec[idx]:.3f}"
                     init_val_str = f"({init_vec[idx]:.3f})"
-            elif prop.type == int:
+            elif prop.type is int:
                 init_i = init_val if init_val is not None else val
                 label = f"{prefix}{prop.name}{snap_status}"
                 curr_val_str = f"{val}"
                 init_val_str = f"({init_i})"
-            elif prop.type == float:
+            elif prop.type is float:
                 init_f = init_val if init_val is not None else val
                 label = f"{prefix}{prop.name}{snap_status}"
                 curr_val_str = f"{val:.3f}"
                 init_val_str = f"({init_f:.3f})"
+            elif prop.type is bool:
+                init_b = init_val if init_val is not None else val
+                label = f"{prefix}{prop.name}{snap_status}"
+                curr_val_str = f"{'On' if val else 'Off'}"
+                init_val_str = f"({'On' if init_b else 'Off'})"
 
-            # Aligned formatting: Label(32) | Current Value(26) | Initial Value(26, Right-aligned)
+            # Aligned formatting:
+            # Label(32) | Current Value(26) | Initial Value(26, Right-aligned)
             msg += f"{label:<32} | {curr_val_str:<26} | {init_val_str:>40}\n"
-            if idx is None or idx == 2:
+            if idx is None or idx == INDEX_Z:
                 displayed_props.add(prop.name)
 
         msg += "-" * SEPARATOR_WIDTH + "\n"
         shortcut_info = " ".join([f"[{k}]" for k in sorted(self._key_to_modes.keys())])
-        msg += f"{shortcut_info} [Tab:Next] [Shift+S:Snap]\n"
+        msg += f"{shortcut_info} [Tab:Next] [Shift+S:Snap] [W:Smooth]\n"
         msg += "[L-Click/Enter:Confirm] [R-Click/Esc:Cancel] [BS:Reset]"
         self._text_drawer.set_text(msg)
 
