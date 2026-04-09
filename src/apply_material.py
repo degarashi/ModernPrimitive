@@ -70,6 +70,9 @@ class ApplyPrototypeMaterial_Operator(Operator):
         if context is None:
             return {"CANCELLED"}
 
+        # Copy selected_objects to ensure the selection is preserved
+        selected_objects = list(context.selected_objects)
+
         # Setup paths and names
         asset_path = Path(get_blend_file_path("__material__", False))
         if not asset_path.exists():
@@ -94,7 +97,7 @@ class ApplyPrototypeMaterial_Operator(Operator):
             return {"CANCELLED"}
 
         # Apply to meshes
-        selected_meshes = [obj for obj in context.selected_objects if obj.type == "MESH"]
+        selected_meshes = [obj for obj in selected_objects if obj.type == "MESH"]
         updated_materials = set()
 
         for obj in selected_meshes:
