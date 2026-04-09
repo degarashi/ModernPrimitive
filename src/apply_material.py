@@ -71,7 +71,7 @@ class ApplyPrototypeMaterial_Operator(Operator):
             return {"CANCELLED"}
 
         # Setup paths and names
-        asset_path = Path(get_blend_file_path("__material__", True))
+        asset_path = Path(get_blend_file_path("__material__", False))
         if not asset_path.exists():
             self.report({"ERROR"}, f"Material asset file missing: {asset_path}")
             return {"CANCELLED"}
