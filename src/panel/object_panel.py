@@ -245,6 +245,20 @@ class MPR_PT_ViewportDisplay(MPR_PT_Base):
             sp.operator(SwitchWireframe.bl_idname, text="Switch")
 
 
+class MPR_PT_ApplyScale(MPR_PT_Base):
+    bl_idname = "MPR_PT_ApplyScale"
+    bl_parent_id = "MPR_PT_Main"
+    bl_label = "Apply Scale"
+
+    def draw(self, _: Context) -> None:
+        layout = self.layout
+        row = layout.row()
+        btn = row.operator(ApplyScale_Operator.bl_idname, text="Scale")
+        btn.strict = False
+        btn = row.operator(ApplyScale_Operator.bl_idname, text="Scale (Strict Mode)")
+        btn.strict = True
+
+
 class MPR_PT_Main(Panel):
     bl_idname = "MPR_PT_Main"
     bl_label = "Modern Primitive"
@@ -267,15 +281,6 @@ class MPR_PT_Main(Panel):
         box.label(text="D-Cube:")
         box.operator(Equalize_DCube_Operator.bl_idname, text="Equalize Size")
 
-    def __apply_panel(self) -> None:
-        box = self.layout.box()
-        box.label(text="Apply")
-        row = box.row()
-        btn = row.operator(ApplyScale_Operator.bl_idname, text="Scale")
-        btn.strict = False
-        btn = row.operator(ApplyScale_Operator.bl_idname, text="Scale (Strict Mode)")
-        btn.strict = True
-
     def __modal_edit_panel(self, ctx: Context) -> None:
         if MPR_OT_modal_edit.poll(ctx):
             box = self.layout.box()
@@ -286,7 +291,6 @@ class MPR_PT_Main(Panel):
         self.__focus_panel()
         self.__modal_edit_panel(ctx)
         self.__dcube_panel()
-        self.__apply_panel()
 
 
 CLASS: tuple[type, ...] = (
@@ -298,6 +302,7 @@ CLASS: tuple[type, ...] = (
     MPR_PT_Material,
     MPR_PT_ApplyMesh,
     MPR_PT_ViewportDisplay,
+    MPR_PT_ApplyScale,
 )
 
 
