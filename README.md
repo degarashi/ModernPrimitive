@@ -26,6 +26,8 @@ All primitives are built with Geometry Nodes, allowing for non-destructive editi
 - **Extract to Primitive**: Select polygons in Edit Mode and convert them into a new Modern Primitive object. Supports multi-region selection.
 - **Origin Manipulation**: Move the object origin freely (using Blender's "Affect Only Origins") and reset it to the default position via the N-panel.
 - **UV Generation**: Supports `Simple` and `Evenly` (texel density preserving) UV mapping. (Requires specifying the UV name in a Shader Attribute node, default is "UVMap")
+- **Grid Material**: A procedural grid material for layout and UV checking. Parameters such as color, density, and line width can be adjusted directly from the MPR panel.
+<img src="./doc_images/grid_material.jpg" alt="Grid Material" width="75%" />
 - **Apply Mesh**: Bake the procedural shape to a static mesh while optionally keeping the modifier for reference.
 - **Apply Scale**: Synchronize gizmos with the object's scale.
 
@@ -45,7 +47,7 @@ You can also use the **MPR tab** in the N-panel for quick access.
 ### 2. Adjustment
 - **Modifier Properties**: Fine-tune all parameters in the Modifier tab.
 - **Gizmos**: Use the interactive handles in the viewport.
-- **N-Panel [MPR]**: Access extra tools like "Apply Mesh", "Restore Defaults", and "Conversion" tools.
+- **N-Panel [MPR]**: Access extra tools like "Apply Mesh", "Restore Defaults", "Conversion" tools, and Grid Material settings.
 
 <img src="./doc_images/mpr_panel.jpg" alt="N-Panel" width="75%" />
 
