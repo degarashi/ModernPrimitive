@@ -89,39 +89,34 @@ def get_prop_shortcuts(prop_name: str) -> list[str]:
         " Z": "Z",
     }
 
-    for keyword, key in SHORTCUT_MAP.items():
-        if keyword in name:
-            keys.append(key)
+    # Keyword search
+    keys.extend([key for kw, key in SHORTCUT_MAP.items() if kw in name])
 
-    # RADIUS types are evaluated exclusively
+    # Radius logic: evaluated exclusively
     if "RADIUS" in name:
-        if "TOP" in name:
-            keys.append("T")
-        elif "BOTTOM" in name:
-            keys.append("B")
-        elif "RING" in name:
-            keys.append("R")
-        elif "OUTER" in name:
-            keys.append("O")
-        elif "INNER" in name:
-            keys.append("I")
-        else:
-            keys.append("R")
+        radius_map: dict[str, str] = {
+            "TOP": "T",
+            "BOTTOM": "B",
+            "RING": "R",
+            "OUTER": "O",
+            "INNER": "I",
+        }
+        # Find first matching radius specific key, default to 'R'
+        radius_key: str = next((key for kw, key in radius_map.items() if kw in name), "R")
+        keys.append(radius_key)
 
-    # DIV types may contain multiple entries, so evaluate each separately
+    # Division logic: multiple entries allowed
     if "DIV" in name:
-        if "SIDE" in name:
-            keys.append("S")
-        if "FILL" in name:
-            keys.append("F")
-        if "CIRCLE" in name:
-            keys.append("C")
-        if "RING" in name:
-            keys.append("R")
-        if "CAP" in name:
-            keys.append("P")
+        div_map: dict[str, str] = {
+            "SIDE": "S",
+            "FILL": "F",
+            "CIRCLE": "C",
+            "RING": "R",
+            "CAP": "P",
+        }
+        keys.extend([key for kw, key in div_map.items() if kw in name])
 
-    # If no shortcut is found, use the first character
+    # Fallback to the first character if no shortcut is found
     if not keys and name:
         keys.append(name[0])
     return keys
