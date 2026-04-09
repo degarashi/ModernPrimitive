@@ -68,6 +68,8 @@ class Drawer:
     __scale: Vector
     __unit_scale: float
 
+    SCALE_THRESHOLD = 1e-4
+
     def __init__(self, blf: ModuleType, context: Context, m_world: Matrix):
         reg = context.region
         reg3d = context.region_data
@@ -255,5 +257,12 @@ class Drawer:
         )
 
     def show_hud(self, scale: Vector) -> None:
-        set_position_draw(blf, (50, 30), "ModernPrimitive:")
-        set_position_draw(blf, (60, 10), f"Scale: {scale.x:.2f} {scale.y:.2f} {scale.z:.2f}")
+        set_color(self.__blf, HUDColor.WHITE)
+        set_position_draw(self.__blf, (50, 30), "ModernPrimitive:")
+
+        if any(abs(s - 1.0) > self.SCALE_THRESHOLD for s in scale):
+            set_color(self.__blf, Color((1.0, 0.5, 0.0)))
+
+        set_position_draw(
+            self.__blf, (60, 10), f"Scale: {scale.x:.2f} {scale.y:.2f} {scale.z:.2f}"
+        )
