@@ -1,4 +1,5 @@
 from typing import Any, ClassVar
+import math
 
 import bpy
 from bpy.types import Context, Event, Operator
@@ -414,7 +415,15 @@ class MPR_OT_modal_edit(Operator):
             set_interface_value(self._mod, (prop.name, val_int))
 
         elif prop.type is float:
-            val = max(0.001, min(100.0, val)) if "DIV" in prop.name.upper() else max(0.001, val)
+            if prop.name == "Smooth Angle":
+                # Convert degree input to radians for the engine
+                val = math.radians(val)
+            else:
+                val = (
+                    max(0.001, min(100.0, val))
+                    if "DIV" in prop.name.upper()
+                    else max(0.001, val)
+                )
             set_interface_value(self._mod, (prop.name, val))
 
         elif prop.type is bool:
@@ -480,8 +489,15 @@ class MPR_OT_modal_edit(Operator):
             elif prop.type is float:
                 init_f = init_val if init_val is not None else val
                 label = f"{prefix}{prop.name}{snap_status}"
-                curr_val_str = f"{val:.3f}"
-                init_val_str = f"({init_f:.3f})"
+
+                if prop.name == "Smooth Angle":
+                    # Display as Degrees
+                    curr_val_str = f"{math.degrees(val):.2f}°"
+                    init_val_str = f"({math.degrees(init_f):.2f}°)"
+                else:
+                    curr_val_str = f"{val:.3f}"
+                    init_val_str = f"({init_f:.3f})"
+
             elif prop.type is bool:
                 init_b = init_val if init_val is not None else val
                 label = f"{prefix}{prop.name}{snap_status}"
