@@ -128,7 +128,7 @@ MATERIAL_PARAMS: dict[str, MaterialValue] = {
     "Param_Main_LineWidth": MaterialValueFloat("Main Line Width", 1.0, 0.001, 100.0),
     "Param_Main_GridDensity": MaterialValueInt("Main Grid Density", 1, 1, 100),
     "Param_Main_CoplanarIntensity": MaterialValueFloat(
-        "Sub Grid Coplanar Intensity", 0.03, 0.0, 1.0
+        "Main Grid Coplanar Intensity", 0.03, 0.0, 1.0
     ),
     "Param_Density": MaterialValueFloat("Grid Density (Global)", 1.0, 0.001, 100.0),
     "Param_LineWidth": MaterialValueFloat("Line Width (Global)", 0.01, 0.001, 1.0),
