@@ -229,6 +229,22 @@ class MPR_PT_ApplyMesh(MPR_PT_Base):
         )
 
 
+class MPR_PT_ViewportDisplay(MPR_PT_Base):
+    bl_idname = "MPR_PT_ViewportDisplay"
+    bl_parent_id = "MPR_PT_Main"
+    bl_label = "Viewport Display"
+
+    def draw(self, ctx: Context) -> None:
+        layout = self.layout
+        obj = get_active_and_selected_primitive(ctx)
+        if obj is not None and is_mpr_enabled(obj.modifiers):
+            sp = layout.split(factor=0.3)
+            sp.label(text="Wireframe:")
+            view_text = f"{getattr(obj, Wireframe_EntryName, '')}" if obj is not None else ""
+            sp.label(text=view_text)
+            sp.operator(SwitchWireframe.bl_idname, text="Switch")
+
+
 class MPR_PT_Main(Panel):
     bl_idname = "MPR_PT_Main"
     bl_label = "Modern Primitive"
@@ -251,18 +267,6 @@ class MPR_PT_Main(Panel):
         box.label(text="D-Cube:")
         box.operator(Equalize_DCube_Operator.bl_idname, text="Equalize Size")
 
-    def __viewport_display_panel(self, ctx: Context) -> None:
-        box = self.layout.box()
-        box.column().label(text="Viewport Display")
-        sp = box.split(factor=0.3)
-
-        obj = get_active_and_selected_primitive(ctx)
-        if obj is not None and is_mpr_enabled(obj.modifiers):
-            sp.label(text="Wireframe:")
-            view_text = f"{getattr(obj, Wireframe_EntryName, '')}" if obj is not None else ""
-            sp.label(text=view_text)
-            sp.operator(SwitchWireframe.bl_idname, text="Switch")
-
     def __apply_panel(self) -> None:
         box = self.layout.box()
         box.label(text="Apply")
@@ -282,7 +286,6 @@ class MPR_PT_Main(Panel):
         self.__focus_panel()
         self.__modal_edit_panel(ctx)
         self.__dcube_panel()
-        self.__viewport_display_panel(ctx)
         self.__apply_panel()
 
 
@@ -294,6 +297,7 @@ CLASS: tuple[type, ...] = (
     MPR_PT_Extract,
     MPR_PT_Material,
     MPR_PT_ApplyMesh,
+    MPR_PT_ViewportDisplay,
 )
 
 
