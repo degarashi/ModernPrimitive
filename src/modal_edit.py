@@ -26,39 +26,39 @@ from .util.aux_node import (
 
 
 PROP_TO_SNAP_NAME: dict[str, str] = {
-    "Size": "Enable Size Snapping",
-    "Size X": "Enable Size Snapping",
-    "Size Y": "Enable Size Snapping",
-    "Size Z": "Enable Size Snapping",
-    "Min X": "Enable Size Snapping",
-    "Min Y": "Enable Size Snapping",
-    "Min Z": "Enable Size Snapping",
-    "Max X": "Enable Size Snapping",
-    "Max Y": "Enable Size Snapping",
-    "Max Z": "Enable Size Snapping",
-    "Division X": "Enable Division Snapping",
-    "Division Y": "Enable Division Snapping",
-    "Division Z": "Enable Division Snapping",
-    "Global Division": "Enable Division Snapping",
-    "Height": "Enable Height Snapping",
-    "Radius": "Enable Radius Snapping",
-    "Top Radius": "Enable Top-Radius Snapping",
-    "Bottom Radius": "Enable Bottom-Radius Snapping",
-    "Ring Radius": "Enable Ring Radius Snapping",
-    "Outer Radius": "Enable Outer Radius Snapping",
-    "Inner Radius": "Enable Inner Radius Snapping",
-    "Div Circle": "Enable Circle-Division Snapping",
-    "Div Side": "Enable Side-Division Snapping",
-    "Div Fill": "Enable Fill-Division Snapping",
-    "Div Ring": "Enable Ring-Division Snapping",
-    "Div Cap": "Enable Cap-Division Snapping",
-    "Num Blades": "Enable Num Blades Snapping",
-    "Twist": "Enable Twist Snapping",
-    "InnerCircle Division": "Enable InnerCircle Division Snapping",
-    "InnerCircle Radius": "Enable InnerCircle Radius Snapping",
-    "Fillet Count": "Enable Fillet Count Snapping",
-    "Fillet Radius": "Enable Fillet Radius Snapping",
-    "Rotations": "Enable Rotations Snapping",
+    P.Size.name: P.SnapSize.name,
+    P.SizeX.name: P.SnapSize.name,
+    P.SizeY.name: P.SnapSize.name,
+    P.SizeZ.name: P.SnapSize.name,
+    P.MinX.name: P.SnapSize.name,
+    P.MinY.name: P.SnapSize.name,
+    P.MinZ.name: P.SnapSize.name,
+    P.MaxX.name: P.SnapSize.name,
+    P.MaxY.name: P.SnapSize.name,
+    P.MaxZ.name: P.SnapSize.name,
+    P.DivisionX.name: P.SnapDivision.name,
+    P.DivisionY.name: P.SnapDivision.name,
+    P.DivisionZ.name: P.SnapDivision.name,
+    P.GlobalDivision.name: P.SnapDivision.name,
+    P.Height.name: P.SnapHeight.name,
+    P.Radius.name: P.SnapRadius.name,
+    P.TopRadius.name: P.SnapTopRadius.name,
+    P.BottomRadius.name: P.SnapBottomRadius.name,
+    P.RingRadius.name: P.SnapRingRadius.name,
+    P.OuterRadius.name: P.SnapOuterRadius.name,
+    P.InnerRadius.name: P.SnapInnerRadius.name,
+    P.DivisionCircle.name: P.SnapCircleDivision.name,
+    P.DivisionSide.name: P.SnapSideDivision.name,
+    P.DivisionFill.name: P.SnapFillDivision.name,
+    P.DivisionRing.name: P.SnapRingDivision.name,
+    P.DivisionCap.name: P.SnapCapDivision.name,
+    P.NumBlades.name: P.SnapNumBlades.name,
+    P.Twist.name: P.SnapTwist.name,
+    P.InnerCircleDivision.name: P.SnapInnerCircleDivision.name,
+    P.InnerCircleRadius.name: P.SnapInnerCircleRadius.name,
+    P.FilletCount.name: P.SnapFilletCount.name,
+    P.FilletRadius.name: P.SnapFilletRadius.name,
+    P.Rotations.name: P.SnapRotations.name,
 }
 
 
@@ -81,10 +81,10 @@ def get_prop_shortcuts(prop_name: str) -> list[str]:
     # Map of keywords contained in property names and corresponding shortcut keys
     SHORTCUT_MAP: dict[str, str] = {
         "GLOBAL": "G",
-        "SIZE": "S",
-        "HEIGHT": "H",
-        "WIDTH": "W",
-        "SMOOTH": "W",
+        P.PT.Size.name.upper(): "S",
+        P.PT.Height.name.upper(): "H",
+        P.PT.Width.name.upper(): "W",
+        P.Smooth.name.upper(): "W",
         " X": "X",
         " Y": "Y",
         " Z": "Z",
@@ -378,13 +378,13 @@ class MPR_OT_modal_edit(Operator):
     def _toggle_smooth(self, context: Context) -> bool:
         """Toggle the smooth shading flag"""
         try:
-            current_val = get_interface_value(self._mod, "Smooth")
-            set_interface_value(self._mod, ("Smooth", not current_val))
+            current_val = get_interface_value(self._mod, P.Smooth.name)
+            set_interface_value(self._mod, (P.Smooth.name, not current_val))
             update_node_interface(self._mod, context)
 
             # Switch mode to Smooth if it's available
-            if "Smooth" in self._modes:
-                self._mode = "Smooth"
+            if P.Smooth.name in self._modes:
+                self._mode = P.Smooth.name
             return True
         except KeyError:
             return False
@@ -421,7 +421,7 @@ class MPR_OT_modal_edit(Operator):
             else:
                 val = (
                     max(0.001, min(100.0, val))
-                    if "DIV" in prop.name.upper()
+                    if prop.has_tag(P.PT.Division)
                     else max(0.001, val)
                 )
             set_interface_value(self._mod, (prop.name, val))
@@ -512,7 +512,7 @@ class MPR_OT_modal_edit(Operator):
 
         msg += "-" * SEPARATOR_WIDTH + "\n"
         shortcut_info = " ".join([f"[{k}]" for k in sorted(self._key_to_modes.keys())])
-        msg += f"{shortcut_info} [Tab:Next] [Shift+S:Snap] [W:Smooth]\n"
+        msg += f"{shortcut_info} [Tab:Next] [Shift+S:Snap] [W:{P.Smooth.name}]\n"
         msg += "[L-Click/Enter:Confirm] [R-Click/Esc:Cancel] [BS:Reset]"
         self._text_drawer.set_text(msg)
 
