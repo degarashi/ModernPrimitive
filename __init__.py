@@ -1,5 +1,6 @@
 import importlib
 import logging
+import os
 from types import ModuleType
 from typing import TypeAlias
 
@@ -7,8 +8,12 @@ __all__ = ["register", "unregister"]
 
 ModuleDict: TypeAlias = dict[str, ModuleType]
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+logger.setLevel(
+    getattr(
+        logging, os.getenv("MODERN_PRIMITIVE_LOG_LEVEL", "WARNING").upper(), logging.WARNING
+    )
+)
 
 MODULE_PREFIX = "src"
 MODULE_NAMES: list[str] = [
