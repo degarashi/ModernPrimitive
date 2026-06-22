@@ -46,7 +46,7 @@ def _make_fullname(name: str) -> str:
 
 
 def _import_modules(mod_names: list[str]) -> ModuleDict:
-    logger.info("Begin importing submodules...")
+    logger.debug("Begin importing submodules...")
 
     def load_module(name: str) -> ModuleType:
         full_name = _make_fullname(name)
@@ -61,19 +61,19 @@ def _import_modules(mod_names: list[str]) -> ModuleDict:
 
     modules: ModuleDict = {}
     for name in mod_names:
-        logger.info(f"Importing submodule '{name}'")
+        logger.debug(f"Importing submodule '{name}'")
         modules[name] = load_module(name)
-    logger.info("Importing submodule Done!")
+    logger.debug("Importing submodule Done!")
     return modules
 
 
 def _reload_modules(modules: ModuleDict) -> ModuleDict:
-    logger.info("Begin reloading submodules...")
+    logger.debug("Begin reloading submodules...")
     ret: ModuleDict = {}
     for name, mod in modules.items():
-        logger.info(f"Reloading submodule '{name}'")
+        logger.debug(f"Reloading submodule '{name}'")
         ret[name] = importlib.reload(mod)
-    logger.info("Reloading submodule Done!")
+    logger.debug("Reloading submodule Done!")
     return ret
 
 
