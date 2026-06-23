@@ -38,91 +38,23 @@ HOTKEY_DEFS = [
 ]
 
 
-def _get_kc():
-    return bpy.context.window_manager.keyconfigs.addon
+from .util import keymap_helper
 
 
 def get_hotkey_entry_item(km, kmi_idname, properties_name=None):
-    for km_item in km.keymap_items:
-        if km_item.idname == kmi_idname:
-            if properties_name:
-                if getattr(km_item.properties, "name", None) == properties_name:
-                    return km_item
-            else:
-                return km_item
-    return None
+    return keymap_helper.get_hotkey_entry_item(km, kmi_idname, properties_name)
 
 
 def remove_hotkey():
-    kc = _get_kc()
-    if not kc:
-        return
-    km = kc.keymaps.get("3D View")
-    if not km:
-        return
-    for kmi in list(km.keymap_items):
-        for spec in HOTKEY_DEFS:
-            if kmi.idname == spec["idname"]:
-                prop_name = spec["prop_name"]
-                if prop_name is None or getattr(kmi.properties, "name", None) == prop_name:
-                    km.keymap_items.remove(kmi)
-                    break
+    keymap_helper.remove_hotkeys(HOTKEY_DEFS)
 
 
 def add_hotkey():
-    remove_hotkey()
-
-    kc = _get_kc()
-    if not kc:
-        return
-    km = kc.keymaps.new(name="3D View", space_type="VIEW_3D")
-
-    for spec in HOTKEY_DEFS:
-        kmi = km.keymap_items.new(
-            spec["idname"],
-            spec["type"],
-            "PRESS",
-            ctrl=spec["ctrl"],
-            shift=spec["shift"],
-            alt=spec["alt"],
-        )
-        if spec["prop_name"]:
-            kmi.properties.name = spec["prop_name"]
-        kmi.active = True
+    keymap_helper.add_hotkeys(HOTKEY_DEFS)
 
 
 def restore_individual_hotkey(label: str):
-    kc = _get_kc()
-    if not kc:
-        return
-    km = kc.keymaps.new(name="3D View", space_type="VIEW_3D")
-
-    target_spec = None
-    for spec in HOTKEY_DEFS:
-        if spec["label"] == label:
-            target_spec = spec
-            break
-    if not target_spec:
-        return
-
-    for kmi in list(km.keymap_items):
-        if kmi.idname == target_spec["idname"]:
-            prop_name = target_spec["prop_name"]
-            if prop_name is None or getattr(kmi.properties, "name", None) == prop_name:
-                km.keymap_items.remove(kmi)
-                break
-
-    kmi = km.keymap_items.new(
-        target_spec["idname"],
-        target_spec["type"],
-        "PRESS",
-        ctrl=target_spec["ctrl"],
-        shift=target_spec["shift"],
-        alt=target_spec["alt"],
-    )
-    if target_spec["prop_name"]:
-        kmi.properties.name = target_spec["prop_name"]
-    kmi.active = True
+    keymap_helper.restore_individual_hotkey(label, HOTKEY_DEFS)
 
 
 class USERPREF_OT_mpr_restore_hotkeys(Operator):
