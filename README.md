@@ -15,7 +15,8 @@ All primitives are built with Geometry Nodes, allowing for non-destructive editi
 
 ### Interactive Workflow
 - **In-Viewport Gizmos**: Adjust parameters like radius, height, and divisions directly in the 3D view.
-- **HUD (Heads-Up Display)**: Real-time display of parameter values and snapping information.
+- **HUD (Heads-Up Display)**: Real-time display of parameter values and snapping information. Optionally show world-space values alongside local values when the object has non-uniform scale (configurable in Preferences → HUD, **disabled by default**).
+<img src="./doc_images/world_space_scale_hud.jpg" alt="World-Space HUD Display" width="75%" />
 - **Modal Edit (`Ctrl + Shift + C`)**: Enter a modal mode to adjust parameters using keyboard shortcuts (e.g., `S` for Size, `H` for Height, `W` for Smooth), numeric input, and mouse wheel.
 <img src="./doc_images/modal_edit.jpg" alt="Modal Edit" width="50%" />
 <img src="./doc_images/modal_edit2.jpg" alt="Modal Edit Smooth" width="50%" />
@@ -55,6 +56,8 @@ You can also use the **MPR tab** in the N-panel for quick access.
 ### 3. Shortcut
 - **`Ctrl + Alt + X`**: Focus the Modern Primitive modifier. Pressing it again will unfocus/toggle.
 - **`Ctrl + Shift + C`**: Start Modal Edit.
+
+Keybindings can be viewed and restored from the **Preferences** panel.
 
 ## Gallery
 <img src="./doc_images/usage_cube_1.jpg" alt="" width="24%" /> <img src="./doc_images/usage_cone_1.jpg" alt="" width="24%" /> <img src="./doc_images/usage_cylinder_2.jpg" alt="" width="24%" /> <img src="./doc_images/usage_grid_1.jpg" alt="" width="24%" />
