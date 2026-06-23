@@ -522,37 +522,11 @@ def draw_menu(self, context):
     layout.operator(MPR_OT_modal_edit.bl_idname, text="Modal Edit (MPR)")
 
 
-addon_keymaps = []
-
-
-def _register_keymap() -> None:
-    wm = bpy.context.window_manager
-    kc = wm.keyconfigs.addon
-    if kc:
-        km = kc.keymaps.new(name="3D View", space_type="VIEW_3D")
-        kmi = km.keymap_items.new(
-            MPR_OT_modal_edit.bl_idname,
-            type="C",
-            value="PRESS",
-            ctrl=True,
-            shift=True,
-        )
-        addon_keymaps.append((km, kmi))
-
-
-def _unregister_keymap() -> None:
-    for km, kmi in addon_keymaps:
-        km.keymap_items.remove(kmi)
-    addon_keymaps.clear()
-
-
 def register() -> None:
     bpy.utils.register_class(MPR_OT_modal_edit)
     bpy.types.VIEW3D_MT_mesh_add.append(draw_menu)
-    _register_keymap()
 
 
 def unregister() -> None:
     bpy.utils.unregister_class(MPR_OT_modal_edit)
     bpy.types.VIEW3D_MT_mesh_add.remove(draw_menu)
-    _unregister_keymap()

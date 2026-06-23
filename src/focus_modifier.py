@@ -1,11 +1,9 @@
-from typing import ClassVar, NamedTuple, cast
+from typing import ClassVar, cast
 
 import bpy
 from bpy.props import BoolProperty
 from bpy.types import (
     Context,
-    KeyMap,
-    KeyMapItem,
     Modifier,
     Object,
     ObjectModifiers,
@@ -19,8 +17,6 @@ from .util.aux_func import (
     is_mpr_enabled,
 )
 from .constants import MODERN_PRIMITIVE_PREFIX
-from .key import KeyAssign
-from .modern_primitive import VIEW3D_MT_mesh_modern_prim
 
 
 def save_other_modifier_state(mods: ObjectModifiers) -> dict[str, bool]:
@@ -125,9 +121,6 @@ def disable_other_mods(mods: ObjectModifiers) -> None:
         mod.show_viewport = is_primitive_mod(mod)
 
 
-addon_keymaps: list[tuple[KeyMap, KeyMapItem]] = []
-
-
 def menu_func(self, context: Context) -> None:
     layout = self.layout
 
@@ -140,51 +133,11 @@ def menu_func(self, context: Context) -> None:
 MENU_TARGET = bpy.types.VIEW3D_MT_select_object
 
 
-class KeymapAt(NamedTuple):
-    name: str
-    space_type: str
-
-
-KEY_ASSIGN_MAP: dict[KeymapAt, list[KeyAssign]] = {
-    KeymapAt("3D View", "VIEW_3D"): [
-        KeyAssign(
-            FocusModifier_Operator.bl_idname,
-            "X",
-            "PRESS",
-            True,
-            True,
-            False,
-        ),
-        KeyAssign(
-            "wm.call_menu",
-            "M",
-            "PRESS",
-            True,
-            False,
-            True,
-            prop={"name": VIEW3D_MT_mesh_modern_prim.bl_idname},
-        ),
-    ]
-}
-
-
 def register() -> None:
     bpy.utils.register_class(FocusModifier_Operator)
     MENU_TARGET.append(menu_func)
-
-    kc = bpy.context.window_manager.keyconfigs.addon
-    if kc:
-        for at, as_l in KEY_ASSIGN_MAP.items():
-            km = kc.keymaps.new(name=at.name, space_type=at.space_type)
-            for a in as_l:
-                kmi = a.register(km)
-                addon_keymaps.append((km, kmi))
 
 
 def unregister() -> None:
     bpy.utils.unregister_class(FocusModifier_Operator)
     MENU_TARGET.remove(menu_func)
-
-    for km, kmi in addon_keymaps:
-        km.keymap_items.remove(kmi)
-    addon_keymaps.clear()
