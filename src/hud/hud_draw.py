@@ -67,91 +67,96 @@ class MPR_Hud(Operator):
     bl_description = "Show/Hide ModernPrimitive HUD"
     bl_options: ClassVar[set[str]] = set()
 
-    __handle = None
+    _handle = None
     show: BoolProperty(name="Show HUD", default=True)
 
     @classmethod
     def is_running(cls) -> bool:
-        return cls.__handle is not None
+        return cls._handle is not None
 
     @classmethod
-    def __handle_add(cls, context: Context) -> None:
+    def _handle_add(cls, context: Context) -> None:
         if not cls.is_running():
-            cls.__handle = SpaceView3D.draw_handler_add(
-                cls.__draw, (context,), "WINDOW", "POST_PIXEL"
+            cls._handle = SpaceView3D.draw_handler_add(
+                cls._draw, (), "WINDOW", "POST_PIXEL"
             )
 
     @classmethod
-    def __handle_remove(cls, context: Context) -> None:
+    def _handle_remove(cls, context: Context) -> None:
         if cls.is_running():
-            SpaceView3D.draw_handler_remove(cls.__handle, "WINDOW")
-            cls.__handle = None
+            SpaceView3D.draw_handler_remove(cls._handle, "WINDOW")
+            cls._handle = None
 
     @classmethod
     def cleanup(cls) -> None:
-        cls.__handle_remove(bpy.context)
+        cls._handle_remove(bpy.context)
 
     @classmethod
-    def __draw(cls, context: Context) -> None:
-        # Do not display in any other than object mode
-        if context.mode != "OBJECT":
-            return
-
-        obj = context.active_object
-        if not is_primitive_selected(obj) or obj not in context.selected_objects:
-            return
-
-        space = cast(SpaceView3D, context.space_data)
-        # Do not display if gizmo display is turned off
-        if not (space.show_gizmo and space.show_gizmo_modifier):
-            return
-
+    def _draw(cls) -> None:
         try:
-            typ = type_from_modifier_name(get_mpr_modifier(obj.modifiers).name)
-            if typ not in PROCS:
+            context = bpy.context
+            # Do not display in any other than object mode
+            if context.mode != "OBJECT":
                 return
 
-            reg3d = context.region_data
-            show_hud = True
-
-            gizmo_info = get_gizmo_info()
-            if gizmo_info is None:
+            obj = context.active_object
+            if not is_primitive_selected(obj) or obj not in context.selected_objects:
                 return
 
-            QUADVIEW_NUM = 4
-            # In quad view mode,
-            # scale values are not displayed except for the upper-right view
-            if (
-                len(space.region_quadviews) == QUADVIEW_NUM
-                and space.region_quadviews[-1] != reg3d
-            ):
-                show_hud = False
-            prefs = get_addon_preferences(context)
-            with Drawer(blf, context, obj.matrix_world, prefs.show_world_space_value) as drawer:
-                if show_hud:
-                    drawer.show_hud(obj.scale)
+            space = cast(SpaceView3D, context.space_data)
+            # Do not display if gizmo display is turned off
+            if not (space.show_gizmo and space.show_gizmo_modifier):
+                return
 
-                mod = get_mpr_modifier(obj.modifiers)
-                typ_ver = TypeAndVersion.get_type_and_version(mod.node_group.name)
-                if typ_ver is None:
+            try:
+                typ = type_from_modifier_name(get_mpr_modifier(obj.modifiers).name)
+                if typ not in PROCS:
                     return
-                is_snap_capable = typ_ver.version >= SNAPPING_CAPABLE
-                PROCS[typ](mod, drawer, gizmo_info, is_snap_capable)
 
-        except DGUnknownType:
+                reg3d = context.region_data
+                show_hud = True
+
+                gizmo_info = get_gizmo_info()
+                if gizmo_info is None:
+                    return
+
+                QUADVIEW_NUM = 4
+                # In quad view mode,
+                # scale values are not displayed except for the upper-right view
+                if (
+                    len(space.region_quadviews) == QUADVIEW_NUM
+                    and space.region_quadviews[-1] != reg3d
+                ):
+                    show_hud = False
+                prefs = get_addon_preferences(context)
+                with Drawer(blf, context, obj.matrix_world, prefs.show_world_space_value) as drawer:
+                    if show_hud:
+                        drawer.show_hud(obj.scale)
+
+                    mod = get_mpr_modifier(obj.modifiers)
+                    typ_ver = TypeAndVersion.get_type_and_version(mod.node_group.name)
+                    if typ_ver is None:
+                        return
+                    is_snap_capable = typ_ver.version >= SNAPPING_CAPABLE
+                    PROCS[typ](mod, drawer, gizmo_info, is_snap_capable)
+
+            except DGUnknownType:
+                pass
+        except Exception:
             pass
 
     def execute(self, context: Context) -> set[str]:
         cls = MPR_Hud
         if self.show:
-            cls.__handle_add(context)
+            cls._handle_add(context)
         else:
-            cls.__handle_remove(context)
+            cls._handle_remove(context)
         return {"FINISHED"}
 
 
 handler_deps_update = bpy.app.handlers.depsgraph_update_post
 handler_loadpost = bpy.app.handlers.load_post
+_hud_init_timer = None
 
 
 class Setting:
@@ -159,25 +164,61 @@ class Setting:
     pref_value: ClassVar[bool | None] = None
 
     @classmethod
-    def _apply_from_pref_value(cls) -> None:
-        # This is a process that should be done only once when the plugin is initialized,
-        # so I will improve it later if possible.
-        if cls.pref_value is None:
-            should_show: bool = False
-            # Load show-gizmo flag from preferences
-            should_show = cls.pref_value = get_addon_preferences(bpy.context).show_gizmo_value
-            # Set the flag value to the window manager property value
-            bpy.context.window_manager.show_gizmo_values = should_show
-            bpy.ops.ui.mpr_show_hud(show=should_show)
+    def _set_window_manager_value(cls, value: bool) -> bool:
+        try:
+            bpy.context.window_manager.show_gizmo_values = value
+            return True
+        except Exception:
+            try:
+                bpy.context.window_manager["show_gizmo_values"] = value
+                return True
+            except Exception:
+                return False
 
     @classmethod
-    def _on_load(cls) -> None:
-        if cls.pref_value is not None:
-            # When we reach this point, the Scene has just been initialized,
-            # so restore the previous settings to the WindowManager.
-            bpy.context.window_manager.show_gizmo_values = cls.pref_value
+    def _get_window_manager_value(cls) -> bool | None:
+        try:
+            return bpy.context.window_manager.show_gizmo_values
+        except Exception:
+            try:
+                return bpy.context.window_manager["show_gizmo_values"]
+            except Exception:
+                return None
+
+    @classmethod
+    def _apply_show_state(cls, should_show: bool) -> None:
+        if should_show:
+            MPR_Hud._handle_add(bpy.context)
         else:
-            cls._apply_from_pref_value()
+            MPR_Hud._handle_remove(bpy.context)
+
+    @classmethod
+    def _sync_from_window_manager(cls) -> bool:
+        should_show = cls._get_window_manager_value()
+        if should_show is None:
+            return False
+        cls.pref_value = should_show
+        cls._apply_show_state(should_show)
+        return True
+
+    @classmethod
+    def _apply_from_pref_value(cls) -> None:
+        if cls.pref_value is None:
+            should_show: bool = False
+            try:
+                should_show = get_addon_preferences(bpy.context).show_gizmo_value
+            except Exception:
+                # Try again later, do not set cls.pref_value yet
+                return
+
+            cls.pref_value = should_show
+            if not cls._set_window_manager_value(should_show):
+                # If setting fails, reset pref_value to try again
+                cls.pref_value = None
+                return
+
+        if not cls._sync_from_window_manager():
+            cls._apply_show_state(cls.pref_value)
 
     @classmethod
     def on_changed(cls, value: bool) -> None:
@@ -190,11 +231,25 @@ def on_update(scene: Scene, depsgraph: Depsgraph) -> None:
 
 
 @persistent
-def on_load(new_file: str) -> None:
-    Setting._on_load()
+def on_load(*args) -> None:
+    Setting._apply_from_pref_value()
+
+
+def init_hud_deferred() -> float | None:
+    try:
+        if bpy.context.window_manager is None:
+            return 0.1
+        Setting._apply_from_pref_value()
+        if Setting.pref_value is not None:
+            return None
+    except Exception:
+        pass
+    return 0.1
 
 
 def register() -> None:
+    global _hud_init_timer
+
     register_class(MPR_Hud)
 
     # Registering handlers
@@ -203,8 +258,17 @@ def register() -> None:
     if on_load not in handler_loadpost:
         handler_loadpost.append(on_load)
 
+    # Defer execution to ensure context / window_manager are ready
+    _hud_init_timer = bpy.app.timers.register(init_hud_deferred, first_interval=0.1)
+
 
 def unregister() -> None:
+    global _hud_init_timer
+
+    if _hud_init_timer is not None:
+        bpy.app.timers.unregister(_hud_init_timer)
+        _hud_init_timer = None
+
     # UnRegistering handlers
     if on_load in handler_loadpost:
         handler_loadpost.remove(on_load)
