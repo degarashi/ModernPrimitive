@@ -66,20 +66,55 @@ class Preference(AddonPreferences):
             ("object.mpr_modal_edit", None, "Modal Edit"),
         ]
 
-        any_found = False
+        missing_count = 0
+        total_count = len(hotkeys)
+
         if km:
             for kmi_idname, prop_name, label in hotkeys:
                 kmi = keymap.get_hotkey_entry_item(km, kmi_idname, prop_name)
-                if kmi:
-                    row = box.row()
-                    row.label(text=label)
-                    row.context_pointer_set("keymap", km)
-                    rna_keymap_ui.draw_kmi([], kc, km, kmi, row, 0)
-                    any_found = True
+                row = box.row()
+                row.label(text=label)
 
-        if not any_found:
-            box.label(text="No hotkeys found!", icon="ERROR")
-            box.operator(keymap.USERPREF_OT_mpr_add_hotkey.bl_idname, text="Add hotkeys")
+                if kmi:
+                    sub = row.row()
+                    sub.context_pointer_set("keymap", km)
+                    rna_keymap_ui.draw_kmi([], kc, km, kmi, sub, 0)
+
+                    op = row.operator(
+                        keymap.USERPREF_OT_mpr_restore_individual_hotkey.bl_idname,
+                        text="",
+                        icon="FILE_REFRESH",
+                    )
+                    op.target_shortcut = label
+                else:
+                    missing_count += 1
+                    row.label(text="Missing", icon="ERROR")
+                    op = row.operator(
+                        keymap.USERPREF_OT_mpr_restore_individual_hotkey.bl_idname,
+                        text="Add",
+                        icon="ADD",
+                    )
+                    op.target_shortcut = label
+        else:
+            missing_count = total_count
+
+        if missing_count > 0:
+            row = box.row()
+            row.label(text=f"Missing {missing_count} of {total_count} shortcuts!", icon="ERROR")
+
+        row = box.row()
+        if missing_count == total_count:
+            row.operator(
+                keymap.USERPREF_OT_mpr_restore_hotkeys.bl_idname,
+                text="Add Default Hotkeys",
+                icon="ADD",
+            )
+        else:
+            row.operator(
+                keymap.USERPREF_OT_mpr_restore_hotkeys.bl_idname,
+                text="Restore Default Hotkeys",
+                icon="FILE_REFRESH",
+            )
 
     def draw(self, ctx: Context) -> None:
         self.__box_create(self.layout)
