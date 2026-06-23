@@ -47,11 +47,12 @@ def draw_hud(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr, is_snap_capable:
         return gizmo_info[GRID_GIZMO_INDEX[prop]]
 
     # Unit text formatting
-    def unit_text(prop: P.Prop, prop_snap: P.Prop) -> str:
+    def unit_text(prop: P.Prop, prop_snap: P.Prop, scale: float = 1.0) -> str:
         return d.format_unit_or_adjusted_dist(
             out[prop.name],
             gz(prop).actual_value,
             is_snap_capable and snap_flag[prop_snap.name],
+            scale=scale,
         )
 
     # --------------------------- draw texts ---------------------------
@@ -65,7 +66,7 @@ def draw_hud(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr, is_snap_capable:
             is_snap_capable and snap_flag[P.SnapDivision.name],
         ),
         Vector((1, 0, 0)),
-        unit_text(P.SizeX, P.SnapSize),
+        unit_text(P.SizeX, P.SnapSize, d.scale.x),
     )
     # Draw Y axis text
     d.draw_text_at_2(
@@ -77,7 +78,7 @@ def draw_hud(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr, is_snap_capable:
             is_snap_capable and snap_flag[P.SnapDivision.name],
         ),
         Vector((0, 1, 0)),
-        unit_text(P.SizeY, P.SnapSize),
+        unit_text(P.SizeY, P.SnapSize, d.scale.y),
     )
     # Draw global division text
     d.draw_text_at(

@@ -47,9 +47,11 @@ def draw_hud(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr, is_snap_capable:
             val, int(gz(prop).actual_value), is_snap_capable and snap_flag[prop_snap.name]
         )
 
-    def unit_text(val: float, prop: P.Prop, prop_snap: P.Prop) -> str:
+    def unit_text(val: float, prop: P.Prop, prop_snap: P.Prop, scale: float = 1.0) -> str:
         return d.format_unit_or_adjusted_dist(
-            val, gz(prop).actual_value, is_snap_capable and snap_flag[prop_snap.name]
+            val, gz(prop).actual_value,
+            is_snap_capable and snap_flag[prop_snap.name],
+            scale=scale,
         )
 
     # --------------------------- draw texts ---------------------------
@@ -58,21 +60,21 @@ def draw_hud(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr, is_snap_capable:
         gz(P.SizeX).position,
         div_text(div_x, P.DivisionX, P.SnapDivision),
         Vector((1, 0, 0)),
-        unit_text(size[0], P.SizeX, P.SnapSize),
+        unit_text(size[0], P.SizeX, P.SnapSize, d.scale.x),
     )
     d.draw_text_at_2(
         d.color.y,
         gz(P.SizeY).position,
         div_text(div_y, P.DivisionY, P.SnapDivision),
         Vector((0, 1, 0)),
-        unit_text(size[1], P.SizeY, P.SnapSize),
+        unit_text(size[1], P.SizeY, P.SnapSize, d.scale.y),
     )
     d.draw_text_at_2(
         d.color.z,
         gz(P.SizeZ).position,
         div_text(div_z, P.DivisionZ, P.SnapDivision),
         Vector((0, 0, 1)),
-        unit_text(size[2], P.SizeZ, P.SnapSize),
+        unit_text(size[2], P.SizeZ, P.SnapSize, d.scale.z),
     )
     d.draw_text_at(
         d.color.secondary,

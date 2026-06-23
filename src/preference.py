@@ -23,6 +23,11 @@ class Preference(AddonPreferences):
 
     # --- Gizmo Option ---
     show_gizmo_value: BoolProperty(name="Show Gizmo Value", default=True)
+    show_world_space_value: BoolProperty(
+        name="Show World-Space Values",
+        description="Display world-space values alongside local values when object scale is not 1.0",  # noqa: E501
+        default=False,
+    )
     # ------
 
     # --- N-Panel Option ---
@@ -45,6 +50,7 @@ class Preference(AddonPreferences):
         box = layout.box()
         box.label(text="HUD")
         box.prop(self, "show_gizmo_value", text="Show Gizmo Value (Initial state)")
+        box.prop(self, "show_world_space_value", text="Show World-Space Values")
 
     def __box_shortcuts(self, layout: UILayout) -> None:
         box = layout.box()

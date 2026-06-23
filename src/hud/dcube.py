@@ -35,11 +35,12 @@ def draw_hud(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr, is_snap_capable:
     def gz(p: P.Prop) -> Vector:
         return gizmo_info[DCUBE_GIZMO_INDEX[p]]
 
-    def unit_text(prop: P.Prop, prop_snap: P.Prop) -> str:
+    def unit_text(prop: P.Prop, prop_snap: P.Prop, scale: float = 1.0) -> str:
         return d.format_unit_or_adjusted_dist(
             out[prop.name],
             gz(prop).actual_value,
             is_snap_capable and snap_flag[prop_snap.name],
+            scale=scale,
         )
 
     # --------------------------- draw texts ---------------------------
@@ -48,40 +49,40 @@ def draw_hud(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr, is_snap_capable:
         gz(P.MinX).position,
         None,
         Vector((-1, 0, 0)),
-        unit_text(P.MinX, P.SnapSize),
+        unit_text(P.MinX, P.SnapSize, d.scale.x),
     )
     d.draw_text_at_2(
         d.color.x,
         gz(P.MaxX).position,
         None,
         Vector((1, 0, 0)),
-        unit_text(P.MaxX, P.SnapSize),
+        unit_text(P.MaxX, P.SnapSize, d.scale.x),
     )
     d.draw_text_at_2(
         d.color.y,
         gz(P.MinY).position,
         None,
         Vector((0, -1, 0)),
-        unit_text(P.MinY, P.SnapSize),
+        unit_text(P.MinY, P.SnapSize, d.scale.y),
     )
     d.draw_text_at_2(
         d.color.y,
         gz(P.MaxY).position,
         None,
         Vector((0, 1, 0)),
-        unit_text(P.MaxY, P.SnapSize),
+        unit_text(P.MaxY, P.SnapSize, d.scale.y),
     )
     d.draw_text_at_2(
         d.color.z,
         gz(P.MinZ).position,
         None,
         Vector((0, 0, -1)),
-        unit_text(P.MinZ, P.SnapSize),
+        unit_text(P.MinZ, P.SnapSize, d.scale.z),
     )
     d.draw_text_at_2(
         d.color.z,
         gz(P.MaxZ).position,
         None,
         Vector((0, 0, 1)),
-        unit_text(P.MaxZ, P.SnapSize),
+        unit_text(P.MaxZ, P.SnapSize, d.scale.z),
     )

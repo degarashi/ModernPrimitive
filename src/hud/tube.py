@@ -41,11 +41,12 @@ def draw_hud(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr, is_snap_capable:
             is_snap_capable and snap_flag[prop_snap.name],
         )
 
-    def unit_text(prop: P.Prop, prop_snap: P.Prop) -> str:
+    def unit_text(prop: P.Prop, prop_snap: P.Prop, scale: float = 1.0) -> str:
         return d.format_unit_or_adjusted_dist(
             out[prop.name],
             gz(prop).actual_value,
             is_snap_capable and snap_flag[prop_snap.name],
+            scale=scale,
         )
 
     # --------------------------- draw texts ---------------------------
@@ -54,7 +55,7 @@ def draw_hud(mod: Modifier, d: Drawer, gizmo_info: GizmoInfoAr, is_snap_capable:
         gz(P.Height).position,
         div_text(P.DivisionCircle, P.SnapCircleDivision),
         Vector((0, 0, 1)),
-        unit_text(P.Height, P.SnapHeight),
+        unit_text(P.Height, P.SnapHeight, d.scale.z),
     )
     d.draw_text_at_2(
         d.color.y,

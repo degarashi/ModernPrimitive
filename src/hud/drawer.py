@@ -70,7 +70,9 @@ class Drawer:
 
     SCALE_THRESHOLD = 1e-4
 
-    def __init__(self, blf: ModuleType, context: Context, m_world: Matrix):
+    def __init__(
+        self, blf: ModuleType, context: Context, m_world: Matrix, show_world_space: bool = False
+    ):
         reg = context.region
         reg3d = context.region_data
 
@@ -80,6 +82,7 @@ class Drawer:
         self.__window_size = (reg.width, reg.height)
         self.__m_pers = reg3d.perspective_matrix @ m_world
         self.__scale = m_world.to_scale()
+        self.__show_world_space = show_world_space
         self.__m_window = reg3d.window_matrix
         self.__system = context.scene.unit_settings.system
         self.__unit_scale = context.scene.unit_settings.scale_length
@@ -92,6 +95,10 @@ class Drawer:
         set_color(blf, HUDColor.WHITE)
         self.__text_dim = Vector(blf.dimensions(FONT_ID, "A"))
         self.__text_dim.y += 4
+
+    @property
+    def scale(self) -> Vector:
+        return self.__scale
 
     def __enter__(self):
         return self
@@ -217,7 +224,7 @@ class Drawer:
         )
 
     def format_unit_or_adjusted_dist(
-        self, input_val: float, adjusted: float, enable: bool, prec: int = 3
+        self, input_val: float, adjusted: float, enable: bool, prec: int = 3, scale: float = 1.0
     ) -> str:
         """
         Format unit distance with optional adjustment
@@ -227,15 +234,24 @@ class Drawer:
             adjusted (float): Adjusted distance value
             enable (bool): Enable adjustment flag
             prec (int, optional): Precision. Defaults to 3.
+            scale (float, optional): Object scale factor for world-space display.
+                Defaults to 1.0.
 
         Returns:
             str: Display string
         """
-        return (
-            self.format_adjusted_unit_dist(input_val, adjusted, prec)
-            if enable
-            else self.unit_dist(input_val, prec)
-        )
+        if enable:
+            base = self.format_adjusted_unit_dist(input_val, adjusted, prec)
+            primary_val = adjusted
+        else:
+            base = self.unit_dist(input_val, prec)
+            primary_val = input_val
+
+        if self.__show_world_space and abs(scale - 1.0) > self.SCALE_THRESHOLD:
+            world_val = primary_val * scale
+            world_str = self.unit_dist(world_val, prec)
+            return f"{base} (world: {world_str})"
+        return base
 
     def unit_dist(self, val: float, prec: int = 3) -> str:
         """

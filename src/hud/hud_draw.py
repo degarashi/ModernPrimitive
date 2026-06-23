@@ -126,7 +126,8 @@ class MPR_Hud(Operator):
                 and space.region_quadviews[-1] != reg3d
             ):
                 show_hud = False
-            with Drawer(blf, context, obj.matrix_world) as drawer:
+            prefs = get_addon_preferences(context)
+            with Drawer(blf, context, obj.matrix_world, prefs.show_world_space_value) as drawer:
                 if show_hud:
                     drawer.show_hud(obj.scale)
 
