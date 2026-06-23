@@ -1,4 +1,36 @@
 # Changelog
+## v0.0.52
+- Keymap registration is now centrally managed. The Preferences panel displays current keybindings and allows restoring defaults.
+- Added world-space value display to the HUD. When the object has non-uniform scale, world-space values can be shown alongside local values (configurable in Preferences → HUD).
+- Log level can now be set via the `MODERN_PRIMITIVE_LOG_LEVEL` environment variable.
+
+## v0.0.51
+- Modal Edit now supports Smooth Angle adjustment with degree display and input.
+- Refactored modal edit shortcut key generation logic.
+- Replaced hardcoded strings with property constants.
+
+## v0.0.50
+- Added procedural **Grid Material** with configurable color, density, and line width settings.
+- Added material panel to the object panel.
+- HUD: Scale value is now drawn in orange when the object scale is not 1.0.
+- HUD position adjustments.
+- Refactored Apply UI and Viewport Display UI into collapsible panels.
+- Fixed an issue where `ApplyMaterial` accidentally cleared `selected_objects`.
+- Fixed an asset path problem when using relative paths.
+
+## v0.0.49
+- Modal Edit now supports property snapping toggle.
+- Relocated default draw function for better reusability.
+
+## v0.0.48
+- Added **Modal Edit** feature (`Ctrl + Shift + C`) for keyboard-driven parameter adjustment with HUD.
+- Added **Apply Mesh** operator to bake the procedural shape to a static mesh.
+- Added modal edit panel to the object panel.
+- Refactored text drawing utilities.
+
+## v0.0.47
+- Tube side surface subdivision method is now consistent with Cylinder.
+
 ## v0.0.46
 - Fix an issue where converting a primitive would forcibly delete mesh data shared with other objects, causing those objects to disappear.
 
