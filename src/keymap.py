@@ -1,4 +1,6 @@
 import bpy
+from typing import ClassVar
+
 from bpy.props import StringProperty
 from bpy.types import Operator
 from bpy.utils import register_class, unregister_class
@@ -126,7 +128,7 @@ def restore_individual_hotkey(label: str):
 class USERPREF_OT_mpr_restore_hotkeys(Operator):
     bl_idname = f"userpref.{MODERN_PRIMITIVE_PREFIX}_restore_hotkeys"
     bl_label = "Restore Default Hotkeys"
-    bl_options = {"REGISTER", "INTERNAL"}
+    bl_options: ClassVar[set[str]] = {"REGISTER", "INTERNAL"}
 
     def execute(self, context):
         add_hotkey()
@@ -136,7 +138,7 @@ class USERPREF_OT_mpr_restore_hotkeys(Operator):
 class USERPREF_OT_mpr_restore_individual_hotkey(Operator):
     bl_idname = f"userpref.{MODERN_PRIMITIVE_PREFIX}_restore_individual_hotkey"
     bl_label = "Restore Shortcut"
-    bl_options = {"REGISTER", "INTERNAL"}
+    bl_options: ClassVar[set[str]] = {"REGISTER", "INTERNAL"}
 
     target_shortcut: StringProperty(name="Target Shortcut")
 
