@@ -59,6 +59,8 @@ You can also use the **MPR tab** in the N-panel for quick access.
 
 Keybindings can be viewed and restored from the **Preferences** panel.
 
+<img src="./doc_images/shortcut_key_2.jpg" alt="Shortcut Key Preferences" width="75%" />
+
 ## Gallery
 <img src="./doc_images/usage_cube_1.jpg" alt="" width="24%" /> <img src="./doc_images/usage_cone_1.jpg" alt="" width="24%" /> <img src="./doc_images/usage_cylinder_2.jpg" alt="" width="24%" /> <img src="./doc_images/usage_grid_1.jpg" alt="" width="24%" />
 <img src="./doc_images/usage_icosphere_0.jpg" alt="" width="24%" /> <img src="./doc_images/usage_torus_0.jpg" alt="" width="24%" /> <img src="./doc_images/usage_uvsphere_0.jpg" alt="" width="24%" /> <img src="./doc_images/usage_tube_2.jpg" alt="" width="24%" />
