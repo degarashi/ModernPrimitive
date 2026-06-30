@@ -1,4 +1,9 @@
 # Changelog
+## v0.0.53
+- Extracted keymap management logic into a dedicated helper module (`src/util/keymap_helper.py`).
+- Added type hints to operator `bl_options` declarations.
+- Updated `blender_manifest.toml` to exclude `readme.ja.md` and related files from the package.
+
 ## v0.0.52
 - Keymap registration is now centrally managed. The Preferences panel displays current keybindings and allows restoring defaults.
 - Added world-space value display to the HUD. When the object has non-uniform scale, world-space values can be shown alongside local values (configurable in Preferences → HUD).
