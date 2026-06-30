@@ -22,33 +22,38 @@ def get_hotkey_entry_item(
 
 
 def remove_hotkeys(keymap_defs: list[dict[str, Any]], keymap_name: str = "3D View"):
-    """Removes all keymaps defined in the keymap_defs list."""
+    """Removes keymaps matching the operator's idname and prop_name on unregister."""
     kc = get_addon_keyconfig()
     if not kc:
         return
     km = kc.keymaps.get(keymap_name)
     if not km:
         return
-    for kmi in list(km.keymap_items):
-        for spec in keymap_defs:
-            if kmi.idname == spec["idname"]:
-                prop_name = spec.get("prop_name")
-                if prop_name is None or getattr(kmi.properties, "name", None) == prop_name:
-                    km.keymap_items.remove(kmi)
-                    break
+    for spec in keymap_defs:
+        # Remove all matching items in case there are duplicates
+        while True:
+            kmi = get_hotkey_entry_item(km, spec["idname"], spec.get("prop_name"))
+            if kmi:
+                km.keymap_items.remove(kmi)
+            else:
+                break
 
 
 def add_hotkeys(
     keymap_defs: list[dict[str, Any]], keymap_name: str = "3D View", space_type: str = "VIEW_3D"
 ):
-    """Adds or registers hotkeys based on keymap definitions."""
-    remove_hotkeys(keymap_defs, keymap_name=keymap_name)
+    """Adds missing hotkeys without removing existing user customizations."""
     kc = get_addon_keyconfig()
     if not kc:
         return
     km = kc.keymaps.new(name=keymap_name, space_type=space_type)
 
     for spec in keymap_defs:
+        # Skip if a keymap item for this operator already exists
+        # (preserving user customizations)
+        if get_hotkey_entry_item(km, spec["idname"], spec.get("prop_name")):
+            continue
+
         kmi = km.keymap_items.new(
             spec["idname"],
             spec["type"],
@@ -83,12 +88,13 @@ def restore_individual_hotkey(
     if not target_spec:
         return
 
-    for kmi in list(km.keymap_items):
-        if kmi.idname == target_spec["idname"]:
-            prop_name = target_spec.get("prop_name")
-            if prop_name is None or getattr(kmi.properties, "name", None) == prop_name:
-                km.keymap_items.remove(kmi)
-                break
+    # Remove existing keymap items for this operator before restoring
+    while True:
+        kmi = get_hotkey_entry_item(km, target_spec["idname"], target_spec.get("prop_name"))
+        if kmi:
+            km.keymap_items.remove(kmi)
+        else:
+            break
 
     kmi = km.keymap_items.new(
         target_spec["idname"],

@@ -1,4 +1,3 @@
-import bpy
 from typing import ClassVar
 
 from bpy.props import StringProperty
@@ -6,6 +5,7 @@ from bpy.types import Operator
 from bpy.utils import register_class, unregister_class
 
 from .constants import MODERN_PRIMITIVE_PREFIX
+from .util import keymap_helper
 
 HOTKEY_DEFS = [
     {
@@ -38,9 +38,6 @@ HOTKEY_DEFS = [
 ]
 
 
-from .util import keymap_helper
-
-
 def get_hotkey_entry_item(km, kmi_idname, properties_name=None):
     return keymap_helper.get_hotkey_entry_item(km, kmi_idname, properties_name)
 
@@ -50,6 +47,11 @@ def remove_hotkey():
 
 
 def add_hotkey():
+    keymap_helper.add_hotkeys(HOTKEY_DEFS)
+
+
+def restore_hotkeys():
+    keymap_helper.remove_hotkeys(HOTKEY_DEFS)
     keymap_helper.add_hotkeys(HOTKEY_DEFS)
 
 
@@ -63,7 +65,7 @@ class USERPREF_OT_mpr_restore_hotkeys(Operator):
     bl_options: ClassVar[set[str]] = {"REGISTER", "INTERNAL"}
 
     def execute(self, context):
-        add_hotkey()
+        restore_hotkeys()
         return {"FINISHED"}
 
 
