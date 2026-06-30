@@ -5,7 +5,8 @@ from bpy.types import AddonPreferences, Context, UILayout
 from bpy.utils import register_class, unregister_class
 
 from . import keymap
-from .constants import get_addon_name, MODERN_PRIMITIVE_PREFIX
+from .constants import get_addon_name
+from .keymap import HOTKEY_DEFS
 
 
 class Preference(AddonPreferences):
@@ -61,9 +62,8 @@ class Preference(AddonPreferences):
         km = kc.keymaps.get("3D View") if kc else None
 
         hotkeys = [
-            ("wm.call_menu", f"VIEW3D_MT_{MODERN_PRIMITIVE_PREFIX}_append", "Main Menu"),
-            (f"object.{MODERN_PRIMITIVE_PREFIX}_focus_modifier", None, "Focus Modifier"),
-            ("object.mpr_modal_edit", None, "Modal Edit"),
+            (spec["idname"], spec.get("prop_name"), spec["label"])
+            for spec in HOTKEY_DEFS
         ]
 
         missing_count = 0
