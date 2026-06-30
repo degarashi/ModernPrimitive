@@ -1,4 +1,8 @@
 # Changelog
+## v0.0.54
+- Fixed duplicate registration and orphaned custom shortcuts in keymap helper.
+- Deduplicated hotkey definitions by deriving from `HOTKEY_DEFS`.
+
 ## v0.0.53
 - Extracted keymap management logic into a dedicated helper module (`src/util/keymap_helper.py`).
 - Added type hints to operator `bl_options` declarations.
