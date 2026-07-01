@@ -1,4 +1,8 @@
 # Changelog
+## v0.0.55
+- Fixed shortcut key registration that was not functioning properly. Refactored keymap management into a reusable `KeymapManager` class (`src/util/keymap_manager.py`).
+- Removed legacy `src/keymap.py` and `src/util/keymap_helper.py` modules.
+
 ## v0.0.54
 - Fixed duplicate registration and orphaned custom shortcuts in keymap helper.
 - Deduplicated hotkey definitions by deriving from `HOTKEY_DEFS`.
