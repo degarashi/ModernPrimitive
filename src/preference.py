@@ -1,12 +1,76 @@
+import contextlib
+
 import bpy
 import rna_keymap_ui
 from bpy.props import BoolProperty
 from bpy.types import AddonPreferences, Context, UILayout
 from bpy.utils import register_class, unregister_class
 
-from . import keymap
 from .constants import get_addon_name
-from .keymap import HOTKEY_DEFS
+
+HOTKEY_DEFS = [
+    {
+        "idname": "wm.call_menu",
+        "type": "M",
+        "ctrl": True,
+        "shift": True,
+        "alt": False,
+        "properties": {"name": "VIEW3D_MT_mpr_append"},
+    },
+    {
+        "idname": "object.mpr_focus_modifier",
+        "type": "X",
+        "ctrl": True,
+        "shift": False,
+        "alt": True,
+    },
+    {"idname": "object.mpr_modal_edit", "type": "C", "ctrl": True, "shift": True, "alt": False},
+]
+
+addon_keymaps = []
+
+
+def get_hotkey_entry_item(km, kmi_name, kmi_value, handled_kmi):
+    for km_item in km.keymap_items:
+        if km_item in handled_kmi:
+            continue
+        if km_item.idname == kmi_name and (
+            kmi_value is None
+            or ("name" in km_item.properties and km_item.properties.name == kmi_value)
+        ):
+            return km_item
+    return None
+
+
+def register_keymaps():
+    wm = bpy.context.window_manager
+    kc = wm.keyconfigs.addon
+    if not kc:
+        return
+
+    km = kc.keymaps.new(name="3D View", space_type="VIEW_3D")
+
+    for spec in HOTKEY_DEFS:
+        kmi = km.keymap_items.new(
+            spec["idname"],
+            spec["type"],
+            "PRESS",
+            ctrl=spec.get("ctrl", False),
+            shift=spec.get("shift", False),
+            alt=spec.get("alt", False),
+        )
+        properties = spec.get("properties")
+        if properties:
+            for key, val in properties.items():
+                setattr(kmi.properties, key, val)
+        addon_keymaps.append((km, kmi))
+
+
+def unregister_keymaps():
+    for km, kmi in addon_keymaps:
+        with contextlib.suppress(Exception):
+            km.keymap_items.remove(kmi)
+    addon_keymaps.clear()
 
 
 class Preference(AddonPreferences):
@@ -54,67 +118,51 @@ class Preference(AddonPreferences):
         box.prop(self, "show_world_space_value", text="Show World-Space Values")
 
     def __box_shortcuts(self, layout: UILayout) -> None:
-        box = layout.box()
-        box.label(text="Shortcuts")
-
         wm = bpy.context.window_manager
-        kc = wm.keyconfigs.addon
-        km = kc.keymaps.get("3D View") if kc else None
+        kc = wm.keyconfigs.user
+        if not kc:
+            return
 
-        hotkeys = [
-            (spec["idname"], spec.get("prop_name"), spec["label"])
-            for spec in HOTKEY_DEFS
-        ]
+        box = layout.box()
+        col = box.column()
+        col.label(text="Setup Keymap")
 
-        missing_count = 0
-        total_count = len(hotkeys)
-
-        if km:
-            for kmi_idname, prop_name, label in hotkeys:
-                kmi = keymap.get_hotkey_entry_item(km, kmi_idname, prop_name)
-                row = box.row()
-                row.label(text=label)
-
-                if kmi:
-                    sub = row.row()
-                    sub.context_pointer_set("keymap", km)
-                    rna_keymap_ui.draw_kmi([], kc, km, kmi, sub, 0)
-
-                    op = row.operator(
-                        keymap.USERPREF_OT_mpr_restore_individual_hotkey.bl_idname,
-                        text="",
-                        icon="FILE_REFRESH",
-                    )
-                    op.target_shortcut = label
-                else:
-                    missing_count += 1
-                    row.label(text="Missing", icon="ERROR")
-                    op = row.operator(
-                        keymap.USERPREF_OT_mpr_restore_individual_hotkey.bl_idname,
-                        text="Add",
-                        icon="ADD",
-                    )
-                    op.target_shortcut = label
-        else:
-            missing_count = total_count
-
-        if missing_count > 0:
-            row = box.row()
-            row.label(text=f"Missing {missing_count} of {total_count} shortcuts!", icon="ERROR")
-
-        row = box.row()
-        if missing_count == total_count:
-            row.operator(
-                keymap.USERPREF_OT_mpr_restore_hotkeys.bl_idname,
-                text="Add Default Hotkeys",
-                icon="ADD",
+        km_tree = {}
+        for _km, _kmi in addon_keymaps:
+            if _km.name not in km_tree:
+                km_tree[_km.name] = []
+            km_tree[_km.name].append(
+                (_kmi.idname, _kmi.properties.name if "name" in _kmi.properties else None)
             )
-        else:
-            row.operator(
-                keymap.USERPREF_OT_mpr_restore_hotkeys.bl_idname,
-                text="Restore Default Hotkeys",
-                icon="FILE_REFRESH",
-            )
+
+        handled_kmi = set()
+        for km_name, kmi_items in km_tree.items():
+            km = kc.keymaps.get(km_name)
+            if km:
+                col.context_pointer_set("keymap", km)
+                col.separator()
+                row = col.row(align=True)
+                row.label(text=km_name)
+
+                if km.is_user_modified:
+                    subrow = row.row()
+                    subrow.alignment = "RIGHT"
+                    subrow.operator("preferences.keymap_restore", text="Restore")
+
+                for kmi_node in kmi_items:
+                    kmi = get_hotkey_entry_item(km, kmi_node[0], kmi_node[1], handled_kmi)
+                    col.separator()
+
+                    if kmi:
+                        handled_kmi.add(kmi)
+                        rna_keymap_ui.draw_kmi([], kc, km, kmi, col, 0)
+                    else:
+                        row = col.row(align=True)
+                        row.separator(factor=2.0)
+                        row.label(
+                            text=f"Keymap item for '{kmi_node[0]}' in '{km_name}' not found",
+                            icon="ERROR",
+                        )
 
     def draw(self, ctx: Context) -> None:
         self.__box_create(self.layout)
@@ -124,7 +172,9 @@ class Preference(AddonPreferences):
 
 def register() -> None:
     register_class(Preference)
+    register_keymaps()
 
 
 def unregister() -> None:
     unregister_class(Preference)
+    unregister_keymaps()

@@ -17,7 +17,6 @@ logger.setLevel(
 
 MODULE_PREFIX = "src"
 MODULE_NAMES: list[str] = [
-    "keymap",
     "preference",
     "modern_primitive",
     "focus_modifier",
