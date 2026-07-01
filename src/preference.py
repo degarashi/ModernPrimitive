@@ -1,5 +1,3 @@
-import contextlib
-
 import bpy
 import rna_keymap_ui
 from bpy.props import BoolProperty
@@ -7,6 +5,7 @@ from bpy.types import AddonPreferences, Context, UILayout
 from bpy.utils import register_class, unregister_class
 
 from .constants import get_addon_name
+from .util.keymap_manager import KeymapManager
 
 HOTKEY_DEFS = [
     {
@@ -27,50 +26,7 @@ HOTKEY_DEFS = [
     {"idname": "object.mpr_modal_edit", "type": "C", "ctrl": True, "shift": True, "alt": False},
 ]
 
-addon_keymaps = []
-
-
-def get_hotkey_entry_item(km, kmi_name, kmi_value, handled_kmi):
-    for km_item in km.keymap_items:
-        if km_item in handled_kmi:
-            continue
-        if km_item.idname == kmi_name and (
-            kmi_value is None
-            or ("name" in km_item.properties and km_item.properties.name == kmi_value)
-        ):
-            return km_item
-    return None
-
-
-def register_keymaps():
-    wm = bpy.context.window_manager
-    kc = wm.keyconfigs.addon
-    if not kc:
-        return
-
-    km = kc.keymaps.new(name="3D View", space_type="VIEW_3D")
-
-    for spec in HOTKEY_DEFS:
-        kmi = km.keymap_items.new(
-            spec["idname"],
-            spec["type"],
-            "PRESS",
-            ctrl=spec.get("ctrl", False),
-            shift=spec.get("shift", False),
-            alt=spec.get("alt", False),
-        )
-        properties = spec.get("properties")
-        if properties:
-            for key, val in properties.items():
-                setattr(kmi.properties, key, val)
-        addon_keymaps.append((km, kmi))
-
-
-def unregister_keymaps():
-    for km, kmi in addon_keymaps:
-        with contextlib.suppress(Exception):
-            km.keymap_items.remove(kmi)
-    addon_keymaps.clear()
+keymap_manager = KeymapManager(HOTKEY_DEFS)
 
 
 class Preference(AddonPreferences):
@@ -128,7 +84,7 @@ class Preference(AddonPreferences):
         col.label(text="Setup Keymap")
 
         km_tree = {}
-        for _km, _kmi in addon_keymaps:
+        for _km, _kmi in keymap_manager.addon_keymaps:
             if _km.name not in km_tree:
                 km_tree[_km.name] = []
             km_tree[_km.name].append(
@@ -150,7 +106,7 @@ class Preference(AddonPreferences):
                     subrow.operator("preferences.keymap_restore", text="Restore")
 
                 for kmi_node in kmi_items:
-                    kmi = get_hotkey_entry_item(km, kmi_node[0], kmi_node[1], handled_kmi)
+                    kmi = keymap_manager.get_hotkey_entry_item(km, kmi_node[0], kmi_node[1], handled_kmi)
                     col.separator()
 
                     if kmi:
@@ -172,9 +128,9 @@ class Preference(AddonPreferences):
 
 def register() -> None:
     register_class(Preference)
-    register_keymaps()
+    keymap_manager.register()
 
 
 def unregister() -> None:
     unregister_class(Preference)
-    unregister_keymaps()
+    keymap_manager.unregister()
