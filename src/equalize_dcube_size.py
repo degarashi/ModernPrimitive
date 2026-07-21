@@ -13,7 +13,7 @@ from .util.aux_func import (
     is_mpr_enabled,
 )
 from .util.aux_math import MinMax
-from .util.aux_node import get_interface_value, set_interface_value
+from .util.aux_node import get_interface_value, set_interface_value, update_node_interface
 from .constants import MODERN_PRIMITIVE_PREFIX, Type
 from .primitive_prop import get_max, get_min
 from .reset_origin import ResetOrigin_Operator
@@ -66,7 +66,7 @@ class Equalize_DCube_Operator(Operator):
             set_interface_value(mod, (min_name, width))
             set_interface_value(mod, (max_name, width))
 
-        mod.node_group.interface_update(context)
+        update_node_interface(mod, context)
         __class__._make_single_vertex(context, obj, bb.average)
 
     def execute(self, context: Context | None) -> set[str]:

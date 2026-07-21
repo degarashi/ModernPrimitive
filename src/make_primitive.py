@@ -15,7 +15,7 @@ from .util.aux_func import (
     register_class,
     unregister_class,
 )
-from .util.aux_node import set_interface_value
+from .util.aux_node import set_interface_value, update_node_interface
 from .util.aux_other import classproperty
 from .exception import DGFileNotFound, DGObjectNotFound
 from .primitive import (
@@ -80,7 +80,7 @@ class OperatorBase(Operator):
         # Apply smooth shading angle
         set_interface_value(mod, ("Smooth Angle", math.radians(self.smooth_angle_deg)))
         # Since the node group value has been changed, update it here
-        mod.node_group.interface_update(context)
+        update_node_interface(mod, context)
 
         if self.appropriate_size:
             bpy.ops.object.mpr_apply_scale(strict=True)

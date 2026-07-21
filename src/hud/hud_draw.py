@@ -213,7 +213,6 @@ class Setting:
 
             cls.pref_value = should_show
             if not cls._set_window_manager_value(should_show):
-                # If setting fails, reset pref_value to try again
                 cls.pref_value = None
                 return
 

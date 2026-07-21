@@ -15,6 +15,7 @@ from .util.aux_node import (
     modify_interface_value,
     set_interface_value,
     swap_interface_value,
+    update_node_interface,
 )
 from .constants import MODERN_PRIMITIVE_PREFIX, Type
 from .exception import DGInvalidInput
@@ -278,7 +279,7 @@ class ApplyScale_Operator(Operator):
                 try:
                     PROC_MAP[typ_ver.type](obj, mod, warn)
                     # Since the node group value has been changed, update it here
-                    mod.node_group.interface_update(context)
+                    update_node_interface(mod, context)
                     old_scale = obj.scale.copy()
                     # reset scale value
                     obj.scale = Vector((1, 1, 1))
