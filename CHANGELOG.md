@@ -1,4 +1,7 @@
 # Changelog
+## v0.0.56
+- Added Blender 5.2+ support for Geometry Nodes modifier API change. Version branching (`bpy.app.version >= (5, 2, 0)`) in `src/util/aux_node.py` ensures compatibility with both old (4.3–5.1) and new (5.2+) Blender versions.
+
 ## v0.0.55
 - Fixed shortcut key registration that was not functioning properly. Refactored keymap management into a reusable `KeymapManager` class (`src/util/keymap_manager.py`).
 - Removed legacy `src/keymap.py` and `src/util/keymap_helper.py` modules.

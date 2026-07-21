@@ -34,7 +34,7 @@ All primitives are built with Geometry Nodes, allowing for non-destructive editi
 - **Apply Scale**: Synchronize gizmos with the object's scale.
 
 ## Requirement
-- **Blender 4.3 or later**
+- **Blender 4.3 or later** (including Blender 5.2+)
 
 ## Usage
 
