@@ -67,7 +67,8 @@ def _copy_socket_value(dst_inputs, src_inputs, sock_name: str) -> None:
     if isinstance(src_val, IDPropertyGroup) and isinstance(dst_val, IDPropertyGroup):
         dst_val["value"] = src_val["value"]
     else:
-        dst_inputs[sock_name] = src_val
+        # Blender 5.2+: RNA property → use .value
+        dst_inputs[sock_name].value = src_val.value
 
 
 def copy_geometry_node_params(mod_dst: NodesModifier, mod_src: NodesModifier) -> None:
@@ -87,7 +88,7 @@ def set_interface_value(mod: NodesModifier, data: tuple[str, Any]) -> None:
         if isinstance(existing, IDPropertyGroup):
             prop_inputs[sock_name]["value"] = data[1]
         else:
-            prop_inputs[sock_name] = data[1]
+            prop_inputs[sock_name].value = data[1]
     else:
         mod[sock_name] = data[1]
 
@@ -106,7 +107,7 @@ def get_interface_value(mod: NodesModifier, name: str) -> Any:
         raw = mod.properties.inputs[sock_name]
         if isinstance(raw, IDPropertyGroup):
             return raw["value"]
-        return raw
+        return raw.value
     return mod[sock_name]
 
 
@@ -130,6 +131,10 @@ def swap_interface_value(mod: NodesModifier, ent0: str, ent1: str) -> None:
 
 
 def update_node_interface(mod: NodesModifier, context: Context) -> bool:
-    if not _GN_NEW_API:
+    if _GN_NEW_API:
+        # Blender 5.2+: RNA property writes don't auto-trigger depsgraph update
+        mod.id_data.update_tag()
+        context.view_layer.update()
+    else:
         mod.node_group.interface_update(context)
     return True
