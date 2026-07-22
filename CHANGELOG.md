@@ -1,4 +1,8 @@
 # Changelog
+## v0.0.57
+- Fixed an issue where primitive parameter changes via Modal Edit were not immediately reflected in the viewport on Blender 5.2+.
+- Refactored geometry socket detection to use `bl_socket_idname` instead of `hasattr` string matching, providing more robust and intentional socket type identification.
+
 ## v0.0.56
 - Added Blender 5.2+ support for Geometry Nodes modifier API change. Version branching (`bpy.app.version >= (5, 2, 0)`) in `src/util/aux_node.py` ensures compatibility with both old (4.3–5.1) and new (5.2+) Blender versions.
 
