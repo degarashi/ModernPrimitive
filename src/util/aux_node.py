@@ -45,7 +45,7 @@ def _enum_group_input_new(node_group: NodeGroup) -> list[str]:
             continue
         if item.identifier.startswith("_"):
             continue
-        if hasattr(item, "socket_type") and "Geometry" in item.socket_type:
+        if item.bl_socket_idname == "NodeSocketGeometry":
             continue
         ret.append(item.identifier)
     return ret
