@@ -5,6 +5,7 @@ from bpy.types import Context, Panel
 from ..constants import MODERN_PRIMITIVE_CATEGORY
 from ..extract_primitive import ExtractPrimitive_Operator
 from ..util.aux_func import (
+    get_addon_preferences,
     register_class,
     unregister_class,
 )
@@ -18,6 +19,11 @@ class MPR_PT_EditConvert(Panel):
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_options: ClassVar[set[str]] = {"DEFAULT_CLOSED"}
+
+    @classmethod
+    def poll(cls, ctx: Context) -> bool:
+        prefs = get_addon_preferences(ctx)
+        return prefs.show_npanel
 
     def draw(self, ctx: Context) -> None:
         lo = self.layout
@@ -58,6 +64,11 @@ class MPR_PT_Edit(Panel):
     bl_region_type = "UI"
     bl_category = MODERN_PRIMITIVE_CATEGORY
     bl_context = "mesh_edit"
+
+    @classmethod
+    def poll(cls, ctx: Context) -> bool:
+        prefs = get_addon_preferences(ctx)
+        return prefs.show_npanel
 
     def draw(self, ctx: Context) -> None:
         pass
