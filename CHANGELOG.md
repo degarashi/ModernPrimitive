@@ -1,4 +1,7 @@
 # Changelog
+## v0.0.58
+- Fixed Edit Mode panels ignoring the "Show N-Panel" preference. `MPR_PT_Edit` and `MPR_PT_EditConvert` now respect the visibility toggle via `poll`.
+
 ## v0.0.57
 - Fixed an issue where primitive parameter changes via Modal Edit were not immediately reflected in the viewport on Blender 5.2+.
 - Refactored geometry socket detection to use `bl_socket_idname` instead of `hasattr` string matching, providing more robust and intentional socket type identification.
