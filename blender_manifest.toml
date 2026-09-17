@@ -69,6 +69,7 @@ files = "Import Geometry-Node from Add-on Directory"
 # # You only need to edit them if you want different options.
 paths_exclude_pattern = [
   "__pycache__/",
+  "*.blend[0-9]*",
   "/.git/",
   ".gitignore",
   "/*.zip",
